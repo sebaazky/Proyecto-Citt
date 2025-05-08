@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="{% static 'images/logocitt.jpeg' %}" type="image/x-icon">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <img src="{% static 'images/citt.jpeg' %}" alt="Logo" style="height: 40px; margin-right: 10px; border-radius: 50%">
+            <a class="navbar-brand" href="{% url 'index' %}">CITT Puente Alto</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Proyectos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Tracks</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        {% if user.is_authenticated %}
+                        <a class="nav-link dropdown-toggle" id="loginDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{user.username}}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="loginDropdown">
+                            {% if user.rol == 'alumno'%}
+                            <li><a class="dropdown-item" href="#">Home</a></li>
+                            {% else %}
+                            <li><a class="dropdown-item" href="#">Home</a></li>
+                            {% endif %}
+                            <li><a class="dropdown-item" href="#">Cerrar sesión</a></li>
+                        </ul>
+                        {% else %}
+                        <a class="nav-link dropdown-toggle" href="#" id="loginDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Log in
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="loginDropdown">
+                            <li><a class="dropdown-item" href="#">Alumno</a></li>
+                            <li><a class="dropdown-item" href="#">Docente</a></li>
+                        </ul>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}
+
+    {% endblock %}
+    
+    <footer class="footer-section bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">Síguenos en nuestras redes sociales:</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="https://www.youtube.com/c/CITTDuocUC" target="_blank"
+                        class="btn btn-outline-light btn-social">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                            class="bi bi-youtube" viewBox="0 0 16 16">
+                            <path
+                                d="M15.564 3.878c-.173-.649-.686-1.157-1.344-1.364C12.684 2 8 2 8 2s-4.684 0-6.22.514c-.658.207-1.171.715-1.344 1.364C0 5.223 0 8 0 8s0 2.777.436 4.122c.173.649.686 1.157 1.344 1.364C3.316 14 8 14 8 14s4.684 0 6.22-.514c.658-.207 1.171-.715 1.344-1.364C16 10.777 16 8 16 8s0-2.777-.436-4.122zM6.5 10.5V5.5l5 2.5-5 2.5z" />
+                        </svg>
+                    </a>
+                    <a href="https://www.instagram.com/citt_puentealto?igsh=N2dtbTlndmE1ZGs2" target="_blank"
+                        class="btn btn-outline-light btn-social">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                            class="bi bi-instagram" viewBox="0 0 16 16">
+                            <path
+                                d="M8 0c1.989 0 2.237.008 3.009.044.771.038 1.314.167 1.785.356.47.19.879.442 1.28.843.401.4.653.81.843 1.28.189.47.318 1.014.356 1.785.035.772.043 1.02.043 3.009s-.008 2.237-.044 3.009c-.038.771-.167 1.314-.356 1.785-.19.47-.442.879-.843 1.28-.4.401-.81.653-1.28.843-.471.189-1.015.318-1.785.356-.772.035-1.02.043-3.009.043s-2.237-.008-3.009-.044c-.771-.038-1.314-.167-1.785-.356-.47-.19-.879-.442-1.28-.843-.401-.4-.653-.81-.843-1.28-.189-.471-.318-1.015-.356-1.785-.035-.772-.043-1.02-.043-3.009s.008-2.237.044-3.009c.038-.771.167-1.314.356-1.785.19-.47.442-.879.843-1.28.4-.401.81-.653 1.28-.843.471-.189 1.014-.318 1.785-.356.772-.035 1.02-.043 3.009-.043zM8 3.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zm0 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zm4-2.5a.5.5 0 0 1 .5.5c0 .3-.1.6-.3.8-.2.2-.5.3-.8.3-.3 0-.6-.1-.8-.3-.2-.2-.3-.5-.3-.8a.5.5 0 0 1 .5-.5zm-8 0a.5.5 0 0 1 .5.5c0 .3-.1.6-.3.8-.2.2-.5.3-.8.3-.3 0-.6-.1-.8-.3-.2-.2-.3-.5-.3-.8a.5.5 0 0 1 .5-.5zm8 10a6 6 0 1 1 0-12 6 6 0 0 1 0 12z" />
+                        </svg>
+                    </a>
+                    <a href="http://www2.duoc.cl/citt/index.html" target="_blank"
+                        class="btn btn-outline-light btn-social">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                            class="bi bi-building" viewBox="0 0 16 16">
+                            <path
+                                d="M13.5 0H2.5a.5.5 0 0 0-.5.5V15a.5.5 0 0 0 .5.5h3V10h3v5h3a.5.5 0 0 0 .5-.5V.5a.5.5 0 0 0-.5-.5zM12 1v4H4V1h8zm-9 5v9h2V6H3zM6 6h3v3H6V6zm5 0h3v3h-3V6z" />
+                            <path fill-rule="evenodd"
+                                d="M4 14V8h1v6H3v-1h1zm7-6v6h1V8h-1zm-4 6v-3H6v3h1zM7 5V1H6v4h1z" />
+                        </svg>
+                        CITT
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'scripts/scripts.js' %}"></script>
+</body>
+</html>

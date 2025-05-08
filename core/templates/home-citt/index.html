@@ -1,0 +1,364 @@
+{% extends 'base_bienvenida.html' %}
+{% load static %}
+
+{% block titulo %}Centro de Investigación y Transferencia Tecnológica Puente Alto{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+<section id="inicio" class="inicio-section">
+    <div class="background-image">
+        <img src="{% static 'images/citt.jpg' %}" alt="CITT">
+    </div>
+</section>
+
+<section id="proyectos" class="proyectos-section">
+    <div class="container">
+        <h2 class="text-center">Proyectos</h2>
+        <div class="d-flex justify-content-center">
+            <div id="proyectosCarousel" class="carousel slide" data-bs-ride="carousel"
+                style="width: 600px; height: 400px;">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{% static 'images/proyecto1.jpg' %}" class="d-block w-100" height="400px"  alt="Proyecto 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'images/proyecto2.jpg' %}" class="d-block w-100" height="400px" alt="Proyecto 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'images/proyecto3.jpg' %}" class="d-block w-100" height="400px" alt="Proyecto 3">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'images/proyecto4.jpg' %}" class="d-block w-100" height="400px" alt="Proyecto 4">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'images/proyecto5.jpg' %}" class="d-block w-100" height="400px" alt="Proyecto 5">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#proyectosCarousel"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#proyectosCarousel"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="tracks" class="tracks-section">
+    <div class="container">
+        <h2>Tracks</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col">
+                <div class="card track-card" data-track="robotica">
+                    <div class="card-front">
+                        <div class="card-body" style="background-image: url({% static 'images/robotica.jpg' %});">
+                            <h5 class="card-title">Robótica</h5>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <div class="card-body">
+                            <h5 class="card-title">Robótica</h5>
+                            <p>En el track de Robótica del CITT, exploramos las bases fundamentales y avanzadas de
+                                la robótica moderna. Desde la teoría hasta la práctica, nuestros estudiantes
+                                aprenden a diseñar, programar y operar robots en diversos entornos y aplicaciones. A
+                                través de proyectos prácticos y laboratorios interactivos, fomentamos la innovación
+                                y el desarrollo de habilidades en ingeniería robótica, preparando a nuestros
+                                participantes para enfrentar los desafíos tecnológicos del futuro.</p>
+                            <a href="#" class="custom-btn">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Tarjeta Big Data -->
+            <div class="col">
+                <div class="card track-card" data-track="big-data">
+                    <div class="card-front">
+                        <div class="card-body" style="background-image: url('{% static 'images/bigdata.jpg' %}');">
+                            <h5 class="card-title">Big Data</h5>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <div class="card-body">
+                            <h5 class="card-title">Big Data</h5>
+                            <p>El track de Big Data en el CITT se enfoca en el manejo y análisis de grandes
+                                volúmenes de datos. Los estudiantes aprenden técnicas y herramientas para extraer
+                                información valiosa de conjuntos masivos de datos, contribuyendo al entendimiento y
+                                la toma de decisiones informadas.</p>
+                            <a href="#" class="custom-btn">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card track-card" data-track="videojuegos">
+                    <div class="card-front">
+                        <div class="card-body" style="background-image: url('{% static 'images/games.jpg' %}');">
+                            <h5 class="card-title">Videojuegos</h5>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <div class="card-body">
+                            <h5 class="card-title">Videojuegos</h5>
+                            <p>En el track de Videojuegos, los participantes exploran el diseño, desarrollo y
+                                programación de juegos digitales. Desde la conceptualización hasta la
+                                implementación, este track fomenta la creatividad y habilidades técnicas necesarias
+                                para la industria del entretenimiento interactivo.</p>
+                            <a href="#" class="custom-btn">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class=" col">
+                <div class="card track-card" data-track="machinelearning">
+                    <div class="card-front">
+                        <div class="card-body" style="background-image: url('{% static 'images/machine-learning.jpg' %}');">
+                            <h5 class="card-title">Machine Learning</h5>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <div class="card-body">
+                            <h5 class="card-title">Machine Learning</h5>
+                            <p>El track de Machine Learning del CITT se centra en algoritmos y
+                                modelos que permiten
+                                a las máquinas aprender y mejorar a partir de datos. Los estudiantes
+                                exploran
+                                aplicaciones en reconocimiento de patrones, procesamiento de
+                                lenguaje natural, y
+                                más, impulsando la inteligencia artificial.</p>
+                            <a href="#" class="custom-btn">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card track-card" data-track="realidad-virtual">
+                    <div class="card-front">
+                        <div class="card-body" style="background-image: url('{% static 'images/realidad-virtual.jpg' %}');">
+                            <h5 class="card-title">Realidad virtual</h5>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <div class="card-body">
+                            <h5 class="card-title">Realidad Virtual</h5>
+                            <p>En el track de Realidad Virtual, los participantes exploran la creación
+                                de entornos
+                                virtuales interactivos. Desde la simulación hasta la experiencia
+                                inmersiva, este
+                                track combina creatividad con tecnología para desarrollar aplicaciones
+                                en educación,
+                                entrenamiento y entretenimiento.</p>
+                            <a href="#" class="custom-btn">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card track-card" data-track="ciberseguridad">
+                    <div class="card-front">
+                        <div class="card-body" style="background-image: url('{% static 'images/ciberseguridad.jpg' %}');">
+                            <h5 class="card-title">Ciberseguridad</h5>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <div class="card-body">
+                            <h5 class="card-title">Ciberseguridad</h5>
+                            <p>El track de Ciberseguridad en el CITT se enfoca en proteger sistemas y
+                                redes contra
+                                amenazas cibernéticas. Los estudiantes aprenden técnicas de prevención,
+                                detección y
+                                respuesta a incidentes, preparándolos para enfrentar desafíos en
+                                seguridad
+                                informática.</p>
+                            <a href="#" class="custom-btn">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card track-card" data-track="Apps">
+                    <div class="card-front">
+                        <div class="card-body" style="background-image: url('{% static 'images/web-movil.jpg' %}');">
+                            <h5 class="card-title">App Movil & Web</h5>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <div class="card-body">
+                            <h5 class="card-title">App Movil & Web</h5>
+                            <p>En el track de Desarrollo de Aplicaciones Móviles y Web, los
+                                participantes aprenden a
+                                crear aplicaciones tanto para dispositivos móviles como para la web.
+                                Desde el diseño
+                                de interfaces hasta la implementación de funcionalidades avanzadas, este
+                                track
+                                prepara a los estudiantes para el mercado digital actual.</p>
+                            <a href="#" class="custom-btn">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card track-card" data-track="IoT">
+                    <div class="card-front">
+                        <div class="card-body" style="background-image: url('{% static 'images/iot.jpg' %}');">
+                            <h5 class="card-title">Internet of Things</h5>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <div class="card-body">
+                            <h5 class="card-title">Internet of Things</h5>
+                            <p>El track de IoT del CITT se enfoca en la interconexión de dispositivos
+                                inteligentes a
+                                través de Internet. Los participantes exploran el diseño y desarrollo de
+                                sistemas
+                                embebidos y aplicaciones IoT, contribuyendo a la creación de ciudades
+                                inteligentes y
+                                soluciones innovadoras.</p>
+                            <a href="#" class="custom-btn">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card track-card" data-track="drones">
+                    <div class="card-front">
+                        <div class="card-body" style="background-image: url('{% static 'images/drones.jpg' %}');">
+                            <h5 class="card-title">Drones</h5>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <div class="card-body">
+                            <h5 class="card-title">Drones</h5>
+                            <p>En el track de Drones del CITT, los participantes exploran el diseño,
+                                operación y
+                                aplicaciones de sistemas de vehículos aéreos no tripulados. Desde la
+                                planificación
+                                de vuelos hasta la captura y procesamiento de datos, este track combina
+                                tecnología y
+                                aplicación práctica en campos como la agricultura de precisión, la
+                                cartografía y la
+                                videografía aérea, promoviendo la innovación en la industria de los
+                                drones.</p>
+                            <a href="#" class="custom-btn">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="ubicacion" class="ubicacion-section">
+    <div class="container">
+        <h2>Ubicación y Horarios</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="ubicacion-info">
+                    <h3>Sede Principal</h3>
+                    <p><strong>Sala:</strong> Sala de Innovación - 2do Piso Edificio principal</p>
+                    <p><strong>Ubicación:</strong> Dirección: Av. Concha y Toro 1340 c/San Carlos, Puente Alto.</p>
+                    <a href="https://www.google.cl/maps/place/Duoc+UC:+Sede+Puente+Alto/@-33.5981779,-70.579635,17.75z/data=!4m6!3m5!1s0x9662d7037854df81:0x893f58a1479b8f82!8m2!3d-33.5983649!4d-70.578602!16s%2Fg%2F1vhklrr4?entry=ttu"
+                        target="_blank">
+                        <img src="{% static 'images/duoc.jpeg' %}" class="img-fluid mt-3"
+                            alt="Ubicación Duoc UC Sede Puente Alto">
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="horarios-info">
+                    <h3>Horarios</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Track</th>
+                                <th>Días</th>
+                                <th>Horario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Robótica</td>
+                                <td>Lunes y Miércoles</td>
+                                <td>16:00 - 18:00</td>
+                            </tr>
+                            <tr>
+                                <td>Big Data</td>
+                                <td>Martes y Jueves</td>
+                                <td>17:00 - 19:00</td>
+                            </tr>
+                            <tr>
+                                <td>Videojuegos</td>
+                                <td>Lunes y Miércoles</td>
+                                <td>18:00 - 20:00</td>
+                            </tr>
+                            <tr>
+                                <td>Machine Learning</td>
+                                <td>Martes y Jueves</td>
+                                <td>16:00 - 18:00</td>
+                            </tr>
+                            <tr>
+                                <td>Realidad Virtual</td>
+                                <td>Lunes y Viernes</td>
+                                <td>15:00 - 17:00</td>
+                            </tr>
+                            <tr>
+                                <td>Ciberseguridad</td>
+                                <td>Miércoles y Viernes</td>
+                                <td>17:00 - 19:00</td>
+                            </tr>
+                            <tr>
+                                <td>Apps Móvil & Web</td>
+                                <td>Martes y Jueves</td>
+                                <td>18:00 - 20:00</td>
+                            </tr>
+                            <tr>
+                                <td>IoT</td>
+                                <td>Miércoles y Viernes</td>
+                                <td>16:00 - 18:00</td>
+                            </tr>
+                            <tr>
+                                <td>Drones</td>
+                                <td>Martes y Jueves</td>
+                                <td>15:00 - 17:00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="nosotros" class="nosotros-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Nuestra Visión</h2>
+                <p>
+                    Nuestra página tiene como objetivo principal motivar a los alumnos a participar activamente en
+                    diversos tracks tecnológicos. Aquí podrán registrarse y colaborar en emocionantes proyectos,
+                    gestionando y coordinando sus actividades de manera efectiva. Estamos comprometidos a mantener a
+                    nuestros participantes informados sobre las últimas novedades y eventos en el ámbito
+                    tecnológico.
+                </p>
+                <p>
+                    Además, facilitamos a nuestros usuarios la creación de sus propios proyectos, permitiéndoles
+                    invitar participantes y gestionar la documentación necesaria de manera eficiente y organizada.
+                </p>
+            </div>
+            <div class="col-md-6 d-flex align-items-center justify-content-center">
+                <a href="#" class="btn btn-primary btn-lg">Registrarse</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
