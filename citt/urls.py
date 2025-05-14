@@ -5,14 +5,11 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('core.urls')),      # root → core.urls
-    ##path('administrador/', include('administrador.urls')),
-    ##ppath('alumno/', include('alumno.urls')),
-    ##ppath('capitan/', include('capitan.urls')),
-    ##ppath('docente/', include('docente.urls')),
-    ##ppath('login/', include('login.urls')),
-    # ... otras apps ...
-]
+    path('', include('core.urls')),
+    path('alumnos/', include('alumno.urls')),
+    path('login/', include('login.urls')),
+    path('docente/', include('docente.urls')),
+    ]
 
 
 if settings.DEBUG:
