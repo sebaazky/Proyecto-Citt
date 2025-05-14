@@ -1,0 +1,143 @@
+{% extends 'base-docentes.html' %}
+{% load static %}
+
+{% block titulo %} Home Citt - Docentes {% endblock %}
+
+{% block content %}
+
+<div class="container mt-5 pt-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="text-center mb-3">
+                {% if user.perfildocente.imagen_perfil %}
+                    <img src="{{ user.perfildocente.imagen_perfil.url }}" alt="Foto del Usuario" class="rounded-circle" id="profilePhoto" style="width: 300px; height: 300px; object-fit: cover;">
+                {% else %}
+                    <img src="{% static 'images/default-avatar.jpg' %}" alt="Foto del Usuario" class="rounded-circle" id="profilePhoto" style="width: 300px; height: 300px; object-fit: cover;">
+                {% endif %}
+                <input type="file" id="uploadPhoto" class="d-none">
+                <button class="btn btn-secondary mt-2"
+                    onclick="document.getElementById('uploadPhoto').click();">Cambiar
+                    Foto</button>
+            </div>
+            <button class="btn btn-primary w-100 mb-3" data-bs-toggle="none" data-bs-target="#activities"
+                aria-expanded="false" aria-controls="activities" id="perfilButton" disabled>
+                Perfil
+            </button>
+            <div id="activities">
+    <ul class="list-group">
+        <li class="list-group-item"><a href="#">Mi perfil</a></li>
+        <li class="list-group-item"><a href="#">Eventos</a></li>
+        <li class="list-group-item"><a href="#">Tracks</a></li>
+        <li class="list-group-item">
+            <div class="dropdown">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMantenedores" data-bs-toggle="dropdown" aria-expanded="false">
+                    Mantenedores
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMantenedores">
+                    <li><a class="dropdown-item" href="#">Registro de alumnos en track</a></li>
+                    <li><a class="dropdown-item" href="#">Registro de eventos</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="list-group-item"><a href="{% url 'logout' %}">Cerrar Sesión</a></li>
+    </ul>
+</div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="p-5 mb-4 bg-light rounded-3">
+                <div class="container-fluid py-5">
+                    <h1 class="display-5 fw-bold">Bienvenido, 
+                        {% if user.nombres or user.apellido_paterno != None %}
+                            {{user.nombres}} {{user.apellido_paterno}}</h1>
+                        {% else %}
+                            {{user.username}}</h1>
+                        {% endif %}
+                    <p class="col-md-8 fs-4">
+                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Consequatur deserunt ducimus fuga quia beatae qui! Quos tempore facere voluptatem veniam voluptas, illo qui mollitia eveniet alias repudiandae ratione! Repellat, rerum.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card text-center mb-4">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Notificaciones Pendientes</h5>
+                    <p class="card-text">Revisar las solicitudes de alumnos para ingresar en los tracks existentes.</p>
+                    <a
+                        name=""
+                        id=""
+                        class="btn btn-primary"
+                        href="#"
+                        role="button"
+                        >Revisar postulaciones</a
+                    >
+                    
+                </div>
+            </div>
+
+            <div id="eventCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{% static 'images/evento1.jpg' %}" class="d-block w-100" height="550px" alt="Evento 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'images/evento2.jpg' %}" class="d-block w-100" height="550px" alt="Evento 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'images/evento3.jpg' %}" class="d-block w-100" height="550px" alt="Evento 3">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+
+            <div class="container">
+        <h2 class="my-4 text-center">Tabla de Proyectos</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">ID Proyecto</th>
+                        <th scope="col">Nombre Proyecto</th>
+                        <th scope="col">Jefe de Proyecto</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Fecha de Inicio</th>
+                        <th scope="col">Imagen</th>
+                        <th scope="col">Objetivo</th>
+                        <th scope="col">Número de Integrantes</th>
+                        <th scope="col">ID Track</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for proyecto in proyectos %}
+                    <tr>
+                        <td>{{ proyecto.id_proyecto }}</td>
+                        <td>{{ proyecto.nom_proyecto }}</td>
+                        <td>{{ proyecto.jefe_proyecto }}</td>
+                        <td>{{ proyecto.descripcion }}</td>
+                        <td>{{ proyecto.fecha_inicio }}</td>
+                        <td><img src="{{ proyecto.imagen.url }}" alt="Imagen del proyecto" style="max-width: 100px;"></td>
+                        <td>{{ proyecto.objetivo }}</td>
+                        <td>{{ proyecto.num_integrantes }}</td>
+                        <td>{{ proyecto.id_track }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+

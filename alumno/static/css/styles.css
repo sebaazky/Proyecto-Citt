@@ -1,0 +1,203 @@
+.inicio-section {
+    position: relative;
+    height: 100vh;
+    background-color: #f8f9fa;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-image: url("../images/citt.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.background-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6;
+}
+
+.track-card {
+    perspective: 1000px;
+    position: relative;
+    height: 400px;
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    transition: transform 0.6s;
+}
+
+.card-front {
+    transform: rotateY(0deg);
+}
+
+.card-back {
+    transform: rotateY(180deg);
+}
+
+.card-body {
+    background-color: #f8f9fa;
+    background-size: cover;
+    background-position: center;
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-title {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: white;
+    font-size: 24px;
+}
+
+.card-back .card-title {
+    position: static;
+    margin-bottom: 20px;
+}
+
+.card-back .btn {
+    margin-top: auto;
+}
+
+.card:hover .card-front {
+    transform: rotateY(-180deg);
+}
+
+.card:hover .card-back {
+    transform: rotateY(0deg);
+}
+
+.proyectos-section {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    background-color: #f2f2f2;
+    padding: 30px 0;
+}
+
+.ubicacion-section {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    background-color: #d4ebf5;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.ubicacion-section h2 {
+    text-align: center;
+}
+
+.ubicacion-info,
+.horarios-info {
+    padding: 20px;
+    text-align: center;
+}
+
+.ubicacion-info h3,
+.horarios-info h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.table {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 600px;
+    background-color: #fff;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    text-align: center;
+    padding: 10px;
+}
+
+.table th {
+    background-color: #b37575;
+    border: 1px solid #dee2e6;
+}
+
+.table td {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+}
+
+.nosotros-section {
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    padding: 30px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.nosotros-section h2 {
+    color: #333;
+}
+
+.nosotros-section p {
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-social {
+    margin-left: 10px;
+}
+
+.btn-social svg {
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+
+.custom-btn {
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.custom-btn:hover {
+    background-color: #0056b3;
+    color: white;
+}
