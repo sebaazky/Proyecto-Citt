@@ -45,4 +45,4 @@ def registrar_perfil(request):
             return redirect('home-docente')
     else:
         form = PerfilDocenteForm()
-    return render(request, 'docente/registrar_perfil.html', {'form': form})
+    return render(request, 'perfil/registrar_perfil.html', {'form': form})
