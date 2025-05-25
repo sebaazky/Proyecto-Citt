@@ -13,27 +13,27 @@ def home_docente(request):
 
 
 def administrar_reuniones(request):
-    return render(request, 'docente/administrar_reuniones.html')
+    return render(request, 'reunion/administrar_reuniones.html')
 
 
 def administrar_proyectos(request):
-    return render(request, 'docente/administrar_proyectos.html')
+    return render(request, 'proyecto/administrar_proyectos.html')
 
 
 def administrar_eventos(request):
-    return render(request, 'docente/administrar_eventos.html')
+    return render(request, 'evento/administrar_eventos.html')
 
 
 def administrar_solicitudes(request):
-    return render(request, 'docente/administrar_solicitudes.html')
+    return render(request, 'solicitud/administrar_solicitudes.html')
 
 
 def generar_reportes(request):
-    return render(request, 'docente/generar_reportes.html')
+    return render(request, 'reporte/generar_reportes.html')
 
 
 def enviar_notificaciones(request):
-    return render(request, 'docente/enviar_notificaciones.html')
+    return render(request, 'notificacion/enviar_notificaciones.html')
 
 
 def registrar_perfil(request):
