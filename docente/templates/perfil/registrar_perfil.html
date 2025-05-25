@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Registrar Perfil Docente{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Registrar Perfil Docente</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Guardar Perfil</button>
+    </form>
+</div>
+{% endblock %}

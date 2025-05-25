@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Generar Reportes{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Generar Reportes</h1>
+    <p>Esta sección permite al docente generar reportes sobre el seguimiento de proyectos, participación en eventos y más.</p>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Opciones de Reportes (estático)</h5>
+
+            <form>
+                <div class="mb-3">
+                    <label for="tipoReporte" class="form-label">Selecciona tipo de reporte</label>
+                    <select class="form-select" id="tipoReporte">
+                        <option>Reporte de proyectos</option>
+                        <option>Reporte de reuniones</option>
+                        <option>Reporte de participación en eventos</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fechaInicio" class="form-label">Desde</label>
+                    <input type="date" class="form-control" id="fechaInicio">
+                </div>
+
+                <div class="mb-3">
+                    <label for="fechaFin" class="form-label">Hasta</label>
+                    <input type="date" class="form-control" id="fechaFin">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Generar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

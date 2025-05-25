@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Administrar Solicitudes{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Administrar Solicitudes</h1>
+    <p>Desde aquí, el docente puede revisar, aceptar o rechazar solicitudes realizadas por los alumnos o capitanes de proyecto.</p>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Listado de solicitudes (estático)</h5>
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Tipo de Solicitud</th>
+                        <th>Solicitante</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Inscripción a evento</td>
+                        <td>Pedro Gómez</td>
+                        <td>2025-05-12</td>
+                        <td>Pendiente</td>
+                        <td>
+                            <button class="btn btn-sm btn-success">Aceptar</button>
+                            <button class="btn btn-sm btn-danger">Rechazar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Cambio de proyecto</td>
+                        <td>Lucía Rojas</td>
+                        <td>2025-05-15</td>
+                        <td>Aceptada</td>
+                        <td>
+                            <button class="btn btn-sm btn-secondary" disabled>Procesada</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

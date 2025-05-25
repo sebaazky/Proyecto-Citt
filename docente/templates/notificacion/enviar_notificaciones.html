@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Enviar Notificaciones{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Enviar Notificación por Correo</h1>
+    <p>Utiliza este formulario para redactar y enviar una notificación a un destinatario específico.</p>
+
+    <div class="card">
+        <div class="card-body">
+            <form>
+                <div class="mb-3">
+                    <label for="destinatario" class="form-label">Correo del destinatario</label>
+                    <input type="email" class="form-control" id="destinatario" placeholder="ejemplo@correo.com">
+                </div>
+
+                <div class="mb-3">
+                    <label for="asunto" class="form-label">Asunto</label>
+                    <input type="text" class="form-control" id="asunto" placeholder="Motivo de la notificación">
+                </div>
+
+                <div class="mb-3">
+                    <label for="mensaje" class="form-label">Mensaje</label>
+                    <textarea class="form-control" id="mensaje" rows="5" placeholder="Escribe el mensaje aquí..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

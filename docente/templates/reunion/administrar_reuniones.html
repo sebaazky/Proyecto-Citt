@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Administrar Reuniones{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Administrar Reuniones</h1>
+    <p>En esta sección el docente puede gestionar todas las reuniones creadas en el sistema.</p>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Listado de reuniones (estático)</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Título</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Participantes</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Reunión de Bienvenida</td>
+                        <td>2025-06-10</td>
+                        <td>10:00</td>
+                        <td>Capitán, Coordinador</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary">Editar</button>
+                            <button class="btn btn-sm btn-danger">Eliminar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Seguimiento Proyecto X</td>
+                        <td>2025-06-14</td>
+                        <td>15:30</td>
+                        <td>Alumno, Docente</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary">Editar</button>
+                            <button class="btn btn-sm btn-danger">Eliminar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Administrar Eventos{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Administrar Eventos</h1>
+    <p>En esta sección el docente puede crear y gestionar eventos académicos o institucionales del CITT.</p>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Listado de eventos (estático)</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre del Evento</th>
+                        <th>Fecha</th>
+                        <th>Ubicación</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Feria de Innovación</td>
+                        <td>2025-07-05</td>
+                        <td>Auditorio Duoc UC</td>
+                        <td>Exposición de proyectos destacados de los alumnos.</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary">Editar</button>
+                            <button class="btn btn-sm btn-danger">Eliminar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Charla de Empleabilidad</td>
+                        <td>2025-08-20</td>
+                        <td>Sala 302</td>
+                        <td>Invitados del área TI hablarán sobre oportunidades laborales.</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary">Editar</button>
+                            <button class="btn btn-sm btn-danger">Eliminar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
