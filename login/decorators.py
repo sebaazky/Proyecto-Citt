@@ -9,6 +9,6 @@ def rol_requerido(rol_permitido):
         def wrapper(request, *args, **kwargs):
             if request.user.rol == rol_permitido:
                 return view_func(request, *args, **kwargs)
-            return HttpResponseForbidden("You are not authorized to view this page.")
+            return HttpResponseForbidden("No estas autorizado a ver esta página.")
         return wrapper
     return decorador

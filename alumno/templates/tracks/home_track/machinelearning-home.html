@@ -1,0 +1,42 @@
+{% extends 'base-alumnos.html' %}
+
+{% block titulo %} Crear un proyecto {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <!-- Navegación izquierda -->
+    <div class="col-md-3">
+      <h5>Navegación</h5>
+      <ul class="list-group">
+        <li class="list-group-item">Inicio</li>
+        <li class="list-group-item">Proyectos</li>
+        <li class="list-group-item">Reuniones</li>
+        <li class="list-group-item">Reportes</li>
+      </ul>
+    </div>
+    <!-- Contenido central -->
+    <div class="col-md-6">
+      <h2>Track de Machine Learning</h2>
+      <p>
+        Aprende sobre algoritmos y modelos que permiten a las máquinas aprender y mejorar a partir de datos. Explora aplicaciones en inteligencia artificial y procesamiento de datos.
+      </p>
+      <p>
+        Los estudiantes implementan modelos y experimentos prácticos.
+      </p>
+    </div>
+    <!-- Información del track -->
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Docente a Cargo</h5>
+          <p class="card-text"><strong>Nombre:</strong> Prof. Diego Rivas</p>
+          <p class="card-text"><strong>Alumnos:</strong> 9</p>
+          <p class="card-text"><strong>Horario:</strong> Mar y Jue, 16:00 - 18:00</p>
+          <a href="#" class="btn btn-primary">Unirme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

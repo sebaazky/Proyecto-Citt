@@ -1,0 +1,18 @@
+{% extends 'base-docentes.html' %}
+{% block titulo %}Eliminar evento{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow border-0" style="background-color: #ffebee;">
+    <div class="card-body">
+      <h2 class="mb-4 text-danger">¿Estás seguro de que deseas eliminar este evento?</h2>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <button type="submit" class="btn btn-danger">Eliminar</button>
+          <a href="{% url 'listar-eventos' %}" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base-docentes.html' %}
+{% block titulo %}Detalle Reunión{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card shadow border-0 mb-4" style="background-color: #e3f2fd;">
+        <div class="card-body">
+          <h2 class="text-primary mb-3">Detalle de la reunión</h2>
+          <ul class="list-group list-group-flush mb-2">
+            <li class="list-group-item bg-transparent"><strong>Track:</strong> {{ track.nom_track }}</li>
+            <li class="list-group-item bg-transparent"><strong>Fecha:</strong> {{ reunion.fecha }}</li>
+            <li class="list-group-item bg-transparent"><strong>Hora:</strong> {{ reunion.hora }}</li>
+            <li class="list-group-item bg-transparent"><strong>Modalidad:</strong> {{ reunion.modalidad }}</li>
+            {% if reunion.modalidad == 'virtual' %}
+            <li class="list-group-item bg-transparent"><strong>Link virtual:</strong> <a href="{{ reunion.link_virtual }}" target="_blank">{{ reunion.link_virtual }}</a></li>
+            {% endif %}
+            <li class="list-group-item bg-transparent"><strong>Ubicación:</strong> {{ reunion.ubicacion }}</li>
+            <li class="list-group-item bg-transparent"><strong>Descripción:</strong> {{ reunion.descripcion }}</li>
+          </ul>
+          <a href="{% url 'mi-track' %}" class="btn btn-outline-secondary">Volver al track</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

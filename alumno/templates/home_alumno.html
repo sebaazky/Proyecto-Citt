@@ -1,13 +1,14 @@
-{% extends 'base-alumnos.html' %} {% load static %} {% block titulo %} Home
-alumnos {% endblock %} {% block content %}
+{% extends 'base-alumnos.html' %} 
+{% load static %} {% block titulo %} 
+Home alumnos {% endblock %} {% block content %}
 
 <div class="container mt-5 pt-5">
   <div class="row">
     <div class="col-md-3">
       <div class="text-center mb-3">
-        {% if user.perfil.imagen_perfil %}
+        {% if user.perfil_alumno.imagen_perfil %}
         <img
-          src="#"
+          src="{{ user.perfil_alumno.imagen_perfil.url }}"
           alt="Foto del Usuario"
           class="rounded-circle"
           id="profilePhoto"
@@ -15,7 +16,7 @@ alumnos {% endblock %} {% block content %}
         />
         {% else %}
         <img
-          src="#"
+          src="{% static 'images/profileImage.jpg' %}"
           alt="Foto del Usuario"
           class="rounded-circle"
           id="profilePhoto"
@@ -43,10 +44,31 @@ alumnos {% endblock %} {% block content %}
       </button>
       <div class="menu" id="activities">
         <ul class="list-group">
-          <li class="list-group-item"><a href="#">Editar Perfil</a></li>
-          <li class="list-group-item"><a href="#">Mis Actividades</a></li>
-          <li class="list-group-item"><a href="#">Mis Proyectos</a></li>
-          <li class="list-group-item"><a href="#">Cerrar Sesión</a></li>
+          <li class="list-group-item"><a href="{% url 'edit-perfil-al' %}">Editar Perfil</a></li>
+          {% if request.user.id_track == 1 %}
+            <li class="list-group-item"><a href="{% url 'track-robotica' %}">Robotica</a></li>
+          {% else %}
+          <li class="list-group-item"><a href="{% url 'track-ciberseguridad' %}">Ciberseguridad</a></li>
+          {% endif %}
+          {% if request.user.id_track %}
+          <li class="list-group-item"><a href="{% url 'listar-proyectos' %}">Mis Proyectos</a></li>
+          {% endif %}
+          
+          <li class="list-group-item"><a href="{% url 'gestionar-solicitudes-proyecto'%}">Solicitudes</a></li>
+          <li class="list-group-item dropdown">
+            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">Tracks</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'track-robotica' %}">Robótica</a></li>
+              <li><a class="dropdown-item" href="{% url 'track-ciberseguridad' %}">Ciberseguridad</a></li>
+              <li><a class="dropdown-item" href="{% url 'track-bigdata' %}">Big Data</a></li>
+              <li><a class="dropdown-item" href="{% url 'track-videojuegos' %}">Videojuegos</a></li>
+              <li><a class="dropdown-item" href="{% url 'track-machinelearning' %}">Machine Learning</a></li>
+              <li><a class="dropdown-item" href="{% url 'track-realidadvirtual' %}">Realidad Virtual</a></li>
+              <li><a class="dropdown-item" href="{% url 'track-appmovilweb' %}">App Móvil & Web</a></li>
+              <li><a class="dropdown-item" href="{% url 'track-iot' %}">IoT</a></li>
+              <li><a class="dropdown-item" href="{% url 'track-drones' %}">Drones</a></li>
+            </ul>
+          </li>
         </ul>
       </div>
     </div>
@@ -55,15 +77,15 @@ alumnos {% endblock %} {% block content %}
         <div class="container-fluid py-5">
           <h1 class="display-5 fw-bold">
             Bienvenido, 
-            {% if user.perfil.nombres and user.perfil.apellido_paterno %}
-              {{ user.perfil.nombres }} {{ user.perfil.apellido_paterno }} 
+            {% if user.perfil_alumno.nombres and user.perfil_alumno.apellido_paterno  %}
+              {{ user.perfil_alumno.nombres }} {{ user.perfil_alumno.apellido_paterno }} {% if user.perfil_alumno.apellido_materno %} {{ user.perfil_alumno.apellido_materno }} {% endif %}
             {% else %} 
               {{ user.username }} 
             {% endif %} !
           </h1>
           <p class="col-md-8 fs-4">
             Estamos encantados de tenerte con nosotros. Explora los tracks,
-            postula a proyectos y más.
+            postula a uno de ellos y comienza a trabajar en proyectos reales.
           </p>
         </div>
       </div>

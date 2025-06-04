@@ -45,40 +45,30 @@
                         <a class="nav-link" href="{% url 'home-docente' %}" >Home</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="tracksDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" id="eventosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Mis eventos
                         </a>
+                        <ul class="dropdown-menu" aria-labelledby="eventosDropdown">
+                            <li><a class="dropdown-item" href="{% url 'añadir-evento' %}">Añadir nuevo evento</a></li>
+                            <li><a class="dropdown-item" href="{% url 'listar-eventos' %}">Todos los eventos</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="tracksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Tracks
+                        </a>
                         <ul class="dropdown-menu" aria-labelledby="tracksDropdown">
-                            <li><a class="dropdown-item" href="#">Añadir nuevo evento</a></li>
-                            <li><a class="dropdown-item" href="#">Todos los eventos</a></li>
+                            <li><a class="dropdown-item" href="{% url 'mi-track' %}">Ver mi track</a></li>
+                            <li><a class="dropdown-item" href="{% url 'solicitudes_pendientes' %}">Ver solicitudes al track</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdownTracks" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Mis tracks
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownTracks">
-                            <li><a class="dropdown-item" href="#">Añadir alumno a track</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Todos los tracks</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdownTracks" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Mantenedores
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownTracks">
-                            <li><a class="dropdown-item" href="#">Registro de alumnos en track</a></li>
-                            <li><a class="dropdown-item" href="#">Registro de eventos</a></li>
-                        </ul>
-                    </li>
+                    
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" id="navbarDropdownTracks" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {{user.username}}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownTracks">
-                            <li><a class="dropdown-item" href="#">Mi perfil</a></li>
+                            <li><a class="dropdown-item" href="{% url 'edit-perfil-docente' %}">Mi perfil</a></li>
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
                         </ul>
                     </li>

@@ -1,0 +1,17 @@
+{% extends 'base-docentes.html' %}
+{% block titulo %}Eliminar Alumno{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow border-0" style="background-color: #ffebee;">
+    <div class="card-body">
+      <h2 class="mb-4 text-danger">¿Estás seguro de que deseas eliminar a este alumno del track?</h2>
+      <p><strong>{{ alumno.nombres }} {{ alumno.apellido_paterno }}</strong> ({{ alumno.alumno.username }})</p>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a href="{% url 'listado-alumnos-track' %}" class="btn btn-outline-secondary">Cancelar</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

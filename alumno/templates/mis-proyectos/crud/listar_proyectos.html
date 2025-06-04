@@ -1,0 +1,55 @@
+{% extends 'base-alumnos.html' %}
+
+{% block titulo %} Crear un proyecto {% endblock %}
+
+{% block content %}
+
+<div class="p-5 mb-4 bg-light rounded-3 text-center">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">Listado de mis proyectos</h1>
+        <a class="btn btn-primary mt-3" href="{% url 'añadir-proyecto' %}" role="button">Añadir un proyecto</a>
+    </div>
+</div>
+
+{% if proyectos %}
+    <div class="container">
+        <table class="table table-primary text-center mx-auto">
+            <thead>
+                <tr>
+                    <th scope="col">ID Proyecto</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Jefe de proyecto</th>
+                    <th scope="col">Descripcion</th>
+                    <th scope="col">Fecha inicio</th>
+                    <th scope="col">Imagen</th>
+                    <th scope="col">Objetivo</th>
+                    <th scope="col">Numero de integrantes</th>
+                    <th scope="col">ID track</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for proyecto in proyectos %}
+                    <tr>
+                        <td>{{ proyecto.id_proyecto }}</td>
+                        <td>{{ proyecto.nom_proyecto }}</td>
+                        <td>{{ proyecto.jefe_proyecto }}</td>
+                        <td>{{ proyecto.descripcion }}</td>
+                        <td>{{ proyecto.fecha_inicio }}</td>
+                        <td><img src="{{ proyecto.imagen.url }}" alt="Imagen del proyecto" style="max-width: 100px;"></td>
+                        <td>{{ proyecto.objetivo }}</td>
+                        <td>{{ proyecto.num_integrantes }}</td>
+                        <td>{{ proyecto.id_track }}</td>
+                        <td>
+                            <a class="btn btn-success" href="{% url 'modificar-proyecto' pk=proyecto.id_proyecto %}" role="button">Modificar</a>
+                            |
+                            <a class="btn btn-danger" href="{% url 'eliminar-proyecto' pk=proyecto.id_proyecto %}" role="button">Eliminar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+
+{% endblock %}

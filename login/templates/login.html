@@ -32,45 +32,58 @@ CITT Login: Alumnos
               
 
               <form method="POST" action="{% url 'login-alumno' %}">
-                {% csrf_token %}
-                <div class="form-outline form-white mb-4">
-                  <input
-                    type="text"
-                    id="typeUsernameX"
-                    name="username"
-                    class="form-control form-control-lg"
-                    placeholder="Usuario"
-                    required
-                  />
-                  <div class="invalid-feedback">
-                    Por favor ingrese un nombre de usuario válido.
-                  </div>
-                </div>
+  {% csrf_token %}
+  
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+      {{ form.non_field_errors }}
+    </div>
+  {% endif %}
 
-                <div class="form-outline form-white mb-4">
-                  <input
-                    type="password"
-                    id="typePasswordX"
-                    name="password"
-                    class="form-control form-control-lg"
-                    placeholder="Contraseña"
-                    required
-                  />
-                  <div class="invalid-feedback">
-                    Por favor ingrese su contraseña.
-                  </div>
-                </div>
+  <div class="form-outline form-white mb-4">
+    <input
+      type="text"
+      id="typeUsernameX"
+      name="username"
+      class="form-control form-control-lg {% if form.username.errors %}is-invalid{% endif %}"
+      placeholder="Usuario"
+      value="{{ form.username.value|default_if_none:'' }}"
+      required
+    />
+    {% for error in form.username.errors %}
+      <div class="invalid-feedback d-block">
+        {{ error }}
+      </div>
+    {% endfor %}
+  </div>
 
-                <p class="small mb-3 pb-lg-2">
-                  <a class="fs-6 text-dark-50 link-dark link-underline link-underline-opacity-0 link-opacity-50-hover" href="#"
-                    >¿Olvidaste tu contraseña?</a
-                  >
-                </p>
+  <div class="form-outline form-white mb-4">
+    <input
+      type="password"
+      id="typePasswordX"
+      name="password"
+      class="form-control form-control-lg {% if form.password.errors %}is-invalid{% endif %}"
+      placeholder="Contraseña"
+      required
+    />
+    {% for error in form.password.errors %}
+      <div class="invalid-feedback d-block">
+        {{ error }}
+      </div>
+    {% endfor %}
+  </div>
 
-                <button class="btn btn-outline-light btn-lg px-4 bg-black" type="submit">
-                  Login
-                </button>
-              </form>
+  <!-- resto del formulario igual -->
+  <p class="small mb-3 pb-lg-2">
+    <a class="fs-6 text-dark-50 link-dark link-underline link-underline-opacity-0 link-opacity-50-hover" href="#">
+      ¿Olvidaste tu contraseña?
+    </a>
+  </p>
+
+  <button class="btn btn-outline-light btn-lg px-4 bg-black" type="submit">
+    Login
+  </button>
+</form>
             </div>
 
             <div>

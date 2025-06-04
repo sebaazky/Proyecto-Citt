@@ -1,0 +1,45 @@
+{% extends 'base-docentes.html' %}
+{% block titulo %}Mis eventos{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow border-0" style="background-color: #e3f2fd;">
+    <div class="card-body">
+      <h2 class="mb-4 text-primary">Mis eventos</h2>
+      <a href="{% url 'añadir-evento' %}" class="btn btn-success mb-3">Añadir nuevo evento</a>
+      <div class="table-responsive">
+        <table class="table table-striped align-middle" style="background-color: #fff;">
+          <thead class="table-light">
+            <tr>
+              <th>Nombre</th>
+              <th>Tipo</th>
+              <th>Ubicación</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Infografía</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for evento in eventos %}
+            <tr>
+              <td>{{ evento.nombre_evento }}</td>
+              <td>{{ evento.id_tipo_evento }}</td>
+              <td>{{ evento.ubicacion_evento }}</td>
+              <td>{{ evento.fecha_evento }}</td>
+              <td>{{ evento.hora }}</td>
+              <td>{% if evento.infografia %}<img src="{{ evento.infografia.url }}" width="60">{% endif %}</td>
+              <td>
+                <a href="{% url 'modificar-evento' evento.id_evento %}" class="btn btn-outline-primary btn-sm">Modificar</a>
+                <a href="{% url 'eliminar-evento' evento.id_evento %}" class="btn btn-outline-danger btn-sm">Eliminar</a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center text-muted">No tienes eventos registrados.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -2,18 +2,15 @@ from django.shortcuts import render, redirect
 from .forms import LoginForm, RegistroAlumnoForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from alumno.models import Perfil_alumno
 
 # Create your views here.
 
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
-        print(form.errors)
-        print(request.POST)
-        print(form.is_valid())
         if form.is_valid():
             user = form.get_user()
-            print(f"Usuario autenticado: {user.username}, Rol: {user.rol}")
             login(request, user)
             if user.rol == 'alumno':
                 return redirect('home-alumno')
@@ -37,6 +34,8 @@ def registrar_alumno(request):
             user = form.save()
             user.rol = 'alumno'
             user.save()
+            #Crear perfil alumno
+            Perfil_alumno.objects.create(alumno=user)
             return redirect('login-alumno') 
     else:
         form = RegistroAlumnoForm()
