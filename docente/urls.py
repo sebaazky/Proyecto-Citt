@@ -3,7 +3,6 @@ from . import views
 
 urlpatterns = [
      path('home/', views.home_docente, name='home-docente'),
-<<<<<<< Updated upstream
      path('perfil/', views.editar_perfil_docente, name="edit-perfil-docente"),
      path('solicitudes/', views.solicitudes_pendientes_view, name='solicitudes_pendientes'),
      path('solicitud/<int:solicitud_id>/aprobar/', views.aprobar_solicitud, name='aprobar_solicitud'),
@@ -22,22 +21,4 @@ urlpatterns = [
      path('mi-track/eventos/', views.listado_eventos_track, name='listado-eventos-track'),
      path('mi-track/reunion/<int:reunion_id>/', views.detalle_reunion_track, name='detalle-reunion-track'),
      path('mi-track/reunion/crear/', views.crear_reunion_track, name='crear-reunion-track'),
-=======
-     path('reuniones/', views.administrar_reuniones, name='administrar_reuniones'),
-     path('proyectos/', views.administrar_proyectos, name='administrar_proyectos'),
-     path('eventos/', views.administrar_eventos, name='administrar_eventos'),
-     path('solicitudes/', views.administrar_solicitudes,
-          name='administrar_solicitudes'),
-     path('reportes/', views.generar_reportes, name='generar_reportes'),
-     path('notificaciones/', views.enviar_notificaciones,
-          name='enviar_notificaciones'),
-     path('perfil/registrar/', views.registrar_perfil,
-          name='registrar_perfil_docente'),
-     path('track/<int:track_id>/solicitudes/', views.solicitudes_track_docente, name='solicitudes_track_docente'),
-
-
-
-
-
->>>>>>> Stashed changes
 ]
