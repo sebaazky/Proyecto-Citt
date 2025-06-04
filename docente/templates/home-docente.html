@@ -28,11 +28,29 @@
         <li class="list-group-item"><a href="{% url 'edit-perfil-docente' %}">Mi perfil</a></li>
         <li class="list-group-item"><a href="{% url 'listar-eventos' %}">Eventos</a></li>
         <li class="list-group-item"><a href="#">Tracks</a></li>
+<<<<<<< Updated upstream
         
+=======
+        <li class="list-group-item">
+            <div class="dropdown">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMantenedores" data-bs-toggle="dropdown" aria-expanded="false">
+                    Mantenedores
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMantenedores">
+                    <li><a href="#">
+                            <button>Ver solicitudes de alumnos</button>
+                        </a>
+                    </li>
+                    <li><a class="dropdown-item" href="#">Registro de eventos</a></li>
+                </ul>
+            </div>
+        </li>
+>>>>>>> Stashed changes
         <li class="list-group-item"><a href="{% url 'logout' %}">Cerrar Sesión</a></li>
     </ul>
 </div>
         </div>
+<<<<<<< Updated upstream
         <div class="col-md-9">
             <div class="card shadow border-0 mb-4" style="background-color: #e3f2fd;">
                 <div class="card-body">
@@ -57,6 +75,19 @@
                     </ul>
                 </div>
             </div>
+=======
+        <div>
+            {% if track %}
+                <p>{{track.id_track}}</p>
+                <p>{{track.nom_track}}</p>
+            {% else %}
+                <p>No estás inscrito en ningún track.</p>
+            {% endif %}
+        </div>
+
+
+    </div>
+>>>>>>> Stashed changes
         </div>
     </div>
 </div>

@@ -1,20 +1,34 @@
 {% extends 'base-alumnos.html' %}
 
+<<<<<<< Updated upstream
 {% block titulo %}Track de Robótica{% endblock %}
 
 {% block content %}
+=======
+{% block titulo %} Crear un proyecto {% endblock %}
+
+{% block content %}
+
+>>>>>>> Stashed changes
 <div class="container mt-4">
   <div class="row">
     <!-- Navegación izquierda -->
     <div class="col-md-3">
       <h5>Navegación</h5>
       <ul class="list-group">
+<<<<<<< Updated upstream
         <li class="list-group-item"><a href="{% url 'track-robotica' %}">Inicio</a></li>
         <li class="list-group-item"><a href="#posts">Posts</a></li>
         <li class="list-group-item"><a href="#proyectos">Proyectos</a></li>
         <li class="list-group-item"><a href="#alumnos">Alumnos</a></li>
         <li class="list-group-item"><a href="#reuniones">Reuniones</a></li>
         <a class="btn btn-primary mt-3" href="{% url 'listar-proyectos-track' track_id %}" role="button">Proyectos Citt</a>
+=======
+        <li class="list-group-item">Inicio</li>
+        <li class="list-group-item">Proyectos</li>
+        <li class="list-group-item">Reuniones</li>
+        <li class="list-group-item">Reportes</li>
+>>>>>>> Stashed changes
       </ul>
     </div>
 
@@ -28,6 +42,7 @@
       <p>
         Se promueve el trabajo en equipo, el uso de sensores, actuadores y programación con microcontroladores.
       </p>
+<<<<<<< Updated upstream
 
       <hr>
       <h4 id="posts">Posts del Docente</h4>
@@ -88,6 +103,8 @@
           <li class="list-group-item text-muted">No hay reuniones programadas.</li>
         {% endfor %}
       </ul>
+=======
+>>>>>>> Stashed changes
     </div>
 
     <!-- Información del track -->
@@ -95,6 +112,7 @@
       <div class="card">
         <div class="card-body">
           <h5 class="title">Robotica</h5>
+<<<<<<< Updated upstream
           <p class="card-text"><strong>Docente a cargo:</strong> {% if track and track.id_usuario.perfil_docente %}{{ track.id_usuario.perfil_docente.nombres }} {{ track.id_usuario.perfil_docente.apellido_paterno }}{% else %}Sin asignar{% endif %}</p>
           <p class="card-text"><strong>Alumnos:</strong> {{ alumnos|length }}</p>
           <p class="card-text"><strong>Horario:</strong> Mié y Vie, 14:00 - 16:00</p>
@@ -108,9 +126,19 @@
               </form>
             {% endif %}
           {% endif %}
+=======
+          <p class="card-text"><strong>Docente a cargo</strong> Ing. María Pérez</p>
+          <p class="card-text"><strong>Alumnos:</strong> 12</p>
+          <p class="card-text"><strong>Horario:</strong> Mié y Vie, 14:00 - 16:00</p>
+          <a href="#" class="btn btn-primary">Unirme</a>
+>>>>>>> Stashed changes
         </div>
       </div>
     </div>
   </div>
 </div>
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 {% endblock %}

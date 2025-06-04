@@ -10,6 +10,7 @@ urlpatterns = [
     path('misproyectos/eliminar/<int:pk>',views.eliminar_proyecto,name='eliminar-proyecto'),
     path('tracks/robotica/', views.robotica_view, name='track-robotica'),
     path('tracks/ciberseguridad/', views.ciberseguridad_view, name='track-ciberseguridad'),
+<<<<<<< Updated upstream
     path('tracks/bigdata/', views.bigdata_view, name='track-bigdata'),
     path('tracks/videojuegos/', views.videojuegos_view, name='track-videojuegos'),
     path('tracks/machinelearning/', views.machinelearning_view, name='track-machinelearning'),
@@ -22,4 +23,6 @@ urlpatterns = [
     path('tracks/<int:track_id>/proyectos', views.lista_proyectos_citt, name='listar-proyectos-track'),
     path('proyectos/solicitudes/', views.gestionar_solicitudes_proyecto, name='gestionar-solicitudes-proyecto'),
     path('tracks/proyectos/solicitar/<int:id_proyecto>/', views.solicitar_ingreso_proyecto, name='solicitar-ingreso-proyecto'),
+=======
+>>>>>>> Stashed changes
 ]

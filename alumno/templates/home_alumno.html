@@ -6,7 +6,11 @@ Home alumnos {% endblock %} {% block content %}
   <div class="row">
     <div class="col-md-3">
       <div class="text-center mb-3">
+<<<<<<< Updated upstream
         {% if user.perfil_alumno.imagen_perfil %}
+=======
+        {% if user.Perfil_alumno.imagen_perfil %}
+>>>>>>> Stashed changes
         <img
           src="{{ user.perfil_alumno.imagen_perfil.url }}"
           alt="Foto del Usuario"
@@ -45,6 +49,7 @@ Home alumnos {% endblock %} {% block content %}
       <div class="menu" id="activities">
         <ul class="list-group">
           <li class="list-group-item"><a href="{% url 'edit-perfil-al' %}">Editar Perfil</a></li>
+<<<<<<< Updated upstream
           {% if request.user.id_track == 1 %}
             <li class="list-group-item"><a href="{% url 'track-robotica' %}">Robotica</a></li>
           {% else %}
@@ -69,6 +74,11 @@ Home alumnos {% endblock %} {% block content %}
               <li><a class="dropdown-item" href="{% url 'track-drones' %}">Drones</a></li>
             </ul>
           </li>
+=======
+          <li class="list-group-item"><a href="#">Mis Actividades</a></li>
+          <li class="list-group-item"><a href="#">Mis Proyectos</a></li>
+          <li class="list-group-item"><a href="#">Cerrar Sesión</a></li>
+>>>>>>> Stashed changes
         </ul>
       </div>
     </div>

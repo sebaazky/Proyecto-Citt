@@ -24,6 +24,7 @@ class LoginForm(AuthenticationForm):
     )
 
 class RegistroAlumnoForm(UserCreationForm):
+<<<<<<< Updated upstream
     username = forms.CharField(
         label="Usuario",
         max_length=150,
@@ -50,6 +51,8 @@ class RegistroAlumnoForm(UserCreationForm):
         })
     )
 
+=======
+>>>>>>> Stashed changes
     class Meta:
         model = User
         fields = ['username', 'password1', 'password2']

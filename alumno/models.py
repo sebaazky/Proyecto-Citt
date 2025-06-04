@@ -32,6 +32,7 @@ class Proyecto(models.Model):
     id_track = models.ForeignKey(Track,models.CASCADE,db_column='idTrack')
     def __str__(self):
         return f'ID proyecto {self.id_proyecto}, Nombre proyecto: {self.nom_proyecto}'
+<<<<<<< Updated upstream
     def jefe_usuario(self):
         return self.jefe_proyecto.alumno
 
@@ -49,3 +50,5 @@ class ProyectoRequest(models.Model):
 
     def __str__(self):
         return f"{self.alumno.username} → {self.proyecto.nom_proyecto} ({self.estado})"
+=======
+>>>>>>> Stashed changes

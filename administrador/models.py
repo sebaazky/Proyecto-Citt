@@ -21,12 +21,15 @@ class Comuna(models.Model):
     def __str__(self):
         return str(self.nom_comuna)
     
+<<<<<<< Updated upstream
 class TipoEvento(models.Model):
     id_tipo_evento = models.AutoField(primary_key=True,verbose_name='idTipoEvento')
     nombre_tipo_evento = models.CharField(max_length=25)
     def __str__(self):
         return str(self.nombre_tipo_evento)
     
+=======
+>>>>>>> Stashed changes
 class Track(models.Model):
     id_track = models.AutoField(primary_key=True, db_column='idTrack')
     nom_track = models.CharField(max_length=30)
@@ -48,13 +51,18 @@ class TrackRequest(models.Model):
         ('aprobada', 'Aprobada'),
         ('rechazada', 'Rechazada'),
     ]
+<<<<<<< Updated upstream
     id_solicitud = models.AutoField(primary_key=True, db_column='idSolicitud')
+=======
+
+>>>>>>> Stashed changes
     track = models.ForeignKey(Track, on_delete=models.CASCADE, related_name='solicitudes')
     alumno = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     estado = models.CharField(max_length=10, choices=ESTADOS, default='pendiente')
     fecha_solicitud = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
+<<<<<<< Updated upstream
         return f"{self.alumno} → {self.track} ({self.estado})"
     
 class ReunionTrack(models.Model):
@@ -70,3 +78,6 @@ class ReunionTrack(models.Model):
 
     def __str__(self):
         return f"Reunión de {self.track.nom_track} el {self.fecha} a las {self.hora}"
+=======
+        return f"{self.alumno} → {self.track} ({self.estado})"
+>>>>>>> Stashed changes

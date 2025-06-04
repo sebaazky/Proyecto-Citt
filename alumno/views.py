@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from login.decorators import rol_requerido
+<<<<<<< Updated upstream
 from .models import Perfil_alumno, Proyecto, ProyectoRequest
 from .forms import PerfilForm, ProyectoForm
 from administrador.models import Track, TrackRequest
@@ -8,6 +9,10 @@ from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from docente.models import DocentePost
 from administrador.models import ReunionTrack
+=======
+from .models import Perfil_alumno, Proyecto
+from .forms import PerfilForm, ProyectoForm
+>>>>>>> Stashed changes
 
 #Home
 
@@ -44,31 +49,51 @@ def editar_perfil(request):
 @login_required
 @rol_requerido('alumno')
 def listar_proyectos(request):
+<<<<<<< Updated upstream
     track_id = request.user.id_track
     proyectos = Proyecto.objects.filter(jefe_proyecto=request.user.perfil_alumno, id_track=track_id)
     context = {'proyectos':proyectos, 'track_id': track_id}
     return render(request,'mis-proyectos/crud/listar_proyectos.html',context)
+=======
+    proyectos = Proyecto.objects.all()
+    context = {'proyectos':proyectos}
+    return render(request,'proyectos/listar_proyectos.html',context)
+>>>>>>> Stashed changes
 
 @login_required
 @rol_requerido('alumno')
 def añadir_proyecto(request):
+<<<<<<< Updated upstream
     track_id = request.user.id_track
+=======
+>>>>>>> Stashed changes
     if request.method == 'POST':
         form = ProyectoForm(request.POST, request.FILES)
         if form.is_valid():
             proyecto = form.save(commit=False)
             proyecto.jefe_proyecto = request.user.perfil_alumno
+<<<<<<< Updated upstream
             proyecto.track_id = track_id
             proyecto.save()
             return redirect('listar-proyectos') 
     else:
         form = ProyectoForm()
+=======
+            proyecto.save()
+            return redirect('listar-proyectos') 
+    else:
+        form = ProyectoForm(instance=request.user) 
+>>>>>>> Stashed changes
 
     context = {
         'form': form,
     }
+<<<<<<< Updated upstream
     return render(request, 'mis-proyectos/crud/crear_proyecto.html', context)
 
+=======
+    return render(request, 'proyectos/crear_proyecto.html', context)
+>>>>>>> Stashed changes
 
 @login_required
 @rol_requerido('alumno')
@@ -83,7 +108,11 @@ def modificar_proyecto(request,pk):
             else:
                 form = ProyectoForm(instance=proyecto)
                 context={'form':form}
+<<<<<<< Updated upstream
                 return render(request,'mis-proyectos/crud/modificar_proyecto.html',context)
+=======
+                return render(request,'proyectos/modificar_proyecto.html',context)
+>>>>>>> Stashed changes
     except:
         return redirect('listar-proyectos')
     
@@ -103,6 +132,7 @@ def eliminar_proyecto(request,pk):
 # Vistas para los tracks
 
 def robotica_view(request):
+<<<<<<< Updated upstream
     track_id = 1  # esta hardcodeado mientras se testea XD
     solicitud_pendiente = False
     boton_solicitud = True
@@ -399,3 +429,9 @@ def error_view(request):
         'error_message': 'No tienes permisos para acceder a esta página.',
     }
     return render(request, 'error.html', context)
+=======
+    return render(request, 'tracks/home_track/robotica-home.html')
+
+def ciberseguridad_view(request):
+    return render(request, 'tracks/home_track/ciberseguridad-home.html')
+>>>>>>> Stashed changes

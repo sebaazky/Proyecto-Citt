@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from login.decorators import rol_requerido
+<<<<<<< Updated upstream
 from administrador.models import Track, TrackRequest, ReunionTrack
 from django.shortcuts import get_object_or_404
 from .models import PerfilDocente, Evento, DocentePost
@@ -8,6 +9,11 @@ from .forms import PerfilFormDocente, EventoForm
 from django.http import HttpResponseForbidden
 from django import forms
 from alumno.models import Perfil_alumno
+=======
+from .forms import PerfilDocenteForm
+from administrador.models import Track, TrackRequest
+from django.shortcuts import get_object_or_404
+>>>>>>> Stashed changes
 
 # Create your views here.
 
@@ -16,12 +22,15 @@ from alumno.models import Perfil_alumno
 def home_docente(request):
     track = Track.objects.filter(id_usuario=request.user).first()
     return render(request, 'home-docente.html', {'track': track})
+<<<<<<< Updated upstream
 
 @login_required
 @rol_requerido('docente')
 def editar_perfil_docente(request):
 
     perfil = PerfilDocente.objects.get(docente=request.user)
+=======
+>>>>>>> Stashed changes
 
 
     if request.method == 'POST':
@@ -30,6 +39,7 @@ def editar_perfil_docente(request):
             form.save()
             return redirect('home-docente') 
     else:
+<<<<<<< Updated upstream
         form = PerfilFormDocente(instance=perfil)
 
     context = {
@@ -255,3 +265,21 @@ def detalle_reunion_track(request, reunion_id):
     reunion = ReunionTrack.objects.get(pk=reunion_id)
     track = reunion.track
     return render(request, 'track/detalle_reunion.html', {'reunion': reunion, 'track': track})
+=======
+        form = PerfilDocenteForm()
+    return render(request, 'perfil/registrar_perfil.html', {'form': form})
+
+def solicitudes_track_docente(request, track_id):
+    track = get_object_or_404(Track, id=track_id)
+
+    if request.user != track.docente:
+        return render(request, 'no_autorizado.html')
+
+    solicitudes_pendientes = TrackRequest.objects.filter(track=track, estado='pendiente')
+
+    context = {
+        'track': track,
+        'solicitudes': solicitudes_pendientes
+    }
+    return render(request, 'docente/solicitudes_track.html', context)
+>>>>>>> Stashed changes

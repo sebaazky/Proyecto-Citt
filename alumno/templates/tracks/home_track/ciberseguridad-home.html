@@ -6,6 +6,7 @@
 
 <div class="container mt-4">
   <div class="row">
+<<<<<<< Updated upstream
     <div class="col-md-3">
       <h5>Navegación</h5>
       <ul class="list-group">
@@ -15,6 +16,16 @@
         <li class="list-group-item"><a href="#alumnos">Alumnos</a></li>
         <li class="list-group-item"><a href="#reuniones">Reuniones</a></li>
         <a class="btn btn-primary mt-3" href="{% url 'listar-proyectos-track' track_id %}" role="button">Proyectos Citt</a>
+=======
+    <!-- Navegación izquierda -->
+    <div class="col-md-3">
+      <h5>Navegación</h5>
+      <ul class="list-group">
+        <li class="list-group-item">Inicio</li>
+        <li class="list-group-item">Proyectos</li>
+        <li class="list-group-item">Reuniones</li>
+        <li class="list-group-item">Reportes</li>
+>>>>>>> Stashed changes
       </ul>
     </div>
 
@@ -28,6 +39,7 @@
       <p>
         Los estudiantes trabajan en simulaciones de ataques reales y defensa de sistemas.
       </p>
+<<<<<<< Updated upstream
 
       <hr>
       <h4 id="posts">Posts del Docente</h4>
@@ -88,12 +100,15 @@
           <li class="list-group-item text-muted">No hay reuniones programadas.</li>
         {% endfor %}
       </ul>
+=======
+>>>>>>> Stashed changes
     </div>
 
     <!-- Información del track -->
     <div class="col-md-3">
       <div class="card">
         <div class="card-body">
+<<<<<<< Updated upstream
           <h5 class="title">Ciberseguridad</h5>
           <p class="card-text"><strong>Docente a cargo:</strong> {% if track and track.id_usuario.perfil_docente %}{{ track.id_usuario.perfil_docente.nombres }} {{ track.id_usuario.perfil_docente.apellido_paterno }}{% else %}Sin asignar{% endif %}</p>
           <p class="card-text"><strong>Alumnos:</strong> {{ alumnos|length }}</p>
@@ -108,9 +123,20 @@
               </form>
             {% endif %}
           {% endif %}
+=======
+          <h5 class="card-title">Docente a Cargo</h5>
+          <p class="card-text"><strong>Nombre:</strong> Prof. Carlos Soto</p>
+          <p class="card-text"><strong>Alumnos:</strong> 8</p>
+          <p class="card-text"><strong>Horario:</strong> Mar y Jue, 10:00 - 12:00</p>
+          <a href="#" class="btn btn-primary">Unirme</a>
+>>>>>>> Stashed changes
         </div>
       </div>
     </div>
   </div>
 </div>
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 {% endblock %}
