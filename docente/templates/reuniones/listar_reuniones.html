@@ -1,0 +1,82 @@
+{% extends 'base-docentes.html' %}
+{% load static %}
+
+{% block titulo %}Listado de Reuniones{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="text-primary">🗓️ Reuniones del Track</h2>
+    <a href="{% url 'crear-reunion-track' %}" class="btn btn-success">
+      <i class="bi bi-plus-circle me-1"></i> Nueva Reunión
+    </a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover align-middle table-striped">
+      <thead class="table-light">
+        <tr>
+          <th>Track</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Modalidad</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for reunion in reuniones %}
+        <tr>
+          <td>{{ reunion.track.nom_track }}</td>
+          <td>{{ reunion.fecha }}</td>
+          <td>{{ reunion.hora }}</td>
+          <td>{{ reunion.get_modalidad_display }}</td>
+          <td>
+            <!-- Detalle en modal -->
+            <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#detalleReunion{{ reunion.id_reunion }}">
+              <i class="bi bi-eye"></i>
+            </button>
+
+            <!-- Editar -->
+            <a href="{% url 'editar-reunion-track' reunion.id_reunion %}" class="btn btn-warning btn-sm">
+              <i class="bi bi-pencil"></i>
+            </a>
+
+            <!-- Eliminar -->
+            <a href="{% url 'eliminar-reunion-track' reunion.id_reunion %}" class="btn btn-danger btn-sm">
+              <i class="bi bi-trash"></i>
+            </a>
+          </td>
+        </tr>
+
+        <!-- Modal de Detalle -->
+        <div class="modal fade" id="detalleReunion{{ reunion.id_reunion }}" tabindex="-1" aria-labelledby="detalleLabel{{ reunion.id_reunion }}" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="detalleLabel{{ reunion.id_reunion }}">Detalle de la Reunión</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+              </div>
+              <div class="modal-body">
+                <p><strong>Track:</strong> {{ reunion.track.nom_track }}</p>
+                <p><strong>Fecha:</strong> {{ reunion.fecha }}</p>
+                <p><strong>Hora:</strong> {{ reunion.hora }}</p>
+                <p><strong>Modalidad:</strong> {{ reunion.get_modalidad_display }}</p>
+                {% if reunion.modalidad == 'virtual' %}
+                  <p><strong>Link Virtual:</strong> <a href="{{ reunion.link_virtual }}" target="_blank">{{ reunion.link_virtual }}</a></p>
+                {% else %}
+                  <p><strong>Ubicación:</strong> {{ reunion.ubicacion }}</p>
+                {% endif %}
+                <p><strong>Descripción:</strong> {{ reunion.descripcion }}</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

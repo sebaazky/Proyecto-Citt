@@ -6,10 +6,6 @@ from .models import *
 admin.site.register(Carrera)
 admin.site.register(Genero)
 admin.site.register(Comuna)
-<<<<<<< Updated upstream
 admin.site.register(Track)
 admin.site.register(TrackRequest)
 admin.site.register(TipoEvento)
-=======
-admin.site.register(Track)
->>>>>>> Stashed changes

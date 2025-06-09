@@ -1,0 +1,35 @@
+{% extends 'base-alumnos.html' %}
+{% load static %}
+
+{% block titulo %}Reuniones del Track{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">🗓️ Reuniones Programadas</h2>
+
+  {% if reuniones %}
+    <div class="list-group">
+      {% for reunion in reuniones %}
+        <div class="list-group-item mb-3 shadow-sm rounded">
+          <h5 class="mb-1"><strong>{{ reunion.titulo|default:"Reunión del Track" }}</strong></h5>
+          <p class="mb-1">
+            <strong>Fecha:</strong> {{ reunion.fecha|date:"d M Y" }} <br>
+            <strong>Hora:</strong> {{ reunion.hora|time:"H:i" }} <br>
+            <strong>Modalidad:</strong> {{ reunion.get_modalidad_display }} <br>
+            {% if reunion.modalidad == "virtual" %}
+              <strong>Link:</strong> <a href="{{ reunion.link_virtual }}" target="_blank">Entrar a reunión</a><br>
+            {% else %}
+              <strong>Ubicación:</strong> {{ reunion.ubicacion }} <br>
+            {% endif %}
+            <strong>Descripción:</strong> {{ reunion.descripcion }}
+          </p>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center mt-4" role="alert">
+      No tienes reuniones asignadas actualmente.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

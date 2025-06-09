@@ -1,0 +1,42 @@
+{% extends 'base-docentes.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Crear Proyecto{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-primary text-white rounded-top-4">
+          <h4 class="mb-0"><i class="bi bi-rocket-takeoff me-2"></i>Crear Nuevo Proyecto</h4>
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% for field in form.visible_fields %}
+              <div class="mb-3">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field|add_class:"form-control" }}
+                {% if field.help_text %}
+                  <div class="form-text">{{ field.help_text }}</div>
+                {% endif %}
+                {% for error in field.errors %}
+                  <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+              </div>
+            {% endfor %}
+
+            <div class="text-end">
+              <a href="{% url 'listar-proyectos' %}" class="btn btn-secondary">Cancelar</a>
+              <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

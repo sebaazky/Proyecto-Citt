@@ -1,0 +1,35 @@
+{% extends 'base-alumnos.html' %}
+{% load static %}
+
+{% block titulo %}Eventos Institucionales{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="text-center mb-4">🎉 Eventos disponibles</h2>
+
+  {% if eventos %}
+    <div class="row">
+      {% for evento in eventos %}
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card shadow-sm h-100">
+            {% if evento.infografia %}
+              <img src="{{ evento.infografia.url }}" class="card-img-top" style="height: 250px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ evento.nombre_evento }}</h5>
+              <p class="card-text"><strong>Tipo:</strong> {{ evento.id_tipo_evento }}</p>
+              <p class="card-text"><strong>Ubicación:</strong> {{ evento.ubicacion_evento }}</p>
+              <p class="card-text"><strong>Fecha:</strong> {{ evento.fecha_evento|date:"d M Y" }} a las {{ evento.hora|time:"H:i" }}</p>
+              <p class="card-text text-muted">Publicado por: {{ evento.docente.username }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center" role="alert">
+      No hay eventos publicados actualmente.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

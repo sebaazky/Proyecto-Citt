@@ -42,11 +42,9 @@ INSTALLED_APPS = [
     'alumno',
     'docente',
     'login',
-<<<<<<< Updated upstream
     'home',
-=======
-    'core',
->>>>>>> Stashed changes
+    "widget_tweaks",
+
 ]
 
 MIDDLEWARE = [
@@ -71,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'alumno.context_processors.tracks_disponibles',
             ],
         },
     },

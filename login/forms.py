@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from .models import User
 
+
 class LoginForm(AuthenticationForm):
     username = forms.CharField(
         label="username",
@@ -23,8 +24,8 @@ class LoginForm(AuthenticationForm):
         })
     )
 
+
 class RegistroAlumnoForm(UserCreationForm):
-<<<<<<< Updated upstream
     username = forms.CharField(
         label="Usuario",
         max_length=150,
@@ -51,8 +52,6 @@ class RegistroAlumnoForm(UserCreationForm):
         })
     )
 
-=======
->>>>>>> Stashed changes
     class Meta:
         model = User
         fields = ['username', 'password1', 'password2']
@@ -60,7 +59,8 @@ class RegistroAlumnoForm(UserCreationForm):
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if User.objects.filter(username=username).exists():
-            raise forms.ValidationError('El nombre de usuario ya está registrado.')
+            raise forms.ValidationError(
+                'El nombre de usuario ya está registrado.')
         return username
 
     def clean(self):

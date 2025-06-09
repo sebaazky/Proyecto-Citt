@@ -1,0 +1,37 @@
+{% extends 'base-alumnos.html' %}
+{% load static %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">👤 Mi Perfil</h4>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4 text-center">
+          {% if perfil.imagen_perfil %}
+            <img src="{{ perfil.imagen_perfil.url }}" class="img-fluid rounded-circle mb-3" width="180" height="180">
+          {% else %}
+            <img src="{% static 'images/default-user.png' %}" class="img-fluid rounded-circle mb-3" width="180" height="180">
+          {% endif %}
+        </div>
+        <div class="col-md-8">
+          <p><strong>Nombre:</strong> {{ perfil.nombres }} {{ perfil.apellido_paterno }} {{ perfil.apellido_materno }}</p>
+          <p><strong>Correo:</strong> {{ perfil.correo }}</p>
+          <p><strong>Teléfono:</strong> {{ perfil.telefono }}</p>
+          <p><strong>Dirección:</strong> {{ perfil.direccion }}</p>
+          <p><strong>Género:</strong> {{ perfil.genero }}</p>
+          <p><strong>Carrera:</strong> {{ perfil.carrera }}</p>
+          <p><strong>Track de interés:</strong> {{ perfil.track_interes.nom_track }}</p>
+        </div>
+      </div>
+      <div class="text-end mt-4">
+        <a href="{% url 'edit-perfil-al' %}" class="btn btn-warning">Editar Perfil</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

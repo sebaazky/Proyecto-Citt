@@ -23,16 +23,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('alumnos/', include('alumno.urls')),
     path('login/', include('login.urls')),
-<<<<<<< Updated upstream
     path('docentes/', include('docente.urls')),
-    path('administrador/',include('administrador.urls')),
+    path('administrador/', include('administrador.urls')),
     path('', include('home.urls')),
-=======
-    path('docente/', include('docente.urls')),
-    path('administrador/',include('administrador.urls')),
->>>>>>> Stashed changes
-    ]
+]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

@@ -1,45 +1,83 @@
 {% extends 'base-docentes.html' %}
+{% load static %}
+
 {% block titulo %}Mis eventos{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-  <div class="card shadow border-0" style="background-color: #e3f2fd;">
-    <div class="card-body">
-      <h2 class="mb-4 text-primary">Mis eventos</h2>
-      <a href="{% url 'añadir-evento' %}" class="btn btn-success mb-3">Añadir nuevo evento</a>
-      <div class="table-responsive">
-        <table class="table table-striped align-middle" style="background-color: #fff;">
-          <thead class="table-light">
-            <tr>
-              <th>Nombre</th>
-              <th>Tipo</th>
-              <th>Ubicación</th>
-              <th>Fecha</th>
-              <th>Hora</th>
-              <th>Infografía</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for evento in eventos %}
-            <tr>
-              <td>{{ evento.nombre_evento }}</td>
-              <td>{{ evento.id_tipo_evento }}</td>
-              <td>{{ evento.ubicacion_evento }}</td>
-              <td>{{ evento.fecha_evento }}</td>
-              <td>{{ evento.hora }}</td>
-              <td>{% if evento.infografia %}<img src="{{ evento.infografia.url }}" width="60">{% endif %}</td>
-              <td>
-                <a href="{% url 'modificar-evento' evento.id_evento %}" class="btn btn-outline-primary btn-sm">Modificar</a>
-                <a href="{% url 'eliminar-evento' evento.id_evento %}" class="btn btn-outline-danger btn-sm">Eliminar</a>
-              </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="7" class="text-center text-muted">No tienes eventos registrados.</td></tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">📅 Mis Eventos</h2>
+    <a href="{% url 'añadir-evento' %}" class="btn btn-dark rounded-pill px-4 py-2">
+      <i class="bi bi-plus-circle me-2"></i> Añadir Evento
+    </a>
   </div>
+
+  {% if eventos %}
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered align-middle text-center">
+        <thead class="table-dark">
+          <tr>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Ubicación</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for evento in eventos %}
+          <tr>
+            <td class="text-start">{{ evento.nombre_evento }}</td>
+            <td>{{ evento.id_tipo_evento }}</td>
+            <td>{{ evento.ubicacion_evento }}</td>
+            <td>{{ evento.fecha_evento|date:"d-m-Y" }}</td>
+            <td>{{ evento.hora }}</td>
+            <td>
+              <div class="btn-group" role="group">
+                <a href="#" class="btn btn-sm btn-outline-primary" title="Ver Detalles" data-bs-toggle="modal" data-bs-target="#detalleEvento{{ evento.id_evento }}">
+                  <i class="bi bi-eye"></i>
+                </a>
+                <a href="{% url 'modificar-evento' evento.id_evento %}" class="btn btn-sm btn-outline-warning" title="Modificar">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <a href="{% url 'eliminar-evento' evento.id_evento %}" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </div>
+
+              <!-- Modal Detalle -->
+              <div class="modal fade" id="detalleEvento{{ evento.id_evento }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">📌 Detalle del Evento</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-start">
+                      <p><strong>Nombre:</strong> {{ evento.nombre_evento }}</p>
+                      <p><strong>Tipo:</strong> {{ evento.id_tipo_evento }}</p>
+                      <p><strong>Ubicación:</strong> {{ evento.ubicacion_evento }}</p>
+                      <p><strong>Fecha:</strong> {{ evento.fecha_evento|date:"d-m-Y" }}</p>
+                      <p><strong>Hora:</strong> {{ evento.hora }}</p>
+                      {% if evento.infografia %}
+                        <p><strong>Infografía:</strong><br><img src="{{ evento.infografia.url }}" class="img-fluid rounded" style="max-height: 250px;"></p>
+                      {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center">No tienes eventos registrados aún.</div>
+  {% endif %}
 </div>
 {% endblock %}

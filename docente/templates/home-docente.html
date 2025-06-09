@@ -1,97 +1,55 @@
 {% extends 'base-docentes.html' %}
 {% load static %}
 
-{% block titulo %} Home Citt - Docentes {% endblock %}
+{% block titulo %}Inicio - Portal Docente CITT{% endblock %}
 
 {% block content %}
-
-<div class="container mt-5 pt-5">
-    <div class="row">
-        <div class="col-md-3">
-            <div class="text-center mb-3">
-                {% if user.perfil_docente.imagen_perfil %}
-                    <img src="{{ user.perfil_docente.imagen_perfil.url }}" alt="Foto del Usuario" class="rounded-circle" id="profilePhoto" style="width: 300px; height: 300px; object-fit: cover;">
-                {% else %}
-                    <img src="{% static 'images/default-avatar.jpg' %}" alt="Foto del Usuario" class="rounded-circle" id="profilePhoto" style="width: 300px; height: 300px; object-fit: cover;">
-                {% endif %}
-                <input type="file" id="uploadPhoto" class="d-none">
-                <button class="btn btn-secondary mt-2"
-                    onclick="document.getElementById('uploadPhoto').click();">Cambiar
-                    Foto</button>
-            </div>
-            <button class="btn btn-primary w-100 mb-3" data-bs-toggle="none" data-bs-target="#activities"
-                aria-expanded="false" aria-controls="activities" id="perfilButton" disabled>
-                Perfil
-            </button>
-            <div id="activities">
-    <ul class="list-group">
-        <li class="list-group-item"><a href="{% url 'edit-perfil-docente' %}">Mi perfil</a></li>
-        <li class="list-group-item"><a href="{% url 'listar-eventos' %}">Eventos</a></li>
-        <li class="list-group-item"><a href="#">Tracks</a></li>
-<<<<<<< Updated upstream
-        
-=======
-        <li class="list-group-item">
-            <div class="dropdown">
-                <a class="dropdown-toggle" href="#" role="button" id="dropdownMantenedores" data-bs-toggle="dropdown" aria-expanded="false">
-                    Mantenedores
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMantenedores">
-                    <li><a href="#">
-                            <button>Ver solicitudes de alumnos</button>
-                        </a>
-                    </li>
-                    <li><a class="dropdown-item" href="#">Registro de eventos</a></li>
-                </ul>
-            </div>
-        </li>
->>>>>>> Stashed changes
-        <li class="list-group-item"><a href="{% url 'logout' %}">Cerrar Sesión</a></li>
-    </ul>
-</div>
-        </div>
-<<<<<<< Updated upstream
-        <div class="col-md-9">
-            <div class="card shadow border-0 mb-4" style="background-color: #e3f2fd;">
-                <div class="card-body">
-                    <h2 class="text-primary mb-3">
-                        Bienvenido,
-                        {% if user.perfil_docente.nombres and user.perfil_docente.apellido_paterno and user.perfil_docente.apellido_materno %}
-                          {{ user.perfil_docente.nombres }} {{ user.perfil_docente.apellido_paterno }} {{ user.perfil_docente.apellido_materno }}
-                        {% else %}
-                          {{ user.username }}
-                        {% endif %}
-                    </h2>
-                    <p class="lead">Este es tu panel principal como docente. Desde aquí puedes gestionar tus eventos, ver tu track y acceder a todas las funcionalidades disponibles.</p>
-                </div>
-            </div>
-            <div class="card shadow border-0" style="background-color: #e8f5e9;">
-                <div class="card-body">
-                    <h5 class="text-success">Accesos rápidos</h5>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item bg-transparent"><a href="{% url 'listar-eventos' %}" class="text-decoration-none">Mis eventos</a></li>
-                        <li class="list-group-item bg-transparent"><a href="{% url 'mi-track' %}" class="text-decoration-none">Mi track</a></li>
-                        <li class="list-group-item bg-transparent"><a href="{% url 'solicitudes_pendientes' %}" class="text-decoration-none">Solicitudes al track</a></li>
-                    </ul>
-                </div>
-            </div>
-=======
-        <div>
-            {% if track %}
-                <p>{{track.id_track}}</p>
-                <p>{{track.nom_track}}</p>
-            {% else %}
-                <p>No estás inscrito en ningún track.</p>
-            {% endif %}
-        </div>
-
-
+<div class="container py-5">
+  <div class="row align-items-center mb-5">
+    <div class="col-md-8">
+      <h2 class="fw-bold text-primary">¡Bienvenido(a) 
+        {% if user.perfil_docente.p_nombre %}
+          {{ user.perfil_docente.p_nombre }} {{ user.perfil_docente.apellido_pat }}
+        {% else %}
+          {{ user.username }}
+        {% endif %}
+      !</h2>
+      <p class="lead text-muted mt-3">Este es tu espacio como docente en el sistema CITT. Aquí podrás administrar tus tracks, crear proyectos, coordinar reuniones, responder solicitudes y más.</p>
     </div>
->>>>>>> Stashed changes
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 border-0">
+        <div class="card-body text-center">
+          <i class="bi bi-kanban fs-2 text-info"></i>
+          <h5 class="card-title mt-3">Mi Track</h5>
+          <p class="card-text">Gestiona tu track y visualiza las solicitudes de alumnos.</p>
+          <a href="{% url 'mi-track' %}" class="btn btn-outline-info btn-sm">Ir al track</a>
         </div>
+      </div>
     </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 border-0">
+        <div class="card-body text-center">
+          <i class="bi bi-folder2-open fs-2 text-success"></i>
+          <h5 class="card-title mt-3">Proyectos</h5>
+          <p class="card-text">Crea y gestiona proyectos, y asigna a los jefes según el avance.</p>
+          <a href="#" class="btn btn-outline-success btn-sm">Ver proyectos</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 border-0">
+        <div class="card-body text-center">
+          <i class="bi bi-calendar-event fs-2 text-warning"></i>
+          <h5 class="card-title mt-3">Reuniones</h5>
+          <p class="card-text">Agenda reuniones con tus alumnos y gestiona el calendario del track.</p>
+          <a href="{% url 'listar-reuniones-track' %}" class="btn btn-outline-warning btn-sm">Ver reuniones</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-
 {% endblock %}
 

@@ -1,55 +1,83 @@
 {% extends 'base-alumnos.html' %}
+{% load static %}
 
-{% block titulo %} Crear un proyecto {% endblock %}
+{% block title %}Proyectos del Alumno{% endblock %}
 
 {% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">📁 Mis Proyectos</h2>
+    <a href="{% url 'añadir-proyecto' %}" class="btn btn-dark rounded-pill px-4 py-2">
+      <i class="bi bi-plus-circle me-2"></i> Crear Proyecto
+    </a>
+  </div>
 
-<div class="p-5 mb-4 bg-light rounded-3 text-center">
-    <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">Listado de mis proyectos</h1>
-        <a class="btn btn-primary mt-3" href="{% url 'añadir-proyecto' %}" role="button">Añadir un proyecto</a>
+  {% if proyectos %}
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered align-middle text-center">
+        <thead class="table-dark">
+          <tr>
+            <th>Nombre</th>
+            <th>Jefe de Proyecto</th>
+            <th>Fecha Inicio</th>
+            <th>N° Integrantes</th>
+            <th>Track</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for proyecto in proyectos %}
+            <tr>
+              <td class="text-start">{{ proyecto.nom_proyecto }}</td>
+              <td>{{ proyecto.jefe_proyecto }}</td>
+              <td>{{ proyecto.fecha_inicio|date:"d-m-Y" }}</td>
+              <td>{{ proyecto.num_integrantes }}</td>
+              <td>{{ proyecto.id_track }}</td>
+              <td>
+                <div class="btn-group" role="group">
+                  <a href="#" class="btn btn-sm btn-outline-primary" title="Ver Detalles" data-bs-toggle="modal" data-bs-target="#detalleProyecto{{ proyecto.id_proyecto }}">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                  <a href="{% url 'modificar-proyecto' proyecto.id_proyecto %}" class="btn btn-sm btn-outline-warning" title="Modificar">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                </div>
+
+                <!-- Modal Detalle -->
+                <div class="modal fade" id="detalleProyecto{{ proyecto.id_proyecto }}" tabindex="-1" aria-hidden="true">
+                  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">🔍 Detalle del Proyecto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </div>
+                      <div class="modal-body text-start">
+                        <p><strong>Nombre:</strong> {{ proyecto.nom_proyecto }}</p>
+                        <p><strong>Jefe de proyecto:</strong> {{ proyecto.jefe_proyecto }}</p>
+                        <p><strong>Descripción:</strong> {{ proyecto.descripcion }}</p>
+                        <p><strong>Objetivo:</strong> {{ proyecto.objetivo }}</p>
+                        <p><strong>Fecha de inicio:</strong> {{ proyecto.fecha_inicio|date:"d-m-Y" }}</p>
+                        <p><strong>N° integrantes:</strong> {{ proyecto.num_integrantes }}</p>
+                        <p><strong>Track:</strong> {{ proyecto.id_track }}</p>
+                        {% if proyecto.imagen %}
+                          <p><strong>Imagen:</strong><br><img src="{{ proyecto.imagen.url }}" class="img-fluid rounded" style="max-height: 250px;"></p>
+                        {% endif %}
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+  {% else %}
+    <div class="alert alert-info text-center">No tienes proyectos registrados aún.</div>
+  {% endif %}
 </div>
-
-{% if proyectos %}
-    <div class="container">
-        <table class="table table-primary text-center mx-auto">
-            <thead>
-                <tr>
-                    <th scope="col">ID Proyecto</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Jefe de proyecto</th>
-                    <th scope="col">Descripcion</th>
-                    <th scope="col">Fecha inicio</th>
-                    <th scope="col">Imagen</th>
-                    <th scope="col">Objetivo</th>
-                    <th scope="col">Numero de integrantes</th>
-                    <th scope="col">ID track</th>
-                    <th scope="col">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for proyecto in proyectos %}
-                    <tr>
-                        <td>{{ proyecto.id_proyecto }}</td>
-                        <td>{{ proyecto.nom_proyecto }}</td>
-                        <td>{{ proyecto.jefe_proyecto }}</td>
-                        <td>{{ proyecto.descripcion }}</td>
-                        <td>{{ proyecto.fecha_inicio }}</td>
-                        <td><img src="{{ proyecto.imagen.url }}" alt="Imagen del proyecto" style="max-width: 100px;"></td>
-                        <td>{{ proyecto.objetivo }}</td>
-                        <td>{{ proyecto.num_integrantes }}</td>
-                        <td>{{ proyecto.id_track }}</td>
-                        <td>
-                            <a class="btn btn-success" href="{% url 'modificar-proyecto' pk=proyecto.id_proyecto %}" role="button">Modificar</a>
-                            |
-                            <a class="btn btn-danger" href="{% url 'eliminar-proyecto' pk=proyecto.id_proyecto %}" role="button">Eliminar</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-{% endif %}
-
 {% endblock %}
+

@@ -1,0 +1,26 @@
+{% extends 'base-docentes.html' %}
+{% block titulo %}Eliminar Reunión{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow border-0" style="background-color: #ffebee;">
+    <div class="card-body">
+      <h2 class="mb-4 text-danger">
+        <i class="bi bi-trash-fill me-2"></i>Confirmar eliminación
+      </h2>
+      <p class="lead">¿Estás seguro que deseas eliminar esta reunión del track <strong>{{ reunion.track.nom_track }}</strong> programada para el <strong>{{ reunion.fecha }}</strong> a las <strong>{{ reunion.hora }}</strong>?</p>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mt-4 d-flex gap-2">
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-check-circle me-1"></i>Eliminar
+          </button>
+          <a href="{% url 'listar-reuniones-track' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-x-circle me-1"></i>Cancelar
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

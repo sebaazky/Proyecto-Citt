@@ -1,0 +1,148 @@
+{% extends 'base-alumnos.html' %}
+{% load static %}
+
+{% block titulo %}{{ track.nom_track }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+
+      <!-- Card del Track -->
+      <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+        <div class="bg-dark position-relative">
+          <img 
+            src="{% if track.imagen %}{{ track.imagen.url }}{% else %}{% static 'images/default_track.png' %}{% endif %}" 
+            class="img-fluid w-100" 
+            style="max-height: 400px; object-fit: cover;" 
+            alt="{{ track.nom_track }}">
+          <h2 class="position-absolute bottom-0 start-0 text-white bg-dark bg-opacity-75 px-4 py-2">{{ track.nom_track }}</h2>
+        </div>
+        <div class="card-body p-4 text-center">
+          {% if track.id_usuario.perfil_docente %}
+          <p class="text-muted fw-semibold mb-2">
+            Docente a cargo:
+            <span class="text-dark">
+              {{ track.id_usuario.perfil_docente.nombres }} {{ track.id_usuario.perfil_docente.apellido_paterno }} {{ track.id_usuario.perfil_docente.apellido_materno }}
+            </span>
+          </p>
+          {% else %}
+          <p class="text-muted">Docente a cargo: <span class="text-danger">No asignado</span></p>
+          {% endif %}
+
+          <p class="card-text fs-5 text-muted mt-3">{{ track.descripcion }}</p>
+
+          {% if boton_solicitud and not solicitud_pendiente %}
+          <form method="post" action="{% url 'unirse_a_track' track.id_track %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success mt-3">Unirse al Track</button>
+          </form>
+          {% elif solicitud_pendiente %}
+          <div class="alert alert-warning mt-3" role="alert">
+            Ya tienes una solicitud pendiente para este track.
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Últimas Publicaciones del Docente -->
+      <div class="mt-5">
+        <h4 class="mb-3">Últimas Publicaciones</h4>
+        {% if posts %}
+        <ul class="list-group">
+          {% for post in posts %}
+            <li class="list-group-item">
+              <strong>{{ post.docente.perfil_docente.nombres }} {{ post.docente.perfil_docente.apellido_paterno }}</strong> - {{ post.fecha_creacion|date:"d M Y H:i" }}<br>
+              {{ post.contenido|linebreaksbr }}
+              {% if post.imagen %}
+              <div class="mt-2">
+                <img src="{{ post.imagen.url }}" class="img-fluid rounded" style="max-height: 300px;">
+              </div>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted">No hay publicaciones registradas.</p>
+        {% endif %}
+      </div>
+
+      <!-- Proyectos Asociados -->
+      <div class="mt-5">
+        <h4 class="mb-3">Proyectos Asociados</h4>
+        {% if proyectos %}
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+          {% for proyecto in proyectos %}
+          <div class="col">
+            <div class="card h-100 shadow-sm">
+              {% if proyecto.imagen %}
+              <img src="{{ proyecto.imagen.url }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="Imagen Proyecto">
+              {% endif %}
+              <div class="card-body">
+                <h5 class="card-title">{{ proyecto.nom_proyecto }}</h5>
+                <p class="card-text mb-1">
+                  <strong>Jefe Proyecto:</strong> {{ proyecto.jefe_proyecto.alumno.username }}
+                </p>
+                <p class="card-text">
+                  {{ proyecto.objetivo|truncatewords:20 }}
+                </p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted">No hay proyectos registrados.</p>
+        {% endif %}
+      </div>
+
+      <!-- Alumnos en el Track -->
+      <div class="mt-5">
+        <h4 class="mb-3">Alumnos en el Track</h4>
+        {% if alumnos %}
+        <ul class="list-group">
+          {% for alumno in alumnos %}
+          <li class="list-group-item">
+            {{ alumno.p_nombre }} {{ alumno.apellido_pat }} ({{ alumno.alumno.username }})
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted">No hay alumnos registrados en este track.</p>
+        {% endif %}
+      </div>
+
+      <!-- Reuniones -->
+      <div class="container py-5">
+        <h2 class="mb-4">🗓️ Reuniones Programadas</h2>
+
+        {% if reuniones %}
+          <div class="list-group">
+            {% for reunion in reuniones %}
+              <div class="list-group-item mb-3 shadow-sm rounded">
+                <h5 class="mb-1"><strong>{{ reunion.titulo|default:"Reunión del Track" }}</strong></h5>
+                <p class="mb-1">
+                  <strong>Fecha:</strong> {{ reunion.fecha|date:"d M Y" }} <br>
+                  <strong>Hora:</strong> {{ reunion.hora|time:"H:i" }} <br>
+                  <strong>Modalidad:</strong> {{ reunion.get_modalidad_display }} <br>
+                  {% if reunion.modalidad == "virtual" %}
+                    <strong>Link:</strong> <a href="{{ reunion.link_virtual }}" target="_blank">Entrar a reunión</a><br>
+                  {% else %}
+                    <strong>Ubicación:</strong> {{ reunion.ubicacion }} <br>
+                  {% endif %}
+                  <strong>Descripción:</strong> {{ reunion.descripcion }}
+                </p>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-info text-center mt-4" role="alert">
+            No tienes reuniones asignadas actualmente.
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

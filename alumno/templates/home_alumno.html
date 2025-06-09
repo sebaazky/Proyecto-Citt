@@ -1,235 +1,94 @@
-{% extends 'base-alumnos.html' %} 
-{% load static %} {% block titulo %} 
-Home alumnos {% endblock %} {% block content %}
+{% extends 'base-alumnos.html' %}
+{% load static %}
 
-<div class="container mt-5 pt-5">
-  <div class="row">
-    <div class="col-md-3">
-      <div class="text-center mb-3">
-<<<<<<< Updated upstream
-        {% if user.perfil_alumno.imagen_perfil %}
-=======
-        {% if user.Perfil_alumno.imagen_perfil %}
->>>>>>> Stashed changes
-        <img
-          src="{{ user.perfil_alumno.imagen_perfil.url }}"
-          alt="Foto del Usuario"
-          class="rounded-circle"
-          id="profilePhoto"
-          style="width: 300px; height: 300px; object-fit: cover"
-        />
-        {% else %}
-        <img
-          src="{% static 'images/profileImage.jpg' %}"
-          alt="Foto del Usuario"
-          class="rounded-circle"
-          id="profilePhoto"
-          style="width: 300px; height: 300px; object-fit: cover"
-        />
-        {% endif %}
-        <input type="file" id="uploadPhoto" class="d-none" />
-        <button
-          class="btn btn-secondary mt-2"
-          onclick="document.getElementById('uploadPhoto').click();"
-        >
-          Cambiar Foto
-        </button>
+{% block titulo %}Home alumnos{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Bienvenida -->
+  <div class="bg-light p-5 rounded shadow-sm mb-4">
+    <h1 class="display-6 fw-bold">
+      Bienvenido,
+      {% if user.perfil_alumno.nombres and user.perfil_alumno.apellido_paterno %}
+        {{ user.perfil_alumno.nombres|title }} {{ user.perfil_alumno.apellido_paterno|title }}
+        {% if user.perfil_alumno.apellido_materno %} {{ user.perfil_alumno.apellido_materno|title }} {% endif %}
+      {% else %}
+        {{ user.username }}
+      {% endif %}!
+    </h1>
+    <p class="lead">
+      Nos alegra tenerte aquí. Explora los tracks, postula a uno de ellos y comienza tu experiencia en proyectos reales.
+    </p>
+  </div>
+
+  <!-- Carrusel de eventos -->
+  <div id="eventCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      {% for i in "54321" %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+        <img src="{% static 'images/evento'|add:i|add:'.jpg' %}" class="d-block w-100 rounded" style="max-height: 450px; object-fit: cover;" alt="Evento {{ i }}" />
       </div>
-      <button
-        class="btn btn-primary w-100 mb-3"
-        data-bs-toggle="none"
-        data-bs-target="#activities"
-        aria-expanded="false"
-        aria-controls="activities"
-        id="perfilButton"
-        disabled
-      >
-        Perfil
-      </button>
-      <div class="menu" id="activities">
-        <ul class="list-group">
-          <li class="list-group-item"><a href="{% url 'edit-perfil-al' %}">Editar Perfil</a></li>
-<<<<<<< Updated upstream
-          {% if request.user.id_track == 1 %}
-            <li class="list-group-item"><a href="{% url 'track-robotica' %}">Robotica</a></li>
+      {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Anterior</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Siguiente</span>
+    </button>
+  </div>
+
+  <!-- Acciones rápidas -->
+  <div class="row g-4">
+    <!-- Tarjeta de perfil -->
+    <div class="col-md-6">
+      <div class="card shadow h-100">
+        <img src="{% static 'images/iot.jpg' %}" class="card-img-top" alt="Perfil" style="height: 200px; object-fit: cover;" />
+        <div class="card-body">
+          <h5 class="card-title">Mi Perfil</h5>
+          {% if user.perfil_alumno %}
+            <p class="card-text">Ya estás registrado en el sistema. Puedes modificar tu perfil si es necesario.</p>
+            <a href="{% url 'edit-perfil-al' %}" class="btn btn-outline-primary">Modificar Perfil</a>
           {% else %}
-          <li class="list-group-item"><a href="{% url 'track-ciberseguridad' %}">Ciberseguridad</a></li>
+            <p class="card-text">Aún no estás registrado en el sistema. Debes completar tu perfil para poder postular proyectos.</p>
+            <a href="{% url 'crear-perfil-al' %}" class="btn btn-primary">Registrar Perfil</a>
           {% endif %}
-          {% if request.user.id_track %}
-          <li class="list-group-item"><a href="{% url 'listar-proyectos' %}">Mis Proyectos</a></li>
-          {% endif %}
-          
-          <li class="list-group-item"><a href="{% url 'gestionar-solicitudes-proyecto'%}">Solicitudes</a></li>
-          <li class="list-group-item dropdown">
-            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">Tracks</a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{% url 'track-robotica' %}">Robótica</a></li>
-              <li><a class="dropdown-item" href="{% url 'track-ciberseguridad' %}">Ciberseguridad</a></li>
-              <li><a class="dropdown-item" href="{% url 'track-bigdata' %}">Big Data</a></li>
-              <li><a class="dropdown-item" href="{% url 'track-videojuegos' %}">Videojuegos</a></li>
-              <li><a class="dropdown-item" href="{% url 'track-machinelearning' %}">Machine Learning</a></li>
-              <li><a class="dropdown-item" href="{% url 'track-realidadvirtual' %}">Realidad Virtual</a></li>
-              <li><a class="dropdown-item" href="{% url 'track-appmovilweb' %}">App Móvil & Web</a></li>
-              <li><a class="dropdown-item" href="{% url 'track-iot' %}">IoT</a></li>
-              <li><a class="dropdown-item" href="{% url 'track-drones' %}">Drones</a></li>
-            </ul>
-          </li>
-=======
-          <li class="list-group-item"><a href="#">Mis Actividades</a></li>
-          <li class="list-group-item"><a href="#">Mis Proyectos</a></li>
-          <li class="list-group-item"><a href="#">Cerrar Sesión</a></li>
->>>>>>> Stashed changes
-        </ul>
+        </div>
       </div>
     </div>
-    <div class="col-md-9">
-      <div class="p-5 mb-4 bg-light rounded-3">
-        <div class="container-fluid py-5">
-          <h1 class="display-5 fw-bold">
-            Bienvenido, 
-            {% if user.perfil_alumno.nombres and user.perfil_alumno.apellido_paterno  %}
-              {{ user.perfil_alumno.nombres }} {{ user.perfil_alumno.apellido_paterno }} {% if user.perfil_alumno.apellido_materno %} {{ user.perfil_alumno.apellido_materno }} {% endif %}
-            {% else %} 
-              {{ user.username }} 
-            {% endif %} !
-          </h1>
-          <p class="col-md-8 fs-4">
-            Estamos encantados de tenerte con nosotros. Explora los tracks,
-            postula a uno de ellos y comienza a trabajar en proyectos reales.
+
+    <!-- Tarjeta de postular proyecto -->
+    <div class="col-md-6">
+      <div class="card shadow h-100">
+        <img src="{% static 'images/iot.jpg' %}" class="card-img-top" alt="Postular" style="height: 200px; object-fit: cover;" />
+        <div class="card-body">
+          <h5 class="card-title">Postular Proyecto</h5>
+          <p class="card-text">
+            Explora proyectos disponibles y postula para participar activamente en desafíos reales con tus compañeros.
           </p>
+          <a href="{% url 'listar-proyectos' %}" class="btn btn-success">Ver Mis Proyectos</a>
         </div>
       </div>
+    </div>
 
-      <div
-        id="eventCarousel"
-        class="carousel slide mb-4"
-        data-bs-ride="carousel"
-      >
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <img
-              src="{% static 'images/evento5.jpg' %}"
-              class="d-block w-100"
-              height="550px"
-              alt="Evento 1"
-            />
-          </div>
-          <div class="carousel-item">
-            <img
-              src="{% static 'images/evento4.jpg' %}"
-              class="d-block w-100"
-              height="550px"
-              alt="Evento 2"
-            />
-          </div>
-          <div class="carousel-item">
-            <img
-              src="{% static 'images/evento3.jpg' %}"
-              class="d-block w-100"
-              height="550px"
-              alt="Evento 3"
-            />
-          </div>
-          <div class="carousel-item">
-            <img
-              src="{% static 'images/evento1.jpg' %}"
-              class="d-block w-100"
-              height="550px"
-              alt="Evento 3"
-            />
-          </div>
-          <div class="carousel-item">
-            <img
-              src="{% static 'images/evento2.jpg' %}"
-              class="d-block w-100"
-              height="550px"
-              alt="Evento 3"
-            />
-          </div>
-        </div>
-        <button
-          class="carousel-control-prev"
-          type="button"
-          data-bs-target="#eventCarousel"
-          data-bs-slide="prev"
-        >
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Anterior</span>
-        </button>
-        <button
-          class="carousel-control-next"
-          type="button"
-          data-bs-target="#eventCarousel"
-          data-bs-slide="next"
-        >
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Siguiente</span>
-        </button>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <div class="card track-card" data-track="IoT">
-            <div class="card-front">
-              <div
-                class="card-body"
-                style="background-image: url('{% static 'images/iot.jpg' %}')"
-              >
-                <h5 class="card-title">Completar Perfil</h5>
-              </div>
-            </div>
-            <div class="card-back">
-              <div class="card-body">
-                <p>
-                  ¡Bienvenidos a nuestra plataforma educativa! Registrarse y
-                  completar su perfil es el primer paso para acceder a un mundo
-                  lleno de oportunidades. Al registrar su perfil, no solo podrán
-                  crear y gestionar sus propios proyectos, sino también
-                  postularse para participar en emocionantes tracks específicos
-                  que alinean con sus intereses. Con un perfil completo, podrán
-                  colaborar con otros estudiantes, acceder a recursos exclusivos
-                  y recibir orientación personalizada para su desarrollo
-                  profesional. ¡No esperen más! Regístrense hoy y comiencen su
-                  viaje hacia el éxito académico y profesional.
-                </p>
-                <a href="#" class="custom-btn">Completar Perfil</a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card track-card" data-track="IoT">
-            <div class="card-front">
-              <div
-                class="card-body"
-                style="background-image: url('{% static 'images/iot.jpg' %}')"
-              >
-                <h5 class="card-title">Postular proyecto</h5>
-              </div>
-            </div>
-            <div class="card-back">
-              <div class="card-body">
-                <p>
-                  ¡No pierdas la oportunidad de ser parte de proyectos
-                  innovadores y desafiantes! Postularse a proyectos te permitirá
-                  aplicar tus conocimientos, adquirir nuevas habilidades y
-                  colaborar con compañeros apasionados por las mismas áreas de
-                  interés. Participar en proyectos te brinda la experiencia
-                  práctica necesaria para destacar en tu carrera profesional y
-                  te conecta con mentores y expertos que te guiarán en tu
-                  desarrollo. No esperes más, revisa la lista de proyectos
-                  disponibles y postúlate hoy mismo para iniciar una aventura
-                  académica y profesional que transformará tu futuro.
-                </p>
-                <a href="#" class="custom-btn">Postular proyecto</a>
-              </div>
-            </div>
-          </div>
+    <!-- Card Track -->
+    <div class="col-md-12">
+      <div class="card shadow h-100">
+        <img src="{% static 'images/track.jpg' %}" class="card-img-top" alt="Mi Track" style="height: 200px; object-fit: cover;" />
+        <div class="card-body text-center">
+          <h5 class="card-title">Mi Track</h5>
+          {% if user.perfil_alumno.track_interes %}
+            <p class="card-text">Accede al contenido, tareas y recursos de tu track asignado para avanzar en tu formación y proyectos.</p>
+            <a href="{% url 'detalle_track' user.perfil_alumno.track_interes.slug %}" class="btn btn-dark">Ir a Mi Track</a>
+          {% else %}
+            <p class="card-text text-danger">Aún no estás registrado en un track. Completa tu perfil o solicita inscripción.</p>
+            <a href="{% url 'edit-perfil-al' %}" class="btn btn-outline-warning">Registrar Track</a>
+          {% endif %}
         </div>
       </div>
     </div>
   </div>
 </div>
 {% endblock %}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
