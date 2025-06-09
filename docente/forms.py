@@ -7,9 +7,18 @@ from alumno.models import Proyecto
 class ProyectoDocenteForm(forms.ModelForm):
     class Meta:
         model = Proyecto
-        fields = '__all__'
+        fields = ['nom_proyecto', 'descripcion', 'imagen', 'objetivo',
+                  'fecha_inicio', 'num_integrantes', 'id_track', 'jefe_proyecto']
+
         widgets = {
-            'descripcion': forms.Textarea(attrs={'rows': 4}),
+            'nom_proyecto': forms.TextInput(attrs={'class': 'form-control'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'objetivo': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'fecha_inicio': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'imagen': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'num_integrantes': forms.NumberInput(attrs={'class': 'form-control'}),
+            'id_track': forms.Select(attrs={'class': 'form-control'}),
+            'jefe_proyecto': forms.Select(attrs={'class': 'form-control'}),
         }
 
 

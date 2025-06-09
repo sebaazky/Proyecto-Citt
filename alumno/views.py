@@ -58,7 +58,7 @@ def editar_perfil(request):
 def listar_proyectos(request):
     track_id = request.user.id_track
     proyectos = Proyecto.objects.filter(
-        jefe_proyecto=request.user.perfil_alumno, id_track=track_id)
+        jefe_proyecto=request.user, id_track=track_id)
     context = {'proyectos': proyectos, 'track_id': track_id}
     return render(request, 'proyectos/listar_proyectos.html', context)
 
@@ -66,12 +66,11 @@ def listar_proyectos(request):
 @login_required
 @rol_requerido('alumno')
 def añadir_proyecto(request):
-    perfil_alumno = request.user.perfil_alumno
     if request.method == 'POST':
         form = ProyectoForm(request.POST, request.FILES)
         if form.is_valid():
             proyecto = form.save(commit=False)
-            proyecto.jefe_proyecto = perfil_alumno
+            proyecto.jefe_proyecto = request.user  # ← Aquí
             proyecto.fecha_inicio = timezone.now().date()
             proyecto.save()
             return redirect('listar-proyectos')

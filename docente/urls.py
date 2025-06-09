@@ -53,9 +53,10 @@ urlpatterns = [
          name='listar-proyectos-docente'),
     path('proyectos/crear/', views.crear_proyecto_docente,
          name='crear-proyecto-docente'),
-    path('proyectos/<int:pk>/editar/', views.editar_proyecto_docente,
+    path('proyectos/modificar/<int:pk>/', views.modificar_proyecto_docente,
          name='modificar-proyecto-docente'),
-    path('proyectos/<int:pk>/eliminar/', views.eliminar_proyecto_docente,
+    path('proyectos/eliminar/<int:pk>/', views.eliminar_proyecto_docente,
          name='eliminar-proyecto-docente'),
+
 
 ]

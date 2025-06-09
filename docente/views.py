@@ -355,7 +355,7 @@ def detalle_reunion_modal(request, pk):
 @login_required
 @rol_requerido('docente')
 def listar_proyectos_docente(request):
-    proyectos = Proyecto.objects.filter(jefe_proyecto=request.user)
+    proyectos = Proyecto.objects.all()  # O filtrar por track si corresponde
     return render(request, 'proyectos/listar_proyectos_docente.html', {'proyectos': proyectos})
 
 
@@ -365,25 +365,26 @@ def crear_proyecto_docente(request):
     if request.method == 'POST':
         form = ProyectoDocenteForm(request.POST, request.FILES)
         if form.is_valid():
-            proyecto = form.save(commit=False)
-            proyecto.jefe_proyecto = request.user  # por defecto
-            proyecto.save()
+            form.save()
             return redirect('listar-proyectos-docente')
     else:
         form = ProyectoDocenteForm()
-    return render(request, 'docente/proyectos/crear_proyecto_docente.html', {'form': form})
+    return render(request, 'proyectos/crear_proyecto_docente.html', {'form': form})
 
 
 @login_required
 @rol_requerido('docente')
-def editar_proyecto_docente(request, pk):
+def modificar_proyecto_docente(request, pk):
     proyecto = get_object_or_404(Proyecto, pk=pk)
-    form = ProyectoDocenteForm(
-        request.POST or None, request.FILES or None, instance=proyecto)
-    if form.is_valid():
-        form.save()
-        return redirect('listar-proyectos-docente')
-    return render(request, 'docente/proyectos/modificar_proyecto_docente.html', {'form': form})
+    if request.method == 'POST':
+        form = ProyectoDocenteForm(
+            request.POST, request.FILES, instance=proyecto)
+        if form.is_valid():
+            form.save()
+            return redirect('listar-proyectos-docente')
+    else:
+        form = ProyectoDocenteForm(instance=proyecto)
+    return render(request, 'proyectos/modificar_proyecto_docente.html', {'form': form})
 
 
 @login_required
@@ -393,4 +394,4 @@ def eliminar_proyecto_docente(request, pk):
     if request.method == 'POST':
         proyecto.delete()
         return redirect('listar-proyectos-docente')
-    return render(request, 'docente/proyectos/eliminar_proyecto_docente.html', {'proyecto': proyecto})
+    return render(request, 'proyectos/eliminar_proyecto_docente.html', {'proyecto': proyecto})

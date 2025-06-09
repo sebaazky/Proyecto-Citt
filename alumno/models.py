@@ -31,7 +31,7 @@ class Proyecto(models.Model):
     id_proyecto = models.AutoField(primary_key=True)
     nom_proyecto = models.CharField(max_length=50)
     jefe_proyecto = models.ForeignKey(
-        Perfil_alumno, on_delete=models.CASCADE, db_column='id_alumno')
+        User, on_delete=models.CASCADE, db_column='id_alumno')
     descripcion = models.CharField(max_length=250)
     fecha_inicio = models.DateField(auto_now=False, auto_now_add=False)
     imagen = models.ImageField(upload_to='images/')  # Quizas opcional
