@@ -26,7 +26,7 @@ def home_docente(request):
 @login_required
 @rol_requerido('docente')
 def ver_perfil_docente(request):
-    perfil = get_object_or_404(PerfilDocente, docente=request.user)
+    perfil, created = PerfilDocente.objects.get_or_create(docente=request.user)
     return render(request, 'perfil/ver_perfil_docente.html', {'perfil': perfil})
 
 

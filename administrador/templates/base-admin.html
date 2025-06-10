@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block titulo %}CITT Administrador{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="icon" href="{% static 'images/logocitt.jpeg' %}" type="image/x-icon" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+  <!-- Navbar (igual que alumnos) -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="{% url 'admin-home' %}">
+        <img src="{% static 'images/citt.jpeg' %}" alt="Logo" class="rounded-circle me-2" style="height: 40px;" />
+        <span>CITT Administrador</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="{% url 'admin-home' %}">Inicio</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAdmin" role="button" data-bs-toggle="dropdown">
+              {{ user.username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'admin-perfil' %}">Mi perfil</a></li>
+              <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Sidebar + Content -->
+  <div class="container-fluid flex-grow-1">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-3 col-lg-2 bg-white border-end p-3 min-vh-100">
+        <div class="mb-4 text-center">
+          {% if user.perfil_administrador.imagen_perfil %}
+            <img src="{{ user.perfil_administrador.imagen_perfil.url }}" alt="Foto perfil admin" class="rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;" />
+          {% else %}
+            <img src="https://static-00.iconduck.com/assets.00/profile-circle-icon-512x512-1p9v0zxi.png" alt="Foto perfil admin" class="rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;" />
+          {% endif %}
+          <h6 class="mt-2">{{ user.username }}</h6>
+        </div>
+        <ul class="nav nav-pills flex-column">
+          <li class="nav-item mb-2">
+            <a href="{% url 'admin-home' %}" class="nav-link bg-dark text-white rounded-3 text-center">
+              <i class="bi bi-house-door-fill me-2"></i> Inicio
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a href="{% url 'admin-reporte-pdf' %}" class="nav-link bg-dark text-white rounded-3 text-center">
+              <i class="bi bi-file-earmark-bar-graph me-2"></i> Reportes
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a href="{% url 'admin-enviar-correos' %}" class="nav-link bg-dark text-white rounded-3 text-center">
+              <i class="bi bi-envelope-fill me-2"></i> Enviar Correos
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a href="{% url 'admin-crear-docente' %}" class="nav-link bg-dark text-white rounded-3 text-center">
+              <i class="bi bi-person-plus-fill me-2"></i> Crear Docente
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a href="{% url 'admin-gestion-roles' %}" class="nav-link bg-dark text-white rounded-3 text-center">
+              <i class="bi bi-shield-lock-fill me-2"></i> Gestión de Roles
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a href="{% url 'admin-gestion-usuarios' %}" class="nav-link bg-dark text-white rounded-3 text-center">
+              <i class="bi bi-people-fill me-2"></i> Gestión de Usuarios
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a href="{% url 'admin-gestion-tracks' %}" class="nav-link bg-dark text-white rounded-3 text-center">
+              <i class="bi bi-diagram-3-fill me-2"></i> Gestión de Tracks
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a href="{% url 'admin-perfil' %}" class="nav-link bg-secondary text-white rounded-3 text-center">
+              <i class="bi bi-person-circle me-2"></i> Mi Perfil
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a href="{% url 'logout' %}" class="nav-link bg-danger text-white rounded-3 text-center">
+              <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
+            </a>
+          </li>
+        </ul>
+      </div>
+      <!-- Content -->
+      <div class="col-md-9 col-lg-10 p-4">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </div>
+  <footer class="footer mt-auto py-3 bg-dark text-white-50">
+    <div class="container text-center">
+      <span>&copy; 2025 CITT DUOC UC</span>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

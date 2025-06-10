@@ -5,8 +5,8 @@ from administrador.models import Track
 class User(AbstractUser):
     ROLES = [
         ('alumno', 'Alumno'),
-        ('capitan','Capitan'),
         ('docente', 'Docente'),
+        ('administrador','Administrador'),
     ]
     rol = models.CharField(max_length=20, choices=ROLES)
     id_track = models.ForeignKey(

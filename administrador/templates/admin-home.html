@@ -1,0 +1,36 @@
+{% extends 'base-admin.html' %}
+{% block titulo %}Panel Administrador{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Panel de Administración</h2>
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Reportes</h5>
+          <p class="card-text">Genera reportes PDF/XLS de proyectos, reuniones y alumnos.</p>
+          <a href="{% url 'admin-reporte-pdf' %}" class="btn btn-primary w-100">Ir a Reportes</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Enviar Correos</h5>
+          <p class="card-text">Envía correos a todos los alumnos de un track.</p>
+          <a href="{% url 'admin-enviar-correos' %}" class="btn btn-primary w-100">Enviar Correos</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Crear Docente</h5>
+          <p class="card-text">Crea cuentas de usuario con rol docente.</p>
+          <a href="{% url 'admin-crear-docente' %}" class="btn btn-primary w-100">Crear Docente</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

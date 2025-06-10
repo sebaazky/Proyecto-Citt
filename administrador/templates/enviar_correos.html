@@ -1,0 +1,146 @@
+{% extends 'base-admin.html' %}
+{% block titulo %}Enviar Correos a Usuarios{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Enviar Correos</h2>
+  <form method="post" id="correoForm">
+    {% csrf_token %}
+    <div class="row g-2 align-items-end">
+      <div class="col-md-3">
+        <label for="destinatario" class="form-label">Enviar a:</label>
+        <select name="destinatario" id="destinatario" class="form-select" required>
+          <option value="alumnos">Alumnos</option>
+          <option value="docentes">Docentes</option>
+          <option value="todos">Todos</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label for="track" class="form-label">Track:</label>
+        <select name="track" id="track" class="form-select">
+          <option value="">Todos los tracks</option>
+          {% for t in tracks %}
+            <option value="{{ t.id_track }}">{{ t.nom_track }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="asunto" class="form-label">Asunto:</label>
+        <input type="text" name="asunto" id="asunto" class="form-control" value="{{ asunto|default:'' }}" required>
+      </div>
+    </div>
+    <div class="form-check mt-3">
+      <input class="form-check-input" type="checkbox" value="1" id="elegirDestinatarios">
+      <label class="form-check-label" for="elegirDestinatarios">
+        Elegir destinatarios manualmente
+      </label>
+    </div>
+    <div id="listadosCorreos" class="row mt-3" style="display:none;">
+      <div class="col-md-5">
+        <label class="form-label">Disponibles</label>
+        <ul class="list-group" id="correosDisponibles" style="min-height:200px;"></ul>
+      </div>
+      <div class="col-md-2 d-flex align-items-center justify-content-center">
+        <i class="bi bi-arrow-left-right fs-2"></i>
+      </div>
+      <div class="col-md-5">
+        <label class="form-label">Seleccionados</label>
+        <ul class="list-group" id="correosSeleccionados" style="min-height:200px;"></ul>
+      </div>
+    </div>
+    <div class="mb-3 mt-3">
+      <label for="mensaje" class="form-label">Mensaje:</label>
+      <textarea name="mensaje" id="mensaje" class="form-control" rows="5" required>{{ mensaje|default:'' }}</textarea>
+    </div>
+    <input type="hidden" name="selected_ids" id="selected_ids">
+    <button type="submit" class="btn btn-primary">Enviar</button>
+  </form>
+  {% if enviados %}
+    <div class="alert alert-success mt-3">Correo(s) enviado(s) a {{ enviados }} destinatario(s).</div>
+  {% endif %}
+</div>
+<script>
+const elegirCheckbox = document.getElementById('elegirDestinatarios');
+const listadosDiv = document.getElementById('listadosCorreos');
+const correosDisponibles = document.getElementById('correosDisponibles');
+const correosSeleccionados = document.getElementById('correosSeleccionados');
+const destinatarioSel = document.getElementById('destinatario');
+const trackSel = document.getElementById('track');
+const selectedIdsInput = document.getElementById('selected_ids');
+let correosData = [];
+let seleccionados = [];
+
+function cargarCorreos() {
+  correosDisponibles.innerHTML = '';
+  correosSeleccionados.innerHTML = '';
+  seleccionados = [];
+  if (!elegirCheckbox.checked) return;
+  fetch(`?ajax=1&destinatario=${destinatarioSel.value}&track=${trackSel.value}`)
+    .then(r => r.json())
+    .then(data => {
+      correosData = data.correos;
+      correosData.forEach(u => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item list-group-item-action';
+        li.textContent = `${u.username} <${u.email}>`;
+        li.dataset.id = u.id;
+        li.onclick = () => moverASeleccionados(u.id);
+        correosDisponibles.appendChild(li);
+      });
+    });
+}
+function moverASeleccionados(id) {
+  if (!seleccionados.includes(id)) {
+    seleccionados.push(id);
+    renderListas();
+  }
+}
+function moverADisponibles(id) {
+  seleccionados = seleccionados.filter(sid => sid != id);
+  renderListas();
+}
+function renderListas() {
+  correosDisponibles.innerHTML = '';
+  correosSeleccionados.innerHTML = '';
+  correosData.forEach(u => {
+    if (!seleccionados.includes(u.id)) {
+      const li = document.createElement('li');
+      li.className = 'list-group-item list-group-item-action';
+      li.textContent = `${u.username} <${u.email}>`;
+      li.dataset.id = u.id;
+      li.onclick = () => moverASeleccionados(u.id);
+      correosDisponibles.appendChild(li);
+    }
+  });
+  correosData.forEach(u => {
+    if (seleccionados.includes(u.id)) {
+      const li = document.createElement('li');
+      li.className = 'list-group-item list-group-item-action bg-primary text-white';
+      li.textContent = `${u.username} <${u.email}>`;
+      li.dataset.id = u.id;
+      li.onclick = () => moverADisponibles(u.id);
+      correosSeleccionados.appendChild(li);
+    }
+  });
+  selectedIdsInput.value = seleccionados.join(',');
+}
+elegirCheckbox.addEventListener('change', function() {
+  listadosDiv.style.display = this.checked ? '' : 'none';
+  if (this.checked) cargarCorreos();
+});
+destinatarioSel.addEventListener('change', function() {
+  if (elegirCheckbox.checked) cargarCorreos();
+});
+trackSel.addEventListener('change', function() {
+  if (elegirCheckbox.checked) cargarCorreos();
+});
+document.getElementById('correoForm').addEventListener('submit', function(e) {
+  if (elegirCheckbox.checked) {
+    selectedIdsInput.value = seleccionados.join(',');
+    if (seleccionados.length === 0) {
+      alert('Debe seleccionar al menos un destinatario.');
+      e.preventDefault();
+    }
+  }
+});
+</script>
+{% endblock %}

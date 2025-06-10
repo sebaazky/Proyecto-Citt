@@ -1,0 +1,93 @@
+{% extends 'base-admin.html' %}
+{% load static %}
+{% block titulo %}Reportes Avanzados{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex align-items-center mb-4">
+    <img src="{% static 'images/citt.jpeg' %}" alt="Logo CITT" style="height: 60px;" class="me-3" />
+    <div>
+      <h2 class="mb-0">Reporte CITT</h2>
+      <small class="text-muted">Generado el {{ now|date:'d/m/Y H:i' }}</small>
+    </div>
+  </div>
+  <hr class="mb-4" style="border-top: 2px solid #343a40;">
+  <form method="get" class="mb-3">
+    <div class="row g-2 align-items-end">
+      <div class="col-auto">
+        <label for="tipo" class="form-label">Tipo de reporte:</label>
+        <select name="tipo" id="tipo" class="form-select">
+          <option value="proyectos" {% if tipo == 'proyectos' %}selected{% endif %}>Proyectos</option>
+          <option value="reuniones" {% if tipo == 'reuniones' %}selected{% endif %}>Reuniones</option>
+          <option value="alumnos_track" {% if tipo == 'alumnos_track' %}selected{% endif %}>Alumnos</option>
+        </select>
+      </div>
+      <div class="col-auto">
+        <label for="track" class="form-label">Track:</label>
+        <select name="track" id="track" class="form-select">
+          <option value="">-- Todos --</option>
+          {% for t in tracks %}
+            <option value="{{ t.id_track }}" {% if selected_track|stringformat:'s' == t.id_track|stringformat:'s' %}selected{% endif %}>{{ t.nom_track }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-auto">
+        <label for="fecha_inicio" class="form-label">Desde:</label>
+        <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" value="{{ fecha_inicio }}">
+      </div>
+      <div class="col-auto">
+        <label for="fecha_fin" class="form-label">Hasta:</label>
+        <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" value="{{ fecha_fin }}">
+      </div>
+      <div class="col-auto">
+        <label for="formato" class="form-label">Formato:</label>
+        <select name="formato" id="formato" class="form-select">
+          <option value="pdf" {% if formato == 'pdf' %}selected{% endif %}>PDF</option>
+          <option value="xls" {% if formato == 'xls' %}selected{% endif %}>XLS</option>
+        </select>
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Ver Reporte</button>
+      </div>
+      {% if data %}
+      <div class="col-auto">
+        <button type="submit" name="download" value="1" class="btn btn-success">Descargar</button>
+      </div>
+      {% endif %}
+    </div>
+  </form>
+  {% if data %}
+    <div class="my-4"></div>
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle shadow-sm" style="background: #fff; border-radius: 12px; overflow: hidden;">
+        <thead style="background: #343a40; color: #fff;">
+          <tr>
+            {% for key in data.0.keys %}
+              <th style="padding: 10px 8px; font-size: 1rem;">{{ key|title|cut:"_" }}</th>
+            {% endfor %}
+            {% if tipo == 'alumnos_track' %}
+              <th style="padding: 10px 8px; font-size: 1rem;">Cantidad de Proyectos</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in data %}
+          <tr {% if forloop.counter0|divisibleby:2 %}style="background:#f8f9fa;"{% else %}style="background:#e9ecef;"{% endif %}>
+            {% for value in row.values %}
+              <td style="padding: 8px 6px;">{{ value }}</td>
+            {% endfor %}
+            {% if tipo == 'alumnos_track' %}
+              <td style="padding: 8px 6px;">{{ row.proyectos_count|default:0 }}</td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="text-end mt-4">
+      <small class="text-muted">Reporte generado por CITT DUOC UC</small>
+    </div>
+  {% elif selected_track or tipo %}
+    <div class="alert alert-warning mt-4">No hay datos para este filtro.</div>
+  {% endif %}
+</div>
+{% endblock %}

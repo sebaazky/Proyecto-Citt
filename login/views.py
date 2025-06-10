@@ -16,9 +16,10 @@ def login_view(request):
                 return redirect('home-alumno')
             elif user.rol == 'docente':
                 return redirect('home-docente')
+            elif user.rol == 'administrador':
+                return redirect('admin-home')
             else:
                 return redirect('home-alumno')
-
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
@@ -27,11 +28,8 @@ def login_view(request):
 def registrar_alumno(request):
     if request.method == 'POST':
         form = RegistroAlumnoForm(request.POST)
-        print(form.errors)
-        print(request.POST)
-        print(form.is_valid())
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
             user.rol = 'alumno'
             user.save()
             #Crear perfil alumno

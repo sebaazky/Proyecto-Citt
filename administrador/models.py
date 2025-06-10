@@ -91,3 +91,20 @@ class ReunionTrack(models.Model):
 
     def __str__(self):
         return f"Reunión de {self.track.nom_track} el {self.fecha} a las {self.hora}"
+
+
+class PerfilAdministrador(models.Model):
+    from login.models import User
+    from .models import Genero
+    administrador = models.OneToOneField(
+        'login.User', on_delete=models.CASCADE, related_name='perfil_administrador', db_column='username')
+    nombres = models.CharField(max_length=255, blank=True, null=True)
+    apellido_paterno = models.CharField(max_length=255, blank=True, null=True)
+    apellido_materno = models.CharField(max_length=255, blank=True, null=True)
+    genero = models.ForeignKey(
+        'Genero', on_delete=models.SET_NULL, blank=True, null=True)
+    imagen_perfil = models.ImageField(
+        upload_to='images/', blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.administrador.username}'

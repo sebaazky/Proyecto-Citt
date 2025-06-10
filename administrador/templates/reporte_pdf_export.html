@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #222; }
+        .header { display: flex; align-items: center; margin-bottom: 20px; }
+        .logo { height: 50px; margin-right: 20px; }
+        .title { font-size: 1.5em; font-weight: bold; }
+        .subtitle { color: #888; font-size: 0.95em; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #bbb; padding: 7px 5px; text-align: left; }
+        th { background: #343a40; color: #fff; font-size: 1em; }
+        tr:nth-child(even) { background: #f8f9fa; }
+        tr:nth-child(odd) { background: #e9ecef; }
+        .footer { margin-top: 30px; text-align: right; color: #888; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="{{ STATIC_ROOT }}/images/citt.jpeg" class="logo" alt="Logo CITT" />
+        <div>
+            <div class="title">Reporte CITT</div>
+            <div class="subtitle">Generado el {{ now|date:'d/m/Y H:i' }}</div>
+        </div>
+    </div>
+    <hr>
+    <table>
+        <thead>
+            <tr>
+                {% for key in data.0.keys %}
+                    <th>{{ key|title|cut:"_" }}</th>
+                {% endfor %}
+                {% if tipo == 'alumnos_track' %}
+                    <th>Cantidad de Proyectos</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                {% for value in row.values %}
+                    <td>{{ value }}</td>
+                {% endfor %}
+                {% if tipo == 'alumnos_track' %}
+                    <td>{{ row.proyectos_count|default:0 }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="footer">
+        Reporte generado por CITT DUOC UC
+    </div>
+</body>
+</html>
