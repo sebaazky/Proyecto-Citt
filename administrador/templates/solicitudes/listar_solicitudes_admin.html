@@ -1,0 +1,88 @@
+{% extends 'base-admin.html' %}
+{% load static %}
+
+{% block title %}Gestión de Solicitudes{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">📨 Gestión de Solicitudes</h2>
+  </div>
+
+  {% if solicitudes %}
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered align-middle text-center">
+        <thead class="table-dark">
+          <tr>
+            <th>Alumno</th>
+            <th>Título</th>
+            <th>Categoría</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for solicitud in solicitudes %}
+          <tr>
+            <td>{{ solicitud.alumno.username }}</td>
+            <td class="text-start">{{ solicitud.titulo }}</td>
+            <td>{{ solicitud.get_categoria_display }}</td>
+            <td>
+              <span class="badge {% if solicitud.estado == 'pendiente' %}bg-warning
+                                 {% elif solicitud.estado == 'en_proceso' %}bg-primary
+                                 {% elif solicitud.estado == 'resuelta' %}bg-success
+                                 {% elif solicitud.estado == 'rechazada' %}bg-danger
+                                 {% endif %}">
+                {{ solicitud.get_estado_display }}
+              </span>
+            </td>
+            <td>{{ solicitud.fecha_creacion|date:"d-m-Y H:i" }}</td>
+            <td>
+              <div class="btn-group" role="group">
+                <a href="#" class="btn btn-sm btn-outline-primary" title="Ver Detalles"
+                   data-bs-toggle="modal" data-bs-target="#detalleSolicitud{{ solicitud.id }}">
+                  <i class="bi bi-eye"></i>
+                </a>
+                <a href="{% url 'admin-modificar-solicitud' solicitud.id %}" class="btn btn-sm btn-outline-warning" title="Modificar">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <a href="{% url 'admin-eliminar-solicitud' solicitud.id %}" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Modal Detalle -->
+          <div class="modal fade" id="detalleSolicitud{{ solicitud.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">🔍 Detalle de la Solicitud</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-start">
+                  <p><strong>Alumno:</strong> {{ solicitud.alumno.username }}</p>
+                  <p><strong>Título:</strong> {{ solicitud.titulo }}</p>
+                  <p><strong>Categoría:</strong> {{ solicitud.get_categoria_display }}</p>
+                  <p><strong>Estado:</strong> {{ solicitud.get_estado_display }}</p>
+                  <p><strong>Fecha de creación:</strong> {{ solicitud.fecha_creacion|date:"d-m-Y H:i" }}</p>
+                  <p><strong>Descripción:</strong><br>{{ solicitud.descripcion }}</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center">Aún no se han recibido solicitudes.</div>
+  {% endif %}
+</div>
+{% endblock %}

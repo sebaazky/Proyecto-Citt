@@ -1,0 +1,14 @@
+{% extends 'base-admin.html' %}
+{% block title %}Eliminar Track{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="alert alert-warning text-center p-4 shadow">
+    <h4>¿Estás seguro de eliminar el track "{{ track.nom_track }}"?</h4>
+    <form method="post" class="mt-4">
+      {% csrf_token %}
+      <a href="{% url 'admin-listar-tracks' %}" class="btn btn-secondary rounded-pill">Cancelar</a>
+      <button type="submit" class="btn btn-danger rounded-pill">Eliminar</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

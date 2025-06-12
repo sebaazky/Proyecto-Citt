@@ -1,0 +1,102 @@
+{% extends 'base-admin.html' %}
+{% load static %}
+
+{% block title %}Gestión de Docentes{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">👨‍🏫 Gestión de Docentes</h2>
+    <a href="{% url 'admin-crear-docente' %}" class="btn btn-dark rounded-pill px-4 py-2">
+      <i class="bi bi-plus-circle me-2"></i> Crear Docente
+    </a>
+  </div>
+
+  {% if docentes %}
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered align-middle text-center">
+        <thead class="table-dark">
+          <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Género</th>
+            <th>Imagen</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for docente in docentes %}
+          <tr>
+            <td>{{ docente.nombres }}</td>
+            <td>{{ docente.apellido_paterno }} {{ docente.apellido_materno }}</td>
+            <td>{{ docente.docente.email }}</td>
+            <td>{{ docente.telefono }}</td>
+            <td>{{ docente.genero }}</td>
+            <td>
+              {% if docente.imagen_perfil %}
+                <img src="{{ docente.imagen_perfil.url }}" class="img-thumbnail" style="max-width: 80px; max-height: 80px;">
+              {% else %}
+                <span class="text-muted">Sin imagen</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="btn-group" role="group">
+                <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#modalDocente{{ docente.pk }}" title="Ver Detalles">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <a href="{% url 'admin-modificar-docente' docente.pk %}" class="btn btn-sm btn-outline-warning" title="Modificar">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <a href="{% url 'admin-eliminar-docente' docente.pk %}" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Modal Detalle Docente -->
+          <div class="modal fade" id="modalDocente{{ docente.pk }}" tabindex="-1" aria-labelledby="modalLabel{{ docente.pk }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+              <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                  <h5 class="modal-title" id="modalLabel{{ docente.pk }}">👨‍🏫 Detalle del Docente</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-md-4 text-center">
+                      {% if docente.imagen_perfil %}
+                        <img src="{{ docente.imagen_perfil.url }}" class="img-fluid rounded" style="max-height: 250px;">
+                      {% else %}
+                        <p class="text-muted">Sin imagen</p>
+                      {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                      <p><strong>Usuario:</strong> {{ docente.docente.username }}</p>
+                      <p><strong>Nombre Completo:</strong> {{ docente.nombres }} {{ docente.apellido_paterno }} {{ docente.apellido_materno }}</p>
+                      <p><strong>Email:</strong> {{ docente.docente.email }}</p>
+                      <p><strong>Teléfono:</strong> {{ docente.telefono }}</p>
+                      <p><strong>Género:</strong> {{ docente.genero }}</p>
+                      <p><strong>Dirección:</strong> {{ docente.direccion }}</p>
+                      <p><strong>Carrera:</strong> {{ docente.carrera }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Fin Modal -->
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center">No hay docentes registrados.</div>
+  {% endif %}
+</div>
+{% endblock %}
