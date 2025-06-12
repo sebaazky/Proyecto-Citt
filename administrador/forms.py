@@ -21,6 +21,8 @@ class PerfilAdministradorForm(forms.ModelForm):
             'apellido_materno': forms.TextInput(attrs={'class': 'form-control'}),
             'genero': forms.Select(attrs={'class': 'form-select'}),
             'imagen_perfil': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+
+
         }
 
 
@@ -101,18 +103,23 @@ class ModificarPerfilAlumnoForm(forms.ModelForm):
 User = get_user_model()
 
 
-class CrearUsuarioForm(forms.ModelForm):
+class CrearUsuarioForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username', 'email', 'rol', 'id_track', 'password']
+        fields = ['username', 'email', 'rol',
+                  'id_track', 'password1', 'password2']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Desactiva o elimina el campo id_track si el rol es administrador
-        if self.data.get('rol') == 'administrador':
-            self.fields['id_track'].widget = forms.HiddenInput()
-            self.fields['id_track'].required = False
+        # Aplicar clases Bootstrap
+        for field_name in self.fields:
+            if field_name in ['rol', 'id_track']:
+                self.fields[field_name].widget.attrs.update(
+                    {'class': 'form-select'})
+            else:
+                self.fields[field_name].widget.attrs.update(
+                    {'class': 'form-control'})
 
 
 class ModificarUsuarioForm(forms.ModelForm):

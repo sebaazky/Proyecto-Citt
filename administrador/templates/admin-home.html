@@ -1,33 +1,44 @@
 {% extends 'base-admin.html' %}
+{% load static %}
 {% block titulo %}Panel Administrador{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-  <h2>Panel de Administración</h2>
-  <div class="row mt-4">
+<div class="container mt-5">
+  <div class="text-center mb-4">
+    <h2 class="fw-bold text-primary">¡Bienvenido al Panel de Administración!</h2>
+    <p class="lead text-muted">Administra eficientemente usuarios, proyectos y comunicación institucional desde un solo lugar.</p>
+  </div>
+
+  <div class="row g-4">
     <div class="col-md-4">
-      <div class="card mb-3">
-        <div class="card-body">
+      <div class="card shadow-lg h-100 border-0">
+        <div class="card-body text-center">
+          <i class="bi bi-bar-chart-fill fs-1 text-info mb-3"></i>
           <h5 class="card-title">Reportes</h5>
-          <p class="card-text">Genera reportes PDF/XLS de proyectos, reuniones y alumnos.</p>
-          <a href="{% url 'admin-reporte-pdf' %}" class="btn btn-primary w-100">Ir a Reportes</a>
+          <p class="card-text">Genera reportes en PDF o Excel de proyectos, reuniones y alumnos.</p>
+          <a href="{% url 'admin-reporte-pdf' %}" class="btn btn-outline-info w-100">Ir a Reportes</a>
         </div>
       </div>
     </div>
+
     <div class="col-md-4">
-      <div class="card mb-3">
-        <div class="card-body">
+      <div class="card shadow-lg h-100 border-0">
+        <div class="card-body text-center">
+          <i class="bi bi-envelope-paper-fill fs-1 text-success mb-3"></i>
           <h5 class="card-title">Enviar Correos</h5>
-          <p class="card-text">Envía correos a todos los alumnos de un track.</p>
-          <a href="{% url 'admin-enviar-correos' %}" class="btn btn-primary w-100">Enviar Correos</a>
+          <p class="card-text">Envía comunicaciones personalizadas a alumnos por track.</p>
+          <a href="{% url 'admin-enviar-correos' %}" class="btn btn-outline-success w-100">Enviar Correos</a>
         </div>
       </div>
     </div>
+
     <div class="col-md-4">
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Crear Docente</h5>
-          <p class="card-text">Crea cuentas de usuario con rol docente.</p>
-          <a href="{% url 'admin-crear-docente' %}" class="btn btn-primary w-100">Crear Docente</a>
+      <div class="card shadow-lg h-100 border-0">
+        <div class="card-body text-center">
+          <i class="bi bi-person-plus-fill fs-1 text-warning mb-3"></i>
+          <h5 class="card-title">Crear Usuarios</h5>
+          <p class="card-text">Registra nuevos Usuarios.</p>
+          <a href="{% url 'admin-gestion-usuarios' %}" class="btn btn-outline-warning w-100">Crear Docente</a>
         </div>
       </div>
     </div>

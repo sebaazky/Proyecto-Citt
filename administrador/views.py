@@ -181,19 +181,28 @@ def admin_enviar_correos(request):
     return render(request, 'correos/enviar_correos.html', {'tracks': tracks})
 
 
-@admin_required
-def admin_perfil(request):
-    perfil, created = PerfilAdministrador.objects.get_or_create(
-        administrador=request.user)
+@login_required
+def ver_perfil_administrador(request):
+    perfil = get_object_or_404(PerfilAdministrador, administrador=request.user)
+
+    return render(request, 'perfil/ver_perfil_administrador.html', {'perfil': perfil})
+
+
+@login_required
+def modificar_perfil_admin(request):
+    perfil = get_object_or_404(PerfilAdministrador, administrador=request.user)
+
     if request.method == 'POST':
         form = PerfilAdministradorForm(
             request.POST, request.FILES, instance=perfil)
         if form.is_valid():
             form.save()
-            return render(request, 'perfil_admin.html', {'form': form, 'perfil': perfil, 'guardado': True})
+            # Cambia esto según tu nombre de URL para ver el perfil
+            return redirect('ver-perfil-admin')
     else:
         form = PerfilAdministradorForm(instance=perfil)
-    return render(request, 'perfil/perfil_admin.html', {'form': form, 'perfil': perfil})
+
+    return render(request, 'perfil/modificar_perfil_admin.html', {'form': form})
 
 
 def listar_proyectos(request):

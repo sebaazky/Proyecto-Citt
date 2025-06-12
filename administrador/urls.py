@@ -6,7 +6,10 @@ urlpatterns = [
     path('reporte-pdf/', views.admin_reporte_pdf, name='admin-reporte-pdf'),
     path('enviar-correos/', views.admin_enviar_correos,
          name='admin-enviar-correos'),
-    path('perfil/', views.admin_perfil, name='admin-perfil'),
+
+    path('admin/perfil/', views.ver_perfil_administrador, name='ver-perfil-admin'),
+    path('admin/perfil/modificar/', views.modificar_perfil_admin,
+         name='modificar-perfil-admin'),
 
     path('gestion-proyectos/', views.listar_proyectos,
          name='admin-gestion-proyectos'),

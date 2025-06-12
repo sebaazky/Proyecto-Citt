@@ -29,7 +29,7 @@
               {{ user.username }}
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="{% url 'admin-perfil' %}">Mi perfil</a></li>
+              <li><a class="dropdown-item" href="{% url 'ver-perfil-admin' %}">Mi perfil</a></li>
               <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
             </ul>
           </li>
@@ -53,20 +53,13 @@
         <ul class="nav nav-pills flex-column">
           <ul class="nav nav-pills flex-column">
             <li class="nav-item mb-2">
-            </li>
-            <li class="nav-item mb-2">
-              <a href="{% url 'admin-perfil' %}" class="nav-link bg-secondary text-white rounded-3 text-center">
+              <a href="{% url 'ver-perfil-admin' %}" class="nav-link bg-secondary text-white rounded-3 text-center">
                 <i class="bi bi-person-circle me-2"></i> Mi Perfil
               </a>
             </li>
             <li class="nav-item mb-2">
-              <a href="{% url 'admin-reporte-pdf' %}" class="nav-link bg-dark text-white rounded-3 text-center">
-                <i class="bi bi-file-earmark-bar-graph me-2"></i> Gestión de Reportes
-              </a>
-            </li>
-            <li class="nav-item mb-2">
-              <a href="{% url 'admin-enviar-correos' %}" class="nav-link bg-dark text-white rounded-3 text-center">
-                <i class="bi bi-envelope-fill me-2"></i> Gestión de Correos
+              <a href="{% url 'admin-gestion-usuarios' %}" class="nav-link bg-dark text-white rounded-3 text-center">
+                <i class="bi bi-people-fill me-2"></i> Gestión de Usuarios
               </a>
             </li>
             <li class="nav-item mb-2">
@@ -75,8 +68,8 @@
               </a>
             </li>
             <li class="nav-item mb-2">
-              <a href="{% url 'admin-gestion-usuarios' %}" class="nav-link bg-dark text-white rounded-3 text-center">
-                <i class="bi bi-people-fill me-2"></i> Gestión de Usuarios
+              <a href="{% url 'admin-gestion-alumnos' %}" class="nav-link bg-dark text-white rounded-3 text-center">
+                <i class="bi bi-person-lines-fill me-2"></i> Gestión de Alumnos
               </a>
             </li>
             <li class="nav-item mb-2">
@@ -100,8 +93,13 @@
               </a>
             </li>
             <li class="nav-item mb-2">
-              <a href="{% url 'admin-gestion-alumnos' %}" class="nav-link bg-dark text-white rounded-3 text-center">
-                <i class="bi bi-person-lines-fill me-2"></i> Gestión de Alumnos
+              <a href="{% url 'admin-reporte-pdf' %}" class="nav-link bg-dark text-white rounded-3 text-center">
+                <i class="bi bi-file-earmark-bar-graph me-2"></i> Gestión de Reportes
+              </a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="{% url 'admin-enviar-correos' %}" class="nav-link bg-dark text-white rounded-3 text-center">
+                <i class="bi bi-envelope-fill me-2"></i> Gestión de Correos
               </a>
             </li>
             <li class="nav-item mb-2">
@@ -110,6 +108,7 @@
               </a>
             </li>
           </ul>
+
 
         </ul>
       </div>

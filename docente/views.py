@@ -44,19 +44,40 @@ def editar_perfil_docente(request):
     return render(request, 'perfil/editar_perfil_docente.html', {'form': form})
 
 
+# @login_required
+# @rol_requerido('docente')
+# def solicitudes_pendientes_view(request):
+#     if request.user.rol != 'docente':
+#         return render(request, 'error.html', {'mensaje': 'No autorizado'})
+
+#     track = Track.objects.filter(id_usuario=request.user).first()
+
+#     if not track:
+#         return render(request, 'error.html', {'mensaje': 'No tienes un track asignado'})
+
+#     solicitudes = TrackRequest.objects.filter(track=track, estado='pendiente')
+
+#     return render(request, 'solicitudes/solicitudes-alumnos.html', {
+#         'track': track,
+#         'solicitudes': solicitudes
+#     })
+
 @login_required
 @rol_requerido('docente')
 def solicitudes_pendientes_view(request):
     if request.user.rol != 'docente':
-        return render(request, 'error.html', {'mensaje': 'No autorizado'})
+        messages.error(
+            request, 'No tienes permisos para acceder a esta sección.')
+        return redirect('home-docente')
 
     track = Track.objects.filter(id_usuario=request.user).first()
 
     if not track:
-        return render(request, 'error.html', {'mensaje': 'No tienes un track asignado'})
+        messages.warning(
+            request, 'No tienes un track asignado. Contacta con el administrador.')
+        return redirect('home-docente')  # o a otra vista que tenga sentido
 
     solicitudes = TrackRequest.objects.filter(track=track, estado='pendiente')
-
     return render(request, 'solicitudes/solicitudes-alumnos.html', {
         'track': track,
         'solicitudes': solicitudes
