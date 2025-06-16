@@ -3,14 +3,13 @@ from django.contrib.auth.decorators import login_required
 from login.decorators import rol_requerido
 from administrador.models import Track, TrackRequest, ReunionTrack
 from django.shortcuts import get_object_or_404
-from .models import PerfilDocente, Evento, DocentePost
-from .forms import EventoForm, PerfilDocenteForm
+from .models import PerfilDocente, Evento, TrackPost, PostProyectoDocente, ReunionProyectoDocente
+from .forms import EventoForm, PerfilDocenteForm, ReunionProyectoDocenteForm, DocentePostForm
 from django.http import HttpResponseForbidden
-from django import forms
-from alumno.models import Perfil_alumno
+from .forms import ProyectoDocenteForm, ReunionTrackForm
 from django.contrib import messages
-from alumno.models import Proyecto
-from .forms import ProyectoDocenteForm
+from alumno.models import Proyecto, ProyectoPost, ReunionProyecto, ProyectoRequest, Perfil_alumno
+from alumno.forms import ProyectoPostForm, ReunionProyectoForm
 
 
 # Create your views here.
@@ -73,7 +72,10 @@ def aprobar_solicitud(request, solicitud_id):
 
     usuario_alumno = solicitud.alumno
     usuario_alumno.id_track = solicitud.track
-    usuario_alumno.save()
+    usuario_alumno.save(update_fields=["id_track"])
+
+    # Rechazar otras solicitudes pendientes del alumno
+    TrackRequest.objects.filter(alumno=usuario_alumno).exclude(id_solicitud=solicitud_id).update(estado='rechazada')
 
     return redirect('solicitudes_pendientes')
 
@@ -134,38 +136,37 @@ def eliminar_evento(request, pk):
     return render(request, 'evento/eliminar_evento.html', {'evento': evento})
 
 
-class DocentePostForm(forms.ModelForm):
-    class Meta:
-        model = DocentePost
-        fields = ['contenido', 'imagen']
-        widgets = {
-            'contenido': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Cuerpo o descripción'}),
-        }
-
-
-class ReunionTrackForm(forms.ModelForm):
-    class Meta:
-        model = ReunionTrack
-        fields = ['fecha', 'hora', 'modalidad',
-                  'link_virtual', 'ubicacion', 'descripcion']
-        widgets = {
-            'fecha': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'hora': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
-            'modalidad': forms.Select(attrs={'class': 'form-select'}),
-            'link_virtual': forms.URLInput(attrs={'class': 'form-control'}),
-            'ubicacion': forms.TextInput(attrs={'class': 'form-control'}),
-            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
-        }
-
-
 @login_required
 @rol_requerido('docente')
 def mi_track_view(request):
     track = Track.objects.filter(id_usuario=request.user).first()
-    posts = DocentePost.objects.filter(track=track).order_by(
-        '-fecha_creacion') if track else []
-    post_form = DocentePostForm()
-    return render(request, 'track/mi_track.html', {'track': track, 'posts': posts, 'post_form': post_form})
+    if request.method == 'POST' and track:
+        form = DocentePostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.docente = request.user
+            post.track = track
+            post.save()
+            return redirect('mi-track')
+    else:
+        form = DocentePostForm()
+    posts = TrackPost.objects.filter(track=track).order_by('-fecha_creacion') if track else []
+    proyectos = Proyecto.objects.filter(id_track=track) if track else []
+    proyectos_info = [{'proyecto': p} for p in proyectos]
+    reuniones = ReunionTrack.objects.filter(track=track).order_by('-fecha') if track else []
+    eventos = Evento.objects.filter(docente=request.user) if track else []
+    from login.models import User
+    integrantes = User.objects.filter(id_track=track, rol='alumno') if track else []
+    context = {
+        'track': track,
+        'posts': posts,
+        'post_form': form,
+        'proyectos_info': proyectos_info,
+        'reuniones': reuniones,
+        'eventos': eventos,
+        'alumnos': integrantes,
+    }
+    return render(request, 'track/mi_track.html', context)
 
 
 @login_required
@@ -185,7 +186,7 @@ def crear_post_docente(request):
 @login_required
 @rol_requerido('docente')
 def eliminar_post_docente(request, post_id):
-    post = DocentePost.objects.get(id=post_id)
+    post = TrackPost.objects.get(id=post_id)
     if post.docente != request.user:
         return HttpResponseForbidden()
     post.delete()
@@ -195,7 +196,7 @@ def eliminar_post_docente(request, post_id):
 @login_required
 @rol_requerido('docente')
 def modificar_post_docente(request, post_id):
-    post = DocentePost.objects.get(id=post_id)
+    post = TrackPost.objects.get(id=post_id)
     if post.docente != request.user:
         return HttpResponseForbidden()
     if request.method == 'POST':
@@ -206,7 +207,7 @@ def modificar_post_docente(request, post_id):
     else:
         form = DocentePostForm(instance=post)
     track = post.track
-    posts = DocentePost.objects.filter(track=track).order_by('-fecha_creacion')
+    posts = TrackPost.objects.filter(track=track).order_by('-fecha_creacion')
     return render(request, 'track/mi_track.html', {'track': track, 'posts': posts, 'post_form': form, 'edit_post_id': post.id})
 
 
@@ -259,31 +260,6 @@ def listado_eventos_track(request):
         'eventos_list': eventos,
         'central_content': 'eventos',
     })
-
-
-""" @login_required
-@rol_requerido('docente')
-def crear_reunion_track(request):
-    track = Track.objects.filter(id_usuario=request.user).first()
-    if request.method == 'POST' and track:
-        form = ReunionTrackForm(request.POST)
-        if form.is_valid():
-            reunion = form.save(commit=False)
-            reunion.id_docente = request.user
-            reunion.track = track
-            reunion.save()
-            return redirect('mi-track')
-    else:
-        form = ReunionTrackForm()
-    return render(request, 'track/crear_reunion.html', {'form': form, 'track': track})
-
-
-@login_required
-@rol_requerido('docente')
-def detalle_reunion_track(request, reunion_id):
-    reunion = ReunionTrack.objects.get(pk=reunion_id)
-    track = reunion.track
-    return render(request, 'track/detalle_reunion.html', {'reunion': reunion, 'track': track}) """
 
 
 @login_required
@@ -355,17 +331,27 @@ def detalle_reunion_modal(request, pk):
 @login_required
 @rol_requerido('docente')
 def listar_proyectos_docente(request):
-    proyectos = Proyecto.objects.all()  # O filtrar por track si corresponde
+    track = Track.objects.filter(id_usuario=request.user).first()
+    proyectos = Proyecto.objects.filter(id_track=track) if track else Proyecto.objects.none()
     return render(request, 'proyectos/listar_proyectos_docente.html', {'proyectos': proyectos})
 
 
 @login_required
 @rol_requerido('docente')
 def crear_proyecto_docente(request):
+    # Obtener el track del docente
+    track = Track.objects.filter(id_usuario=request.user).first()
+    if not track:
+        messages.error(request, "No tienes un track asignado. Contacta al administrador.")
+        return redirect('listar-proyectos-docente')
+
     if request.method == 'POST':
         form = ProyectoDocenteForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            proyecto = form.save(commit=False)
+            proyecto.id_track = track
+            proyecto.jefe_proyecto = request.user
+            proyecto.save()
             return redirect('listar-proyectos-docente')
     else:
         form = ProyectoDocenteForm()
@@ -395,3 +381,176 @@ def eliminar_proyecto_docente(request, pk):
         proyecto.delete()
         return redirect('listar-proyectos-docente')
     return render(request, 'proyectos/eliminar_proyecto_docente.html', {'proyecto': proyecto})
+
+
+@login_required
+@rol_requerido('docente')
+def home_proyecto_docente(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, id_proyecto=proyecto_id)
+    es_jefe = request.user == proyecto.jefe_proyecto
+    integrantes = proyecto.integrantes.all() if hasattr(proyecto, 'integrantes') else []
+
+    # Crear post
+    post_form = ProyectoPostForm()
+    if request.method == 'POST' and 'crear_post' in request.POST:
+        post_form = ProyectoPostForm(request.POST, request.FILES)
+        if post_form.is_valid():
+            post = post_form.save(commit=False)
+            post.proyecto = proyecto
+            post.autor = request.user
+            post.save()
+            return redirect('home-proyecto-docente', proyecto_id=proyecto.id_proyecto)
+
+    # Crear reunión
+    reunion_form = ReunionProyectoForm()
+    if request.method == 'POST' and 'crear_reunion' in request.POST:
+        reunion_form = ReunionProyectoForm(request.POST)
+        if reunion_form.is_valid():
+            reunion = reunion_form.save(commit=False)
+            reunion.proyecto = proyecto
+            reunion.save()
+            return redirect('home-proyecto-docente', proyecto_id=proyecto.id_proyecto)
+
+    posts = ProyectoPost.objects.filter(proyecto=proyecto).order_by('-fecha_creacion')
+    reuniones = ReunionProyecto.objects.filter(proyecto=proyecto).order_by('-fecha')
+    solicitudes = ProyectoRequest.objects.filter(proyecto=proyecto, estado='pendiente').order_by('-fecha_solicitud') if es_jefe and request.GET.get('seccion') == 'solicitudes' else []
+    page_number = request.GET.get('page')
+    from django.core.paginator import Paginator
+    reuniones_paginadas = Paginator(reuniones, 5).get_page(page_number)
+
+    # Obtener perfil del jefe de proyecto
+    perfil_docente_jefe = None
+    if hasattr(proyecto.jefe_proyecto, 'perfil_docente'):
+        perfil_docente_jefe = proyecto.jefe_proyecto.perfil_docente
+
+    # Perfiles docentes de los autores de los posts
+    perfiles_docentes_posts = {}
+    for post in posts:
+        if hasattr(post.autor, 'perfil_docente'):
+            perfiles_docentes_posts[post.id_post] = post.autor.perfil_docente
+        else:
+            perfiles_docentes_posts[post.id_post] = None
+
+    # Cantidad máxima de integrantes
+    cantidad_max_integrantes = proyecto.num_integrantes
+
+    # Perfiles de los integrantes (incluyendo jefe)
+    integrantes_con_perfil_docente = []
+    if perfil_docente_jefe:
+        integrantes_con_perfil_docente.append({'user': proyecto.jefe_proyecto, 'perfil': perfil_docente_jefe, 'es_jefe': True})
+    for integrante in integrantes:
+        if hasattr(integrante.alumno, 'perfil_docente'):
+            integrantes_con_perfil_docente.append({'user': integrante.alumno, 'perfil': integrante.alumno.perfil_docente, 'es_jefe': False})
+
+    context = {
+        'proyecto': proyecto,
+        'posts': posts,
+        'reuniones': reuniones,
+        'reuniones_paginadas': reuniones_paginadas,
+        'es_jefe': es_jefe,
+        'reunion_form': reunion_form,
+        'post_form': post_form,
+        'integrantes': integrantes,
+        'solicitudes': solicitudes,
+        'perfil_docente_jefe': perfil_docente_jefe,
+        'perfiles_docentes_posts': perfiles_docentes_posts,
+        'cantidad_max_integrantes': cantidad_max_integrantes,
+        'integrantes_con_perfil_docente': integrantes_con_perfil_docente,
+    }
+    return render(request, 'proyectos/home_proyecto_docente.html', context)
+
+
+@login_required
+@rol_requerido('docente')
+def crear_post_proyecto_docente(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, id_proyecto=proyecto_id)
+    if request.user != proyecto.jefe_proyecto:
+        return HttpResponseForbidden('No tienes permiso para publicar en este proyecto.')
+    if request.method == 'POST':
+        form = ProyectoPostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.proyecto = proyecto
+            post.autor = request.user
+            post.save()
+            messages.success(request, 'Post creado correctamente.')
+            return redirect('home-proyecto-docente', proyecto_id=proyecto_id)
+    return redirect('home-proyecto-docente', proyecto_id=proyecto_id)
+
+
+@login_required
+@rol_requerido('docente')
+def modificar_post_proyecto_docente(request, proyecto_id, post_id):
+    post = get_object_or_404(ProyectoPost, id_post=post_id, proyecto_id=proyecto_id)
+    if post.autor != request.user:
+        return HttpResponseForbidden('No tienes permiso para modificar este post.')
+    if request.method == 'POST':
+        form = ProyectoPostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Post modificado correctamente.')
+            return redirect('home-proyecto-docente', proyecto_id=proyecto_id)
+    else:
+        form = ProyectoPostForm(instance=post)
+    return render(request, 'proyectos/modificar_post_proyecto_docente.html', {'form': form, 'post': post, 'proyecto': post.proyecto})
+
+
+@login_required
+@rol_requerido('docente')
+def eliminar_post_proyecto_docente(request, proyecto_id, post_id):
+    post = get_object_or_404(ProyectoPost, id_post=post_id, proyecto_id=proyecto_id)
+    if post.autor != request.user:
+        return HttpResponseForbidden('No tienes permiso para eliminar este post.')
+    if request.method == 'POST':
+        post.delete()
+        messages.success(request, 'Post eliminado correctamente.')
+        return redirect('home-proyecto-docente', proyecto_id=proyecto_id)
+    return render(request, 'proyectos/eliminar_post_proyecto_docente.html', {'post': post, 'proyecto': post.proyecto})
+
+
+# Reuniones en proyectos
+
+@login_required
+@rol_requerido('docente')
+def crear_reunion_proyecto_docente(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, id_proyecto=proyecto_id)
+    if request.user != proyecto.jefe_proyecto:
+        return HttpResponseForbidden('Solo el jefe de proyecto puede crear reuniones.')
+    if request.method == 'POST':
+        form = ReunionProyectoForm(request.POST)
+        if form.is_valid():
+            reunion = form.save(commit=False)
+            reunion.proyecto = proyecto
+            reunion.save()
+            messages.success(request, 'Reunión creada correctamente.')
+    return redirect('home-proyecto-docente', proyecto_id=proyecto_id)
+
+
+@login_required
+@rol_requerido('docente')
+def modificar_reunion_proyecto_docente(request, proyecto_id, reunion_id):
+    reunion = get_object_or_404(ReunionProyecto, id_reunion=reunion_id, proyecto_id=proyecto_id)
+    if request.user != reunion.proyecto.jefe_proyecto:
+        return HttpResponseForbidden('No tienes permiso para modificar esta reunión.')
+    if request.method == 'POST':
+        form = ReunionProyectoForm(request.POST, instance=reunion)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Reunión modificada correctamente.')
+            return redirect('home-proyecto-docente', proyecto_id=proyecto_id)
+    else:
+        form = ReunionProyectoForm(instance=reunion)
+    return render(request, 'proyectos/modificar_reunion_proyecto_docente.html', {'form': form, 'reunion': reunion, 'proyecto': reunion.proyecto})
+
+
+@login_required
+@rol_requerido('docente')
+def eliminar_reunion_proyecto_docente(request, proyecto_id, reunion_id):
+    reunion = get_object_or_404(ReunionProyecto, id_reunion=reunion_id, proyecto_id=proyecto_id)
+    if request.user != reunion.proyecto.jefe_proyecto:
+        return HttpResponseForbidden('No tienes permiso para eliminar esta reunión.')
+    if request.method == 'POST':
+        reunion.delete()
+        messages.success(request, 'Reunión eliminada correctamente.')
+        return redirect('home-proyecto-docente', proyecto_id=proyecto_id)
+    return render(request, 'proyectos/eliminar_reunion_proyecto_docente.html', {'reunion': reunion, 'proyecto': reunion.proyecto})

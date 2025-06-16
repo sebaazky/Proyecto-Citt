@@ -1,0 +1,36 @@
+{% extends 'base-alumnos.html' %}
+{% block titulo %}Solicitudes al Proyecto{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow border-0" style="background-color: #fff3cd;">
+    <div class="card-body">
+      <h2 class="mb-4 text-warning">Solicitudes al Proyecto</h2>
+      <p class="lead">Aquí puedes aceptar o rechazar solicitudes de alumnos para tu proyecto.</p>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Alumno</th>
+            <th>Fecha Solicitud</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for solicitud in solicitudes %}
+          <tr>
+            <td>{{ solicitud.alumno.perfil_alumno.nombres }} {{ solicitud.alumno.perfil_alumno.apellido_paterno }} ({{ solicitud.alumno.username }})</td>
+            <td>{{ solicitud.fecha_solicitud|date:'d/m/Y H:i' }}</td>
+            <td>
+              <a href="{% url 'aceptar-solicitud-proyecto' proyecto.id_proyecto solicitud.id_solicitud %}" class="btn btn-success btn-sm">Aceptar</a>
+              <a href="{% url 'rechazar-solicitud-proyecto' proyecto.id_proyecto solicitud.id_solicitud %}" class="btn btn-danger btn-sm">Rechazar</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" class="text-muted">No hay solicitudes pendientes.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <a href="{% url 'home-proyecto' proyecto.id_proyecto %}" class="btn btn-outline-secondary mt-3">Volver al proyecto</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

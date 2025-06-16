@@ -1,0 +1,14 @@
+{% extends 'base-docentes.html' %}
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow p-4 border-danger">
+    <h3 class="text-center text-danger fw-bold">⚠️ Eliminar Reunión</h3>
+    <p class="mt-3 text-center">¿Estás seguro que deseas eliminar la reunión <strong>"{{ reunion.titulo }}"</strong>? Esta acción no se puede deshacer.</p>
+    <form method="post" class="text-center mt-4">
+      {% csrf_token %}
+      <a href="{% url 'home-proyecto-docente' proyecto.id_proyecto %}?seccion=reuniones" class="btn btn-secondary me-2">Cancelar</a>
+      <button type="submit" class="btn btn-danger">Eliminar</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

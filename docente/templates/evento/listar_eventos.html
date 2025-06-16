@@ -17,6 +17,7 @@
       <table class="table table-hover table-bordered align-middle text-center">
         <thead class="table-dark">
           <tr>
+            <th>Infografia</th>
             <th>Nombre</th>
             <th>Tipo</th>
             <th>Ubicación</th>
@@ -28,6 +29,13 @@
         <tbody>
           {% for evento in eventos %}
           <tr>
+            <td>
+                {% if evento.infografia %}
+                  <img src="{{ evento.infografia.url }}" alt="Imagen Proyecto" class="rounded" style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #dee2e6; background: #fff;">
+                {% else %}
+                  <img src="{% static 'images/profileImage.jpg' %}" alt="Sin imagen" class="rounded" style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #dee2e6; background: #fff;">
+                {% endif %}
+            </td>
             <td class="text-start">{{ evento.nombre_evento }}</td>
             <td>{{ evento.id_tipo_evento }}</td>
             <td>{{ evento.ubicacion_evento }}</td>

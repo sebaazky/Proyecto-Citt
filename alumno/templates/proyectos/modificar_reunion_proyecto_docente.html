@@ -1,0 +1,16 @@
+{% extends 'base-alumnos.html' %}
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow p-4">
+    <h3 class="mb-4">Modificar Reunión</h3>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="text-end">
+        <a href="{% url 'home-proyecto-alumno' proyecto.id_proyecto %}?seccion=reuniones" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-warning">Guardar Cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

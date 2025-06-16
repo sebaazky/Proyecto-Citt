@@ -8,8 +8,8 @@
   <div class="row align-items-center mb-5">
     <div class="col-md-8">
       <h2 class="fw-bold text-primary">¡Bienvenido(a) 
-        {% if user.perfil_docente.p_nombre %}
-          {{ user.perfil_docente.p_nombre }} {{ user.perfil_docente.apellido_pat }}
+        {% if user.perfil_docente.nombres and user.perfil_docente.apellido_paterno %}
+          {{ user.perfil_docente.nombres }} {{ user.perfil_docente.apellido_paterno }}
         {% else %}
           {{ user.username }}
         {% endif %}

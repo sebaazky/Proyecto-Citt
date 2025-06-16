@@ -1,6 +1,7 @@
 from django.db import models
 from login.models import User
 from administrador.models import Carrera, Genero, TipoEvento, Track
+from alumno.models import Proyecto
 
 # Create your models here.
 
@@ -40,7 +41,7 @@ class Evento(models.Model):
         return f'ID:{self.id_evento}-{self.nombre_evento}'
 
 
-class DocentePost(models.Model):
+class TrackPost(models.Model):
     docente = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='posts_docente', db_column='username')
     track = models.ForeignKey(
@@ -51,3 +52,28 @@ class DocentePost(models.Model):
 
     def __str__(self):
         return f'Post by {self.docente.username} on {self.fecha_creacion}'
+
+
+class PostProyectoDocente(models.Model):
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
+    autor = models.ForeignKey(User, on_delete=models.CASCADE)
+    contenido = models.TextField()
+    imagen = models.ImageField(upload_to='posts_docente/', blank=True, null=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Post de {self.autor.username} en {self.proyecto.nom_proyecto}"
+
+
+class ReunionProyectoDocente(models.Model):
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
+    titulo = models.CharField(max_length=100, blank=True, null=True)
+    fecha = models.DateField()
+    hora = models.TimeField()
+    modalidad = models.CharField(max_length=20, choices=[('virtual', 'Virtual'), ('presencial', 'Presencial')])
+    link_virtual = models.URLField(blank=True, null=True)
+    ubicacion = models.CharField(max_length=200, blank=True, null=True)
+    descripcion = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Reunión {self.titulo or ''} - {self.proyecto.nom_proyecto}"

@@ -1,5 +1,5 @@
 from django.db import models
-from administrador.models import Carrera, Genero, Track
+from administrador.models import Carrera, Genero, Track, TrackRequest
 from login.models import User
 from django.conf import settings
 # Create your models here.
@@ -60,7 +60,7 @@ class ProyectoRequest(models.Model):
     fecha_solicitud = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.alumno.username} → {self.proyecto.nom_proyecto} ({self.estado})"
+        return f"{self.alumno} → {self.proyecto} ({self.estado})"
 
 
 class Solicitud(models.Model):
@@ -90,3 +90,39 @@ class Solicitud(models.Model):
 
     def __str__(self):
         return f'{self.titulo} - {self.alumno.username}'
+
+class ProyectoPost(models.Model):
+    id_post = models.AutoField(primary_key=True)
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name='posts')
+    autor = models.ForeignKey(User, on_delete=models.CASCADE)
+    contenido = models.TextField()
+    imagen = models.ImageField(upload_to='images/', blank=True, null=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Post de {self.autor.username} en {self.proyecto.nom_proyecto}"
+
+class ReunionProyecto(models.Model):
+    id_reunion = models.AutoField(primary_key=True)
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name='reuniones')
+    titulo = models.CharField(max_length=100, default='Reunión de Proyecto')
+    fecha = models.DateField()
+    hora = models.TimeField()
+    modalidad = models.CharField(max_length=20, choices=[('presencial', 'Presencial'), ('virtual', 'Virtual')], default='presencial')
+    link_virtual = models.URLField(blank=True, null=True)
+    ubicacion = models.CharField(max_length=100, blank=True, null=True)
+    descripcion = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Reunión de {self.proyecto.nom_proyecto} el {self.fecha} a las {self.hora}"
+
+class IntegranteProyecto(models.Model):
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name='integrantes')
+    alumno = models.ForeignKey(User, on_delete=models.CASCADE)
+    fecha_ingreso = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('proyecto', 'alumno')
+
+    def __str__(self):
+        return f"{self.alumno.username} en {self.proyecto.nom_proyecto}"

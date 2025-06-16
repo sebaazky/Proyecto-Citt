@@ -1,0 +1,480 @@
+{% extends 'base-alumnos.html' %}
+{% load static %}
+
+{% block titulo %}{{ proyecto.nom_proyecto }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-start">
+    <div class="col-lg-8 mb-4 ms-lg-0">
+      <!-- Menú navegación del proyecto -->
+      <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+          <a class="nav-link {% if not request.GET.seccion or request.GET.seccion == 'home' %}active{% endif %}" href="{% url 'home-proyecto-alumno' proyecto.id_proyecto %}"><i class="bi bi-house-door"></i> Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.GET.seccion == 'reuniones' %}active{% endif %}" href="{% url 'home-proyecto-alumno' proyecto.id_proyecto %}?seccion=reuniones"><i class="bi bi-calendar-event"></i> Reuniones</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.GET.seccion == 'integrantes' %}active{% endif %}" href="{% url 'home-proyecto-alumno' proyecto.id_proyecto %}?seccion=integrantes"><i class="bi bi-people"></i> Integrantes</a>
+        </li>
+        {% if es_jefe %}
+        <li class="nav-item">
+          <a class="nav-link {% if request.GET.seccion == 'solicitudes' %}active{% endif %}" href="{% url 'home-proyecto-alumno' proyecto.id_proyecto %}?seccion=solicitudes"><i class="bi bi-envelope-plus"></i> Solicitudes</a>
+        </li>
+        {% endif %}
+      </ul>
+      {% if not request.GET.seccion or request.GET.seccion == 'home' %}
+      <!-- Formulario para crear post (solo jefe de proyecto) -->
+      {% if es_jefe %}
+      <div class="mb-4">
+        <form method="post" enctype="multipart/form-data" action="{% url 'crear-post-proyecto-alumno' proyecto.id_proyecto %}">
+          {% csrf_token %}
+          {{ post_form.non_field_errors }}
+          <div class="mb-2">
+            {{ post_form.contenido.label_tag }}
+            {{ post_form.contenido }}
+          </div>
+          <div class="mb-2">
+            {{ post_form.imagen.label_tag }}
+            {{ post_form.imagen }}
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Publicar</button>
+        </form>
+      </div>
+      {% endif %}
+      <hr class="my-4">
+      <!-- Últimos Posts -->
+      <div class="mb-5">
+        <h4 class="mb-3 text-dark">Últimos Posts</h4>
+        {% if posts %}
+        <ul class="list-group">
+          {% for post in posts %}
+            <li class="list-group-item d-flex align-items-start justify-content-between">
+              <div class="d-flex">
+                {% if post.autor.perfil_alumno.imagen_perfil %}
+                  <img src="{{ post.autor.perfil_alumno.imagen_perfil.url }}" class="rounded-circle me-2 mt-1" style="width: 40px; height: 40px; object-fit: cover;" alt="Foto autor">
+                {% else %}
+                  <img src="{% static 'images/profileImage.jpg' %}" class="rounded-circle me-2 mt-1" style="width: 40px; height: 40px; object-fit: cover;" alt="Foto autor">
+                {% endif %}
+                <div>
+                  <div>
+                    <strong>{{ post.autor.perfil_alumno.nombres }} {{ post.autor.perfil_alumno.apellido_paterno }}</strong>
+                    <span class="text-muted">({{ post.autor.username }})</span>
+                  </div>
+                  <div class="small text-secondary">{{ post.fecha_creacion|date:"d M Y H:i" }}</div>
+                  <div class="mt-1">{{ post.contenido|linebreaksbr }}</div>
+                  {% if post.imagen %}
+                    <div class="mt-2">
+                      <img src="{{ post.imagen.url }}" class="img-fluid rounded" style="max-height: 300px;">
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% if es_jefe %}
+                <div class="ms-2 d-flex flex-column gap-1">
+                  <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-targ  et="#editarPostModal{{ post.id_post }}"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#eliminarPostModal{{ post.id_post }}"><i class="bi bi-trash"></i></button>
+                </div>
+                <!-- Modal Editar Post -->
+                <div class="modal fade" id="editarPostModal{{ post.id_post }}" tabindex="-1" aria-labelledby="editarPostModalLabel{{ post.id_post }}" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <form method="get" action="{% url 'modificar-post-proyecto-alumno' proyecto.id_proyecto post.id_post %}">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="editarPostModalLabel{{ post.id_post }}">Editar Post</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                          ¿Deseas editar este post?
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                          <button type="submit" class="btn btn-warning">Editar</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <!-- Modal Eliminar Post -->
+                <div class="modal fade" id="eliminarPostModal{{ post.id_post }}" tabindex="-1" aria-labelledby="eliminarPostModalLabel{{ post.id_post }}" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <form method="post" action="{% url 'eliminar-post-proyecto-alumno' proyecto.id_proyecto post.id_post %}">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="eliminarPostModalLabel{{ post.id_post }}">Eliminar Post</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                          ¿Estás seguro que deseas eliminar este post?
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                          <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted">No hay posts registrados.</p>
+        {% endif %}
+      </div>
+      {% elif request.GET.seccion == 'reuniones' %}
+      <!-- Reuniones del Proyecto (listado paginado, gestión si es jefe) -->
+      <div class="mb-5">
+        <h4 class="mb-3 text-dark">🗓️ Reuniones del Proyecto</h4>
+        {% if es_jefe %}
+        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalCrearReunion">Crear Reunión</button>
+        {% endif %}
+        {% if reuniones_paginadas %}
+        <div class="list-group mt-3">
+          {% for reunion in reuniones_paginadas %}
+            <div class="list-group-item mb-3 shadow-sm rounded">
+              <h5 class="mb-1"><strong>{{ reunion.titulo|default:"Reunión del Proyecto" }}</strong></h5>
+              <p class="mb-1">
+                <strong>Fecha:</strong> {{ reunion.fecha|date:"d M Y" }} <br>
+                <strong>Hora:</strong> {{ reunion.hora|time:"H:i" }} <br>
+                <strong>Modalidad:</strong> {{ reunion.get_modalidad_display }} <br>
+                {% if reunion.modalidad == "virtual" %}
+                  <strong>Link:</strong> <a href="{{ reunion.link_virtual }}" target="_blank">Entrar a reunión</a><br>
+                {% else %}
+                  <strong>Ubicación:</strong> {{ reunion.ubicacion }} <br>
+                {% endif %}
+                <strong>Descripción:</strong> {{ reunion.descripcion }}
+              </p>
+              {% if es_jefe %}
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalEditarReunion{{ reunion.id_reunion }}"><i class="bi bi-pencil"></i> Editar</button>
+                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalEliminarReunion{{ reunion.id_reunion }}"><i class="bi bi-trash"></i> Eliminar</button>
+              </div>
+              <!-- Modal Editar Reunión -->
+              <div class="modal fade" id="modalEditarReunion{{ reunion.id_reunion }}" tabindex="-1" aria-labelledby="modalEditarReunionLabel{{ reunion.id_reunion }}" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <form method="post" action="{% url 'modificar-reunion-proyecto-alumno' proyecto.id_proyecto reunion.id_reunion %}?seccion=reuniones">
+                      {% csrf_token %}
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="modalEditarReunionLabel{{ reunion.id_reunion }}">Editar Reunión</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="mb-2">
+                          <label for="titulo{{ reunion.id_reunion }}">Título</label>
+                          <input type="text" name="titulo" id="titulo{{ reunion.id_reunion }}" class="form-control" value="{{ reunion.titulo }}">
+                        </div>
+                        <div class="mb-2">
+                          <label for="fecha{{ reunion.id_reunion }}">Fecha</label>
+                          <input type="date" name="fecha" id="fecha{{ reunion.id_reunion }}" class="form-control" value="{{ reunion.fecha|date:'Y-m-d' }}">
+                        </div>
+                        <div class="mb-2">
+                          <label for="hora{{ reunion.id_reunion }}">Hora</label>
+                          <input type="time" name="hora" id="hora{{ reunion.id_reunion }}" class="form-control" value="{{ reunion.hora|time:'H:i' }}">
+                        </div>
+                        <div class="mb-2">
+                          <label for="modalidad{{ reunion.id_reunion }}">Modalidad</label>
+                          <select name="modalidad" id="modalidad{{ reunion.id_reunion }}" class="form-control">
+                            <option value="presencial" {% if reunion.modalidad == 'presencial' %}selected{% endif %}>Presencial</option>
+                            <option value="virtual" {% if reunion.modalidad == 'virtual' %}selected{% endif %}>Virtual</option>
+                          </select>
+                        </div>
+                        <div class="mb-2">
+                          <label for="link_virtual{{ reunion.id_reunion }}">Link Virtual</label>
+                          <input type="url" name="link_virtual" id="link_virtual{{ reunion.id_reunion }}" class="form-control" value="{{ reunion.link_virtual }}">
+                        </div>
+                        <div class="mb-2">
+                          <label for="ubicacion{{ reunion.id_reunion }}">Ubicación</label>
+                          <input type="text" name="ubicacion" id="ubicacion{{ reunion.id_reunion }}" class="form-control" value="{{ reunion.ubicacion }}">
+                        </div>
+                        <div class="mb-2">
+                          <label for="descripcion{{ reunion.id_reunion }}">Descripción</label>
+                          <textarea name="descripcion" id="descripcion{{ reunion.id_reunion }}" class="form-control">{{ reunion.descripcion }}</textarea>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-warning">Guardar Cambios</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <!-- Modal Eliminar Reunión -->
+              <div class="modal fade" id="modalEliminarReunion{{ reunion.id_reunion }}" tabindex="-1" aria-labelledby="modalEliminarReunionLabel{{ reunion.id_reunion }}" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <form method="post" action="{% url 'eliminar-reunion-proyecto-alumno' proyecto.id_proyecto reunion.id_reunion %}?seccion=reuniones">
+                      {% csrf_token %}
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="modalEliminarReunionLabel{{ reunion.id_reunion }}">Eliminar Reunión</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>¿Estás seguro que deseas eliminar esta reunión?</p>
+                        <div class="mb-3">
+                          <strong>Título:</strong> {{ reunion.titulo }}<br>
+                          <strong>Fecha:</strong> {{ reunion.fecha|date:'d/m/Y' }}<br>
+                          <strong>Hora:</strong> {{ reunion.hora|time:'H:i' }}<br>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+        <!-- Paginación -->
+        <nav aria-label="Paginación de reuniones">
+          <ul class="pagination justify-content-center">
+            {% if reuniones_paginadas.has_previous %}
+              <li class="page-item"><a class="page-link" href="?seccion=reuniones&page={{ reuniones_paginadas.previous_page_number }}">Anterior</a></li>
+            {% endif %}
+            <li class="page-item disabled"><span class="page-link">Página {{ reuniones_paginadas.number }} de {{ reuniones_paginadas.paginator.num_pages }}</span></li>
+            {% if reuniones_paginadas.has_next %}
+              <li class="page-item"><a class="page-link" href="?seccion=reuniones&page={{ reuniones_paginadas.next_page_number }}">Siguiente</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+        {% else %}
+        <div class="alert alert-info text-center mt-4" role="alert">
+          No hay reuniones programadas actualmente.
+        </div>
+        {% endif %}
+        <!-- Modal Crear Reunión -->
+        <div class="modal fade" id="modalCrearReunion" tabindex="-1" aria-labelledby="modalCrearReunionLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form method="post" action="{% url 'crear-reunion-proyecto-alumno' proyecto.id_proyecto %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalCrearReunionLabel">Crear Reunión</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                  {{ reunion_form.as_p }}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  <button type="submit" class="btn btn-success">Crear</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% elif request.GET.seccion == 'integrantes' %}
+      <!-- Integrantes del Proyecto (listado con imagen) -->
+      <div class="mb-5">
+        <h4 class="mb-3 text-dark">Integrantes del Proyecto</h4>
+        <ul class="list-group">
+          <!-- Jefe de proyecto -->
+          <li class="list-group-item d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center flex-grow-1 overflow-hidden" style="max-width: 100%;">
+              {% if proyecto.jefe_proyecto.perfil_alumno.imagen_perfil %}
+                <img src="{{ proyecto.jefe_proyecto.perfil_alumno.imagen_perfil.url }}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;" alt="Jefe proyecto">
+              {% else %}
+                <img src="{% static 'images/profileImage.jpg' %}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;" alt="Jefe proyecto">
+              {% endif %}
+              <div class="text-truncate">
+                {{ proyecto.jefe_proyecto.perfil_alumno.nombres }} {{ proyecto.jefe_proyecto.perfil_alumno.apellido_paterno }}
+                <span class="text-muted">({{ proyecto.jefe_proyecto.username }})</span>
+              </div>
+            </div>
+            <span class="badge bg-info text-dark ms-3">Jefe</span>
+          </li>
+
+          <!-- Resto de integrantes -->
+          {% for integrante in integrantes %}
+            {% if integrante.alumno != proyecto.jefe_proyecto %}
+            <li class="list-group-item d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center flex-grow-1 overflow-hidden" style="max-width: 100%;">
+                {% if integrante.alumno.perfil_alumno.imagen_perfil %}
+                  <img src="{{ integrante.alumno.perfil_alumno.imagen_perfil.url }}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;" alt="Integrante">
+                {% else %}
+                  <img src="{% static 'images/profileImage.jpg' %}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;" alt="Integrante">
+                {% endif %}
+                <div class="text-truncate">
+                  {{ integrante.alumno.perfil_alumno.nombres }} {{ integrante.alumno.perfil_alumno.apellido_paterno }}
+                  <span class="text-muted">({{ integrante.alumno.username }})</span>
+                </div>
+              </div>
+              <span class="badge bg-secondary ms-3">Integrante</span>
+            </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+      {% elif request.GET.seccion == 'solicitudes' %}
+      {% if es_jefe %}
+      <div class="mb-5">
+        <h4 class="mb-3 text-dark">Solicitudes al Proyecto</h4>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Alumno</th>
+              <th>Fecha Solicitud</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for solicitud in solicitudes %}
+            <tr>
+              <td>{{ solicitud.alumno.perfil_alumno.nombres }} {{ solicitud.alumno.perfil_alumno.apellido_paterno }} ({{ solicitud.alumno.username }})</td>
+              <td>{{ solicitud.fecha_solicitud|date:'d/m/Y H:i' }}</td>
+              <td>
+                <a href="{% url 'aceptar-solicitud-proyecto' proyecto.id_proyecto solicitud.id_solicitud %}" class="btn btn-success btn-sm">Aceptar</a>
+                <a href="{% url 'rechazar-solicitud-proyecto' proyecto.id_proyecto solicitud.id_solicitud %}" class="btn btn-danger btn-sm">Rechazar</a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="text-muted">No hay solicitudes pendientes.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+      {% endif %}
+      <!-- Solicitar ingreso -->
+      {% if puede_solicitar %}
+      <form method="post" action="{% url 'solicitar-ingreso-proyecto' proyecto.id_proyecto %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-primary">Solicitar ingreso al proyecto</button>
+      </form>
+      {% elif solicitud_pendiente %}
+      <div class="alert alert-warning mt-2" role="alert">
+        Ya tienes una solicitud pendiente para este proyecto.
+      </div>
+      {% endif %}
+    </div>
+    <!-- Card lateral derecha: Información del Proyecto -->
+    <div class="col-lg-4 d-none d-lg-block">
+      <div class="card shadow-sm border-0" style="min-height: 400px; background: #fff;">
+        
+        <!-- Título principal de la card -->
+        <div class="card-header bg-white text-center border-bottom">
+          <h5 class="fw-bold mb-0" style="color: #222;">Información del Proyecto</h5>
+        </div>
+
+        <div class="card-body px-3 py-4">
+          
+          <!-- Nombre del proyecto -->
+          <h5 class="fw-bold text-center mb-4" style="color: #222;">{{ proyecto.nom_proyecto }}</h5>
+
+          <!-- Imagen del proyecto -->
+          {% if proyecto.imagen %}
+            <div class="text-center mb-4">
+              <img src="{{ proyecto.imagen.url }}" class="img-fluid rounded" style="max-height: 180px; object-fit: cover;">
+            </div>
+          {% endif %}
+          <div class="mb-4">
+            <h6 class="fw-semibold text-dark mb-1">Jefe del proyecto</h6>
+            {% if proyecto.jefe_proyecto.rol == 'alumno' %}
+              <p class="mb-0" style="color: #555;">{{ proyecto.jefe_proyecto.perfil_alumno.nombres }} {{ proyecto.jefe_proyecto.perfil_alumno.apellido_paterno }}</p>
+            {% elif proyecto.jefe_proyecto.rol == 'docente' %}
+              <p class="mb-0" style="color: #555;">{{ proyecto.jefe_proyecto.perfil_docente.nombres }}</p>
+            {% else %}
+              <p class="mb-0 text-muted">Sin perfil asociado</p>
+            {% endif %}
+          </div>
+          <!-- Descripción -->
+          <div class="mb-4">
+            <h6 class="fw-semibold text-dark mb-1">Descripción:</h6>
+            <p class="mb-0" style="color: #555;">{{ proyecto.descripcion }}</p>
+          </div>
+
+          <!-- Integrantes -->
+          <div class="mb-4">
+            <h6 class="fw-semibold text-dark mb-2">
+              Integrantes ({{ integrantes|length|add:1 }}/{{ proyecto.num_integrantes }})
+            </h6>
+
+            <!-- Avatares de los participantes -->
+            <div class="d-flex align-items-center flex-wrap gap-2">
+              <!-- Jefe de proyecto -->
+              <img src="{{ proyecto.jefe_proyecto.perfil_alumno.imagen_perfil.url }}"
+                  class="rounded-circle border border-3 border-primary"
+                  alt="Jefe"
+                  style="width: 40px; height: 40px; object-fit: cover;"
+                  title="Jefe del Proyecto">
+
+              <!-- Resto de integrantes -->
+              {% for integrante in integrantes %}
+                <img src="{{ integrante.perfil_alumno.imagen_perfil.url }}"
+                    class="rounded-circle border border-2 border-secondary"
+                    alt="Integrante"
+                    style="width: 38px; height: 38px; object-fit: cover;">
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Reuniones -->
+          <div>
+            <div class="mt-4 d-flex justify-content-between align-items-center mb-2">
+              <h6 class="fw-semibold text-dark mb-0">Reuniones</h6>
+              {% if es_jefe %}
+                <button class="btn btn-outline-secondary btn-lg py-0 px-2" data-bs-toggle="modal" data-bs-target="#modalCrearReunionCard">
+                  <i class="bi bi-plus-circle medium"></i>
+                </button>
+              {% endif %}
+            </div>
+
+            <ul class="list-group">
+              {% if reuniones|length > 0 %}
+                {% for reunion in reuniones|slice:"0:5" %}
+                  <li class="list-group-item d-flex justify-content-between align-items-center small">
+                    <div>
+                      <i class="bi bi-calendar-event me-1 text-primary"></i>
+                      <strong>{{ reunion.titulo|default:"Reunión" }}</strong>
+                    </div>
+                    <span class="text-muted">{{ reunion.fecha|date:"d M" }} - {{ reunion.hora|time:"H:i" }}</span>
+                  </li>
+                {% endfor %}
+              {% else %}
+                <li class="list-group-item bg-transparent text-muted border-0 ps-0 small">
+                  Actualmente no hay reuniones planificadas.
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+
+<!-- Modal Crear Reunión desde Card lateral -->
+{% if es_jefe %}
+<div class="modal fade" id="modalCrearReunionCard" tabindex="-1" aria-labelledby="modalCrearReunionCardLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" action="{% url 'crear-reunion-proyecto-alumno' proyecto.id_proyecto %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalCrearReunionCardLabel">Crear Reunión</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          {{ reunion_form.as_p }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success">Crear</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

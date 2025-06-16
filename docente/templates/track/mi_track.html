@@ -1,257 +1,266 @@
 {% extends 'base-docentes.html' %}
+{% load static %}
 {% block titulo %}Mi Track{% endblock %}
 {% block content %}
 <!-- Banner superior -->
 <div class="mb-4" style="height: 220px; background: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat; border-radius: 12px; display: flex; align-items: flex-end;">
   <div class="bg-dark bg-opacity-50 w-100 p-3 rounded-bottom">
-    <h2 class="text-white">Bienvenido a tu Track</h2>
+    <h2 class="text-white">
+      Bienvenido {{ user.perfil_docente.nombres }} {{ user.perfil_docente.apellido_paterno }}! a tu track de {{ track.nom_track }}.
+    </h2>
   </div>
 </div>
-<div class="container-fluid">
+<div class="container py-5">
   <div class="row">
-    <!-- Sección izquierda: menú -->
-    <div class="col-md-2 mb-3">
-      <div class="card shadow-sm border-0" style="background-color: #f8f9fa;">
-        <div class="card-body p-2">
-          <h6 class="mb-3 text-primary">Opciones</h6>
-          <table class="table table-sm table-borderless mb-0">
-            <tbody>
-              <tr><td><a href="{% url 'listado-alumnos-track' %}" class="text-decoration-none">Listado alumnos</a></td></tr>
-              <tr><td><a href="{% url 'listado-solicitudes-track' %}" class="text-decoration-none">Listado solicitudes</a></td></tr>
-              <tr><td><a href="{% url 'listado-eventos-track' %}" class="text-decoration-none">Listado eventos</a></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-7 mb-3">
-      <div class="card shadow-sm border-0 mb-4" style="background-color: #e9f7ef;">
-        <div class="card-body">
-          <button id="togglePostForm" class="btn btn-success mb-3" type="button">Nuevo Post</button>
-          <div id="postFormContainer" {% if not edit_post_id and not post_form.errors %}style="display:none;"{% endif %}>
-            <form method="post" enctype="multipart/form-data" action="{% if edit_post_id %}{% url 'modificar-post-docente' edit_post_id %}{% else %}{% url 'crear-post-docente' %}{% endif %}">
-              {% csrf_token %}
-              <div class="mb-2">
-                {{ post_form.contenido.label_tag }}
-                {{ post_form.contenido }}
-                {% for error in post_form.contenido.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
-              </div>
-              <div class="mb-2">
-                {{ post_form.imagen.label_tag }}
-                {{ post_form.imagen }}
-                {% for error in post_form.imagen.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
-              </div>
-              <div class="d-flex gap-2">
-                <button type="reset" class="btn btn-outline-secondary">Resetear</button>
-                <button type="submit" class="btn btn-success">{% if edit_post_id %}Guardar cambios{% else %}Crear post{% endif %}</button>
-                <button type="button" class="btn btn-outline-danger" id="closePostForm">Cerrar</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="card shadow-sm border-0" style="background-color: #f4f6fa; min-height: 200px;">
-        <div class="card-body">
-          {% if central_content == 'alumnos' %}
-            <h6 class="text-secondary">Listado de alumnos</h6>
-            <table class="table table-striped">
-              <thead><tr><th>Nombre</th><th>Usuario</th><th>Acciones</th></tr></thead>
-              <tbody>
-                {% for alumno in alumnos_list %}
-                <tr>
-                  <td>{{ alumno.nombres }} {{ alumno.apellido_paterno }}</td>
-                  <td>{{ alumno.alumno.username }}</td>
-                  <td>
-                    <a href="{% url 'eliminar-alumno-track' alumno.id %}" class="btn btn-danger btn-sm">Eliminar</a>
-                  </td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="3" class="text-muted">No hay alumnos en este track.</td></tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          {% elif central_content == 'solicitudes' %}
-            <h6 class="text-secondary">Solicitudes de ingreso al track</h6>
-            <table class="table table-striped">
-              <thead><tr><th>Alumno</th><th>Fecha</th><th>Estado</th></tr></thead>
-              <tbody>
-                {% for solicitud in solicitudes_list %}
-                <tr>
-                  <td>{{ solicitud.alumno.username }}</td>
-                  <td>{{ solicitud.fecha_solicitud|date:'d/m/Y H:i' }}</td>
-                  <td>{{ solicitud.estado }}</td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="3" class="text-muted">No hay solicitudes pendientes.</td></tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          {% elif central_content == 'eventos' %}
-            <h6 class="text-secondary">Eventos del track</h6>
-            <table class="table table-striped">
-              <thead><tr><th>Nombre</th><th>Tipo</th><th>Ubicación</th><th>Fecha</th><th>Hora</th></tr></thead>
-              <tbody>
-                {% for evento in eventos_list %}
-                <tr>
-                  <td>{{ evento.nombre_evento }}</td>
-                  <td>{{ evento.id_tipo_evento }}</td>
-                  <td>{{ evento.ubicacion_evento }}</td>
-                  <td>{{ evento.fecha_evento }}</td>
-                  <td>{{ evento.hora }}</td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="5" class="text-muted">No hay eventos registrados.</td></tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          {% else %}
-            <h6 class="text-secondary">Listado de posts</h6>
-            {% for post in posts %}
-            <div class="d-flex align-items-start mb-4 p-2 rounded" style="background-color: #fff; border: 1px solid #e0e0e0;">
-              {% if post.docente.perfildocente.imagen_perfil %}
-                <img src="{{ post.docente.perfildocente.imagen_perfil.url }}" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
-              {% else %}
-                <img src="/static/images/default-avatar.jpg" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
-              {% endif %}
-              <div class="flex-grow-1">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <strong>
-                    {% if post.docente.perfildocente %}
-                      {{ post.docente.perfildocente.nombres }} {{ post.docente.perfildocente.apellido_paterno }}
-                    {% else %}
-                      {{ post.docente.username }}
-                    {% endif %}
-                  </strong>
-                    <span class="text-muted small ms-2">{{ post.fecha_creacion|date:'d/m/Y H:i' }}</span>
-                  </div>
-                  <div>
-                    {% if post.docente == user %}
-                    <button type="button" class="btn btn-sm btn-outline-primary edit-post-btn" data-post-id="{{ post.id }}">Modificar</button>
-                    <form method="post" action="{% url 'eliminar-post-docente' post.id %}" style="display:inline;">
-                      {% csrf_token %}
-                      <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
-                    </form>
-                    {% endif %}
-                  </div>
-                </div>
-                <div class="mt-2" id="edit-post-form-{{ post.id }}"{% if not edit_post_id or edit_post_id != post.id %} style="display:none;"{% endif %}>
-                  <form method="post" enctype="multipart/form-data" action="{% url 'modificar-post-docente' post.id %}">
-                    {% csrf_token %}
-                    <div class="mb-2">
-                      {{ post_form.contenido.label_tag }}
-                      {{ post_form.contenido }}
-                      {% for error in post_form.contenido.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
-                    </div>
-                    <div class="mb-2">
-                      {{ post_form.imagen.label_tag }}
-                      {{ post_form.imagen }}
-                      {% for error in post_form.imagen.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
-                    </div>
-                    <div class="d-flex gap-2">
-                      <button type="submit" class="btn btn-success">Guardar cambios</button>
-                      <a href="{% url 'mi-track' %}" class="btn btn-outline-danger">Cancelar</a>
-                    </div>
-                  </form>
-                </div>
-                {% if not edit_post_id or edit_post_id != post.id %}
-                  <div class="mt-2">{{ post.contenido|linebreaks }}</div>
-                  {% if post.imagen %}<img src="{{ post.imagen.url }}" class="img-fluid rounded mt-2" style="max-width: 300px;">{% endif %}
-                {% endif %}
-              </div>
+    <div class="col-lg-8 mb-4 ms-lg-0">
+      <!-- Track Navigation Tabs -->
+      <ul class="nav nav-tabs mb-4 mt-2">
+        <li class="nav-item">
+          <a class="nav-link {% if not request.GET.seccion or request.GET.seccion == 'home' %}active{% endif %}" href="{% url 'mi-track' %}"><i class="bi bi-house-door"></i> Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.GET.seccion == 'proyectos' %}active{% endif %}" href="{% url 'mi-track' %}?seccion=proyectos"><i class="bi bi-kanban"></i> Proyectos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.GET.seccion == 'reuniones' %}active{% endif %}" href="{% url 'mi-track' %}?seccion=reuniones"><i class="bi bi-calendar-event"></i> Reuniones</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.GET.seccion == 'integrantes' %}active{% endif %}" href="{% url 'mi-track' %}?seccion=integrantes"><i class="bi bi-people"></i> Integrantes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.GET.seccion == 'eventos' %}active{% endif %}" href="{% url 'mi-track' %}?seccion=eventos"><i class="bi bi-megaphone"></i> Eventos</a>
+        </li>
+      </ul>
+      <!-- Sectioned Content -->
+      {% if not request.GET.seccion or request.GET.seccion == 'home' %}
+        <!-- Formulario para crear post (solo jefe de track) -->
+        {% if user == track.id_usuario %}
+        <div class="mb-4">
+          <form method="post" enctype="multipart/form-data" class="mb-3">
+            {% csrf_token %}
+            {{ post_form.non_field_errors }}
+            <div class="mb-2">
+              {{ post_form.contenido.label_tag }}
+              {{ post_form.contenido }}
             </div>
-            {% empty %}
-            <div class="text-muted">No hay posts aún.</div>
+            <div class="mb-2">
+              {{ post_form.imagen.label_tag }}
+              {{ post_form.imagen }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Publicar</button>
+          </form>
+        </div>
+        {% endif %}
+        <!-- Últimas Publicaciones -->
+        <div class="mb-5">
+          <h4 class="mb-3 text-dark">Últimas Publicaciones</h4>
+          {% if posts %}
+          <ul class="list-group">
+            {% for post in posts %}
+              <li class="list-group-item d-flex justify-content-between">
+  <div class="d-flex">
+    <!-- Imagen del perfil -->
+    {% if post.docente.perfil_docente.imagen_perfil %}
+      <img src="{{ post.docente.perfil_docente.imagen_perfil.url }}" class="rounded-circle me-2 mt-1" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #eee;">
+    {% else %}
+      <img src="{% static 'images/profileImage.jpg' %}" class="rounded-circle me-2 mt-1" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #eee;">
+    {% endif %}
+
+    <!-- Contenido del post -->
+    <div>
+      <strong>{{ post.docente.first_name }} {{ post.docente.last_name }}</strong>
+      <span class="text-muted">({{ post.docente.username }})</span><br>
+      <span class="small text-secondary">{{ post.fecha_creacion|date:"d M Y H:i" }}</span><br>
+      {{ post.contenido|linebreaksbr }}
+      {% if post.imagen %}
+        <div class="mt-2">
+          <img src="{{ post.imagen.url }}" class="img-fluid rounded" style="max-height: 300px;">
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if user == post.docente %}
+  <div class="ms-2 d-flex flex-column gap-1">
+    <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editarPostModal{{ post.id }}"><i class="bi bi-pencil"></i></button>
+    <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#eliminarPostModal{{ post.id }}"><i class="bi bi-trash"></i></button>
+  </div>
+  {% endif %}
+</li>
             {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No hay publicaciones registradas.</p>
           {% endif %}
         </div>
-      </div>
+        <!-- Carrusel de Proyectos Asociados -->
+        <div class="mb-5">
+          <h4 class="mb-3 text-dark">Proyectos Asociados</h4>
+          {% if proyectos_info %}
+          <div id="proyectosCarruselDocente" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              {% for info in proyectos_info %}
+                {% with proyecto=info.proyecto %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                  <div class="card h-100 shadow-sm mx-auto" style="max-width: 400px;">
+                    {% if proyecto.imagen %}
+                    <img src="{{ proyecto.imagen.url }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="Imagen Proyecto">
+                    {% endif %}
+                    <div class="card-body">
+                      <h5 class="card-title">{{ proyecto.nom_proyecto }}</h5>
+                      <p class="card-text mb-1">
+                        <strong>Jefe Proyecto:</strong> {{ proyecto.jefe_proyecto.first_name }} {{ proyecto.jefe_proyecto.last_name }} ({{ proyecto.jefe_proyecto.username }})
+                      </p>
+                      <p class="card-text">{{ proyecto.objetivo|truncatewords:20 }}</p>
+                      <a href="{% url 'home-proyecto-docente' proyecto.id_proyecto %}" class="btn btn-sm btn-outline-success mt-1">Ir al Home</a>
+                    </div>
+                  </div>
+                </div>
+                {% endwith %}
+              {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#proyectosCarruselDocente" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#proyectosCarruselDocente" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Siguiente</span>
+            </button>
+          </div>
+          {% else %}
+          <p class="text-muted">No hay proyectos registrados.</p>
+          {% endif %}
+        </div>
+      {% elif request.GET.seccion == 'proyectos' %}
+        <!-- Listado de proyectos -->
+        <div class="mb-5">
+          <h4 class="mb-3 text-dark">Proyectos del Track</h4>
+          {% if proyectos_info %}
+          <ul class="list-group">
+            {% for info in proyectos_info %}
+              {% with proyecto=info.proyecto %}
+              <li class="list-group-item d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  {% if proyecto.imagen %}
+                    <img src="{{ proyecto.imagen.url }}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;" alt="Imagen Proyecto">
+                  {% else %}
+                    <img src="{% static 'images/profileImage.jpg' %}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;" alt="Imagen Proyecto">
+                  {% endif %}
+                  <span class="fw-semibold">{{ proyecto.nom_proyecto }}</span>
+                </div>
+                <div>
+                  <a href="{% url 'home-proyecto-docente' proyecto.id_proyecto %}" class="btn btn-sm btn-outline-success" title="Ir al Home"><i class="bi bi-house-door"></i></a>
+                </div>
+              </li>
+              {% endwith %}
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No hay proyectos registrados.</p>
+          {% endif %}
+        </div>
+      {% elif request.GET.seccion == 'reuniones' %}
+        <!-- Reuniones del Track -->
+        <div class="mb-5">
+          <h4 class="mb-3 text-dark">🗓️ Reuniones del Track</h4>
+          {% if reuniones %}
+          <div class="list-group mt-3">
+            {% for reunion in reuniones %}
+              <div class="list-group-item mb-3 shadow-sm rounded">
+                <h5 class="mb-1"><strong>{{ reunion }}</strong></h5>
+                <p class="mb-1">
+                  <strong>Fecha:</strong> {{ reunion.fecha|date:"d M Y" }} <br>
+                  <strong>Hora:</strong> {{ reunion.hora|time:"H:i" }} <br>
+                  <strong>Modalidad:</strong> {{ reunion.get_modalidad_display }} <br>
+                  {% if reunion.modalidad == "virtual" %}
+                    <strong>Link:</strong> <a href="{{ reunion.link_virtual }}" target="_blank">Entrar a reunión</a><br>
+                  {% else %}
+                    <strong>Ubicación:</strong> {{ reunion.ubicacion }} <br>
+                  {% endif %}
+                  <strong>Descripción:</strong> {{ reunion.descripcion }}
+                </p>
+              </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="alert alert-info text-center mt-4" role="alert">
+            No hay reuniones programadas actualmente.
+          </div>
+          {% endif %}
+        </div>
+      {% elif request.GET.seccion == 'integrantes' %}
+        <!-- Integrantes del Track -->
+        <div class="mb-5">
+          <h4 class="mb-3 text-dark">Integrantes del Track</h4>
+          <ul class="list-group">
+            {% for alumno in alumnos %}
+              <li class="list-group-item d-flex align-items-center">
+                {% if alumno.perfil_docente.imagen_perfil %}
+                  <img src="{{ alumno.perfil_docente.imagen_perfil.url }}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                {% elif alumno.perfil_alumno.imagen_perfil %}
+                  <img src="{{ alumno.perfil_alumno.imagen_perfil.url }}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                {% else %}
+                  <img src="{% static 'images/profileImage.jpg' %}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                {% endif %}
+                <span>{{ alumno.first_name }} {{ alumno.last_name }}</span> <span class="text-muted ms-1">({{ alumno.username }})</span>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% elif request.GET.seccion == 'eventos' %}
+        <!-- Eventos del Track -->
+        <div class="mb-5">
+          <h4 class="mb-3 text-dark">Eventos del Track</h4>
+          {% if eventos %}
+          <ul class="list-group">
+            {% for evento in eventos %}
+              <li class="list-group-item">
+                <strong>{{ evento.nombre_evento }}</strong> - {{ evento.fecha_evento|date:"d M Y" }} {{ evento.hora|time:"H:i" }}<br>
+                <span class="text-muted">{{ evento.ubicacion_evento }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <div class="alert alert-info text-center mt-4" role="alert">
+            No hay eventos registrados para este track.
+          </div>
+          {% endif %}
+        </div>
+      {% endif %}
     </div>
-    <!-- Sección derecha: info del track y reuniones -->
-    <div class="col-md-3 mb-3">
-      <!-- Card info track -->
-      <div class="card shadow border-0 mb-2">
-        <div class="card-header bg-warning text-white" style="cursor:pointer;" data-bs-toggle="collapse" data-bs-target="#infoTrackCollapse" aria-expanded="false" aria-controls="infoTrackCollapse">
-          <h5 class="card-title mb-0">Información del Track</h5>
+    <!-- Card lateral derecha: Información del Track -->
+    <div class="col-lg-4 d-none d-lg-block">
+      <div class="card" style="background: #f5f6fa; box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10); border: none; border-radius: 16px; margin-top: 0.5rem; max-width: 350px; margin-left: auto;">
+        <div class="card-header bg-white text-center border-bottom" style="border-radius: 16px 16px 0 0;">
+          <span class="fw-bold" style="font-size: 1.1rem; color: #222;">Información del Track</span>
         </div>
-        <div class="collapse" id="infoTrackCollapse">
-          <div class="card-body" style="background-color: #fff3cd;">
-            <ul class="list-group list-group-flush mb-2">
-              <li class="list-group-item bg-transparent"><strong>Nombre:</strong> {{ track.nom_track }}</li>
-              <li class="list-group-item bg-transparent"><strong>Docente a cargo:</strong> {{ user.perfildocente.nombres }} {{ user.perfildocente.apellido_paterno }}</li>
-              <li class="list-group-item bg-transparent"><strong>Integrantes:</strong> 15</li>
-              <li class="list-group-item bg-transparent"><strong>Proyectos:</strong> 4</li>
-              <li class="list-group-item bg-transparent"><strong>Eventos:</strong> 2</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <!-- Card reuniones -->
-      <div class="card shadow border-0">
-        <div class="card-header bg-info text-white" style="cursor:pointer;" data-bs-toggle="collapse" data-bs-target="#reunionesCollapse" aria-expanded="false" aria-controls="reunionesCollapse">
-          <h5 class="card-title mb-0">Próximas reuniones</h5>
-        </div>
-        <div class="collapse" id="reunionesCollapse">
-          <div class="card-body" style="background-color: #e3f2fd;">
-            {% with reuniones=track.reuniones.all|dictsort:'fecha' %}
-            {% if reuniones %}
-              <ul class="list-group list-group-flush mb-2">
-                {% for reunion in reuniones|slice:':4' %}
-                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
-                  <span>{{ reunion.fecha }} - {{ reunion.hora|time:'H:i' }}</span>
-                  <a href="{% url 'detalle-reunion-track' reunion.id_reunion %}" class="btn btn-outline-primary btn-sm">Ver</a>
-                </li>
-                {% endfor %}
-              </ul>
+        <div class="card-body px-3 py-4 text-center">
+          <h5 class="fw-bold text-center mb-3" style="color: #222;">{{ track.nom_track }}</h5>
+          <div class="d-flex align-items-center justify-content-center mb-3">
+            {% if track.id_usuario.perfil_docente and track.id_usuario.perfil_docente.imagen_perfil %}
+              <img src="{{ track.id_usuario.perfil_docente.imagen_perfil.url }}" alt="Foto Docente" class="rounded-circle me-2" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #eee;">
             {% else %}
-              <div class="text-muted">No hay reuniones próximas.</div>
+              <div class="rounded-circle bg-secondary me-2" style="width: 48px; height: 48px;"></div>
             {% endif %}
-            {% endwith %}
-            <a href="{% url 'crear-reunion-track' %}" class="btn btn-info btn-sm w-100 mt-2">Crear nueva reunión</a>
+            <div class="text-start">
+              <span class="fw-semibold" style="color: #444;">Docente a cargo:</span><br>
+              {% if track.id_usuario.perfil_docente %}
+                <span style="color: #555;">{{ track.id_usuario.perfil_docente.nombres }} {{ track.id_usuario.perfil_docente.apellido_paterno }} {{ track.id_usuario.perfil_docente.apellido_materno }}</span>
+              {% else %}
+                <span class="text-danger">No asignado</span>
+              {% endif %}
+            </div>
           </div>
+          <p class="mb-3 text-center"><span class="fw-semibold" style="color: #444;">Descripción:</span><br><span style="color: #555;">{{ track.descripcion }}</span></p>
+          <ul class="list-group list-group-flush mb-3 text-center">
+            <li class="list-group-item bg-transparent text-dark border-0 ps-0"><span class="fw-semibold">Alumnos:</span> {{ alumnos|length }}</li>
+            <li class="list-group-item bg-transparent text-dark border-0 ps-0"><span class="fw-semibold">Proyectos:</span> {{ proyectos_info|length }}</li>
+            <li class="list-group-item bg-transparent text-dark border-0 ps-0"><span class="fw-semibold">Reuniones:</span> {{ reuniones|length }}</li>
+          </ul>
         </div>
       </div>
     </div>
   </div>
 </div>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const toggleBtn = document.getElementById('togglePostForm');
-    const postForm = document.getElementById('postFormContainer');
-    const closeBtn = document.getElementById('closePostForm');
-    if (toggleBtn && postForm) {
-      toggleBtn.addEventListener('click', function() {
-        postForm.style.display = postForm.style.display === 'none' ? 'block' : 'none';
-      });
-    }
-    if (closeBtn && postForm) {
-      closeBtn.addEventListener('click', function() {
-        postForm.style.display = 'none';
-      });
-    }
-    // Independiente para cada botón de modificar post
-    document.querySelectorAll('.edit-post-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        const postId = btn.getAttribute('data-post-id');
-        document.querySelectorAll('[id^="edit-post-form-"]').forEach(function(formDiv) {
-          formDiv.style.display = 'none';
-        });
-        const formDiv = document.getElementById('edit-post-form-' + postId);
-        if (formDiv) {
-          formDiv.style.display = 'block';
-        }
-      });
-    });
-    // Inicialmente colapsar info track y NO mostrar reuniones
-    var infoTrackCollapse = document.getElementById('infoTrackCollapse');
-    var reunionesCollapse = document.getElementById('reunionesCollapse');
-    if (infoTrackCollapse) {
-      var bsCollapse = new bootstrap.Collapse(infoTrackCollapse, {toggle: false});
-    }
-    if (reunionesCollapse) {
-      var bsCollapse2 = new bootstrap.Collapse(reunionesCollapse, {toggle: false});
-    }
-  });
-</script>
 {% endblock %}

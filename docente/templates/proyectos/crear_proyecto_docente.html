@@ -29,8 +29,12 @@
               </div>
             {% endfor %}
 
+            <div class="alert alert-info small">
+              <strong>Nota:</strong> El proyecto se asignará automáticamente a tu track y tú serás el jefe de proyecto.
+            </div>
+
             <div class="text-end">
-              <a href="{% url 'listar-proyectos' %}" class="btn btn-secondary">Cancelar</a>
+              <a href="{% url 'listar-proyectos-docente' %}" class="btn btn-secondary">Cancelar</a>
               <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
             </div>
           </form>

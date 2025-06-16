@@ -6,17 +6,32 @@
 {% block content %}
 <div class="container py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">📁 Proyectos que Gestiono</h2>
+    <div>
+      <h2 class="mb-1">📁 Proyectos que Gestiono</h2>
+      <div class="text-muted small ms-1">
+        {% with docente=user %}
+          {% if docente.perfil_docente.nombres or docente.perfil_docente.apellido_paterno %}
+            <span class="fw-semibold">{{ docente.perfil_docente.nombres }} {{ docente.perfil_docente.apellido_paterno }}</span>
+            <span class="text-secondary">({{ docente.username }})</span>
+          {% else %}
+            <span class="fw-semibold">{{ docente.username }}</span>
+          {% endif %}
+        {% endwith %}
+      </div>
+    </div>
     <a href="{% url 'crear-proyecto-docente' %}" class="btn btn-dark rounded-pill px-4 py-2">
       <i class="bi bi-plus-circle me-2"></i> Crear Proyecto
     </a>
   </div>
 
+  <hr class="my-4" style="border-top: 1.5px solid #e3e3e3; opacity: 0.7;" />
+
   {% if proyectos %}
-    <div class="table-responsive">
-      <table class="table table-hover table-bordered align-middle text-center">
-        <thead class="table-dark">
+    <div class="table-responsive mt-4">
+      <table class="table align-middle text-center" style="background-color: #f8fafc; border-radius: 12px; box-shadow: 0 2px 8px 0 rgba(0,0,0,0.03);">
+        <thead style="background-color: #e9ecef;">
           <tr>
+            <th>Imagen</th>
             <th>Nombre</th>
             <th>Jefe de Proyecto</th>
             <th>Fecha Inicio</th>
@@ -28,8 +43,23 @@
         <tbody>
           {% for proyecto in proyectos %}
             <tr>
+              <td>
+                {% if proyecto.imagen %}
+                  <img src="{{ proyecto.imagen.url }}" alt="Imagen Proyecto" class="rounded" style="width: 60px; height: 60px; object-fit: cover; border: 1px solid #dee2e6; background: #fff;">
+                {% else %}
+                  <img src="{% static 'images/profileImage.jpg' %}" alt="Sin imagen" class="rounded" style="width: 60px; height: 60px; object-fit: cover; border: 1px solid #dee2e6; background: #fff;">
+                {% endif %}
+              </td>
               <td class="text-start">{{ proyecto.nom_proyecto }}</td>
-              <td>{{ proyecto.jefe_proyecto }}</td>
+              <td>
+                {% with jefe=proyecto.jefe_proyecto %}
+                  {% if jefe.perfil_docente.nombres or jefe.perfil_docente.apellido_paterno %}
+                    {{ jefe.perfil_docente.nombres }} {{ jefe.perfil_docente.apellido_paterno }} - <span class="text-secondary">{{ jefe.username }}</span>
+                  {% else %}
+                    {{ jefe.username }}
+                  {% endif %}
+                {% endwith %}
+              </td>
               <td>{{ proyecto.fecha_inicio|date:"d-m-Y" }}</td>
               <td>{{ proyecto.num_integrantes }}</td>
               <td>{{ proyecto.id_track }}</td>
@@ -56,7 +86,15 @@
                       </div>
                       <div class="modal-body text-start">
                         <p><strong>Nombre:</strong> {{ proyecto.nom_proyecto }}</p>
-                        <p><strong>Jefe de proyecto:</strong> {{ proyecto.jefe_proyecto }}</p>
+                        <p><strong>Jefe de proyecto:</strong> 
+                          {% with jefe=proyecto.jefe_proyecto %}
+                            {% if jefe.perfil_docente.nombres or jefe.perfil_docente.apellido_paterno %}
+                              {{ jefe.perfil_docente.nombres }} {{ jefe.perfil_docente.apellido_paterno }} - <span class="text-secondary">{{ jefe.username }}</span>
+                            {% else %}
+                              {{ jefe.username }}
+                            {% endif %}
+                          {% endwith %}
+                        </p>
                         <p><strong>Descripción:</strong> {{ proyecto.descripcion }}</p>
                         <p><strong>Objetivo:</strong> {{ proyecto.objetivo }}</p>
                         <p><strong>Fecha de inicio:</strong> {{ proyecto.fecha_inicio|date:"d-m-Y" }}</p>
@@ -79,7 +117,7 @@
       </table>
     </div>
   {% else %}
-    <div class="alert alert-info text-center">Aún no se han registrado proyectos.</div>
+    <div class="alert alert-info text-center mt-4">Aún no se han registrado proyectos.</div>
   {% endif %}
 </div>
 {% endblock %}

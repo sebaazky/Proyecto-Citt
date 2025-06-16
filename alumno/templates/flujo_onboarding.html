@@ -1,0 +1,59 @@
+{% extends 'base-alumnos.html' %} {% block titulo %}Primeros pasos -
+Onboarding{% endblock %} {% block content %}
+<div class="container py-4">
+  <h2 class="mb-4">Primeros pasos para comenzar</h2>
+  <ol class="list-group list-group-numbered mb-4">
+    <li
+      class="list-group-item {% if paso < 2 %}active bg-primary text-white{% elif paso > 1 %}bg-success text-white{% endif %}"
+    >
+      1. Completa tu perfil {% if paso > 1 %}<span class="badge bg-success ms-2"
+        >Listo</span
+      >{% elif paso == 1 %}<span class="badge bg-warning ms-2">Pendiente</span
+      >{% endif %} {% if paso == 1 %}<a
+        href="{% url 'edit-perfil-al' %}"
+        class="btn btn-sm btn-outline-light ms-3"
+        >Completar perfil</a
+      >{% endif %}
+    </li>
+    <li
+      class="list-group-item {% if paso == 2 %}active bg-primary text-white{% elif paso > 2 %}bg-success text-white{% endif %}"
+    >
+      2. Solicita unirte a un track {% if paso > 2 %}<span
+        class="badge bg-success ms-2"
+        >Listo</span
+      >{% elif paso == 2 %}<span class="badge bg-warning ms-2">Pendiente</span
+      >{% endif %} {% if paso == 2 %}<a
+        href="{% url 'listar-tracks' %}"
+        class="btn btn-sm btn-outline-light ms-3"
+        >Solicitar track</a
+      >{% endif %}
+    </li>
+    <li
+      class="list-group-item {% if paso == 3 %}active bg-primary text-white{% elif paso > 3 %}bg-success text-white{% endif %}"
+    >
+      3. Espera la aprobación de tu solicitud {% if paso > 3 %}<span
+        class="badge bg-success ms-2"
+        >Listo</span
+      >{% elif paso == 3 %}<span class="badge bg-warning ms-2">Pendiente</span
+      >{% endif %} {% if paso == 3 %}<span class="ms-3"
+        >Tu solicitud está en revisión.</span
+      >{% endif %}
+    </li>
+    <li
+      class="list-group-item {% if paso == 4 %}active bg-success text-white{% endif %}"
+    >
+      4. ¡Ya puedes crear proyectos y usar todas las funcionalidades! 
+      {% if paso == 4 %}<span class="badge bg-success ms-2">Completado</span>{% endif %}
+    </li>
+  </ol>
+  <div class="alert alert-info">
+    {% if paso == 1 %} Debes completar tu perfil antes de continuar. 
+    {% elif paso == 2 %} Solicita unirte a un track para poder crear proyectos. 
+    {% elif paso == 3 %} Espera a que tu solicitud sea aprobada por un administrador o
+    docente. 
+    {% elif paso == 4 %} ¡Felicidades! Ya puedes crear proyectos y
+    participar en tu track. 
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -5,60 +5,56 @@
 
 {% block content %}
 <div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-10 col-lg-8">
-
-      <!-- Card del Track -->
-      <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
-        <div class="bg-dark position-relative">
-          <img 
-            src="{% if track.imagen %}{{ track.imagen.url }}{% else %}{% static 'images/default_track.png' %}{% endif %}" 
-            class="img-fluid w-100" 
-            style="max-height: 400px; object-fit: cover;" 
-            alt="{{ track.nom_track }}">
-          <h2 class="position-absolute bottom-0 start-0 text-white bg-dark bg-opacity-75 px-4 py-2">{{ track.nom_track }}</h2>
-        </div>
-        <div class="card-body p-4 text-center">
-          {% if track.id_usuario.perfil_docente %}
-          <p class="text-muted fw-semibold mb-2">
-            Docente a cargo:
-            <span class="text-dark">
-              {{ track.id_usuario.perfil_docente.nombres }} {{ track.id_usuario.perfil_docente.apellido_paterno }} {{ track.id_usuario.perfil_docente.apellido_materno }}
-            </span>
-          </p>
-          {% else %}
-          <p class="text-muted">Docente a cargo: <span class="text-danger">No asignado</span></p>
-          {% endif %}
-
-          <p class="card-text fs-5 text-muted mt-3">{{ track.descripcion }}</p>
-
-          {% if boton_solicitud and not solicitud_pendiente %}
-          <form method="post" action="{% url 'unirse_a_track' track.id_track %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-success mt-3">Unirse al Track</button>
-          </form>
-          {% elif solicitud_pendiente %}
-          <div class="alert alert-warning mt-3" role="alert">
-            Ya tienes una solicitud pendiente para este track.
-          </div>
-          {% endif %}
+  <div class="row align-items-start justify-content-start">
+    <!-- Contenido central -->
+    <div class="col-lg-9 mb-4 ms-lg-0">
+      <!-- Banner superior -->
+      <div style="height: 120px; background: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat; border-radius: 12px; display: flex; align-items: flex-end; opacity: 0.3;">
+        <div class="w-100 p-3">
+          <h2 class="text-dark" style="font-weight: bold;">{{ track.nom_track }}</h2>
         </div>
       </div>
-
+      <!-- Menú navegación del track -->
+      <ul class="nav nav-tabs mb-4 mt-3">
+        <li class="nav-item">
+          <a class="nav-link {% if not request.GET.seccion or request.GET.seccion == 'home' %}active{% endif %}" href="{% url 'detalle-track' track.nom_track|slugify %}"><i class="bi bi-house-door"></i> Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.GET.seccion == 'proyectos' %}active{% endif %}" href="{% url 'detalle-track' track.nom_track|slugify %}?seccion=proyectos"><i class="bi bi-kanban"></i> Proyectos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.GET.seccion == 'reuniones' %}active{% endif %}" href="{% url 'detalle-track' track.nom_track|slugify %}?seccion=reuniones"><i class="bi bi-calendar-event"></i> Reuniones</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.GET.seccion == 'integrantes' %}active{% endif %}" href="{% url 'detalle-track' track.nom_track|slugify %}?seccion=integrantes"><i class="bi bi-people"></i> Integrantes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.GET.seccion == 'eventos' %}active{% endif %}" href="{% url 'detalle-track' track.nom_track|slugify %}?seccion=eventos"><i class="bi bi-megaphone"></i> Eventos</a>
+        </li>
+      </ul>
+      {% if not request.GET.seccion or request.GET.seccion == 'home' %}
       <!-- Últimas Publicaciones del Docente -->
-      <div class="mt-5">
-        <h4 class="mb-3">Últimas Publicaciones</h4>
+      <div class="mb-5">
+        <h4 class="mb-3 text-dark">Últimas Publicaciones</h4>
         {% if posts %}
         <ul class="list-group">
           {% for post in posts %}
-            <li class="list-group-item">
-              <strong>{{ post.docente.perfil_docente.nombres }} {{ post.docente.perfil_docente.apellido_paterno }}</strong> - {{ post.fecha_creacion|date:"d M Y H:i" }}<br>
-              {{ post.contenido|linebreaksbr }}
-              {% if post.imagen %}
-              <div class="mt-2">
-                <img src="{{ post.imagen.url }}" class="img-fluid rounded" style="max-height: 300px;">
-              </div>
+            <li class="list-group-item d-flex align-items-start">
+              {% if post.docente.perfil_docente.imagen_perfil %}
+                <img src="{{ post.docente.perfil_docente.imagen_perfil.url }}" class="rounded-circle me-2" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #eee;">
+              {% else %}
+                <img src="{% static 'images/profileImage.jpg' %}" class="rounded-circle me-2" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #eee;">
               {% endif %}
+              <div>
+                <strong>{{ post.docente.perfil_docente.nombres }} {{ post.docente.perfil_docente.apellido_paterno }}</strong> <span class="text-muted">({{ post.docente.username }})</span><br>
+                <span class="small text-secondary">{{ post.fecha_creacion|date:"d M Y H:i" }}</span><br>
+                {{ post.contenido|linebreaksbr }}
+                {% if post.imagen %}
+                <div class="mt-3">
+                  <img src="{{ post.imagen.url }}" class="img-fluid rounded" style="max-height: 300px;">
+                </div>
+                {% endif %}
+              </div>
             </li>
           {% endfor %}
         </ul>
@@ -66,82 +62,261 @@
         <p class="text-muted">No hay publicaciones registradas.</p>
         {% endif %}
       </div>
-
-      <!-- Proyectos Asociados -->
-      <div class="mt-5">
-        <h4 class="mb-3">Proyectos Asociados</h4>
-        {% if proyectos %}
-        <div class="row row-cols-1 row-cols-md-2 g-4">
-          {% for proyecto in proyectos %}
-          <div class="col">
-            <div class="card h-100 shadow-sm">
-              {% if proyecto.imagen %}
-              <img src="{{ proyecto.imagen.url }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="Imagen Proyecto">
-              {% endif %}
-              <div class="card-body">
-                <h5 class="card-title">{{ proyecto.nom_proyecto }}</h5>
-                <p class="card-text mb-1">
-                  <strong>Jefe Proyecto:</strong> {{ proyecto.jefe_proyecto.username }}
-                </p>
-                <p class="card-text">
-                  {{ proyecto.objetivo|truncatewords:20 }}
-                </p>
+      <!-- Carrusel de Proyectos Asociados -->
+      <div class="mb-5">
+        <h4 class="mb-3 text-dark">Proyectos Asociados</h4>
+        {% if proyectos_carrusel and proyectos_carrusel|length > 0 %}
+        <div id="proyectosCarruselAlumno" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            {% for info in proyectos_carrusel %}
+              {% with proyecto=info.proyecto %}
+              <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="card h-100 shadow-sm mx-auto" style="max-width: 400px;">
+                  {% if proyecto.imagen %}
+                  <img src="{{ proyecto.imagen.url }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="Imagen Proyecto">
+                  {% endif %}
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <h5 class="card-title mb-0">{{ proyecto.nom_proyecto }}</h5>
+                      <a href="#modalProyecto{{ proyecto.id_proyecto }}" data-bs-toggle="modal" class="btn btn-sm btn-outline-info" title="Ver detalles"><i class="bi bi-eye"></i></a>
+                    </div>
+                    <p class="card-text mb-1">
+                      <strong>Jefe Proyecto:</strong>
+                      {% if proyecto.jefe_proyecto.perfil_alumno %}
+                        {{ proyecto.jefe_proyecto.perfil_alumno.nombres }} {{ proyecto.jefe_proyecto.perfil_alumno.apellido_paterno }} {{ proyecto.jefe_proyecto.perfil_alumno.apellido_materno }} ({{ proyecto.jefe_proyecto.username }})
+                      {% elif proyecto.jefe_proyecto.perfil_docente %}
+                        {{ proyecto.jefe_proyecto.perfil_docente.nombres }} {{ proyecto.jefe_proyecto.perfil_docente.apellido_paterno }} {{ proyecto.jefe_proyecto.perfil_docente.apellido_materno }} ({{ proyecto.jefe_proyecto.username }})
+                      {% else %}
+                        {{ proyecto.jefe_proyecto.username }}
+                      {% endif %}
+                    </p>
+                    <p class="card-text mb-1">
+                      <strong>Integrantes:</strong> {{ proyecto.integrantes.count }} / {{ proyecto.num_integrantes }}
+                    </p>
+                    <p class="card-text">{{ proyecto.objetivo|truncatewords:20 }}</p>
+                    <form method="post" action="{% url 'solicitar-ingreso-proyecto' proyecto.id_proyecto %}">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-sm btn-outline-primary mt-1">Solicitar ingreso</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              {% endwith %}
+            {% endfor %}
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#proyectosCarruselAlumno" data-bs-slide="prev" style="background: rgba(30,30,30,0.7); border-radius: 50%; width: 40px; height: 40px; top: 50%; transform: translateY(-50%); left: 10px;">
+            <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(1);"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#proyectosCarruselAlumno" data-bs-slide="next" style="background: rgba(30,30,30,0.7); border-radius: 50%; width: 40px; height: 40px; top: 50%; transform: translateY(-50%); right: 10px;">
+            <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(1);"></span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
+        </div>
+        {% else %}
+          <p class="text-muted">No hay proyectos disponibles para solicitar ingreso.</p>
+        {% endif %}
+      </div>
+      {% elif request.GET.seccion == 'proyectos' %}
+      <!-- Listado de proyectos con botones interactivos -->
+      <div class="mb-5">
+        <h4 class="mb-3 text-dark">Proyectos del Track</h4>
+        <ul class="list-group">
+          {% for info in proyectos_info %}
+            {% with proyecto=info.proyecto %}
+            <li class="list-group-item d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center">
+                {% if proyecto.imagen %}
+                  <img src="{{ proyecto.imagen.url }}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;" alt="Imagen Proyecto">
+                {% else %}
+                  <img src="{% static 'images/profileImage.jpg' %}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;" alt="Imagen Proyecto">
+                {% endif %}
+                <span class="fw-semibold">{{ proyecto.nom_proyecto }}</span>
+                <span class="ms-3 small text-muted">
+                  <strong>Jefe:</strong>
+                  {% if proyecto.jefe_proyecto.perfil_alumno %}
+                    {{ proyecto.jefe_proyecto.perfil_alumno.nombres }} {{ proyecto.jefe_proyecto.perfil_alumno.apellido_paterno }}
+                  {% elif proyecto.jefe_proyecto.perfil_docente %}
+                    {{ proyecto.jefe_proyecto.perfil_docente.nombres }} {{ proyecto.jefe_proyecto.perfil_docente.apellido_paterno }}
+                  {% else %}
+                    {{ proyecto.jefe_proyecto.username }}
+                  {% endif %}
+                </span>
+                <span class="ms-3 small text-muted">
+                  <strong>Integrantes:</strong> {{ proyecto.integrantes.count }} / {{ proyecto.num_integrantes }}
+                </span>
+                <a href="#modalProyectoLista{{ proyecto.id_proyecto }}" data-bs-toggle="modal" class="btn btn-sm btn-outline-info ms-3" title="Ver detalles"><i class="bi bi-eye"></i></a>
+              </div>
+              <div>
+                {% if user.id_track and user.id_track.id_track == track.id_track %}
+                  {% if info.es_jefe or info.es_integrante %}
+                    <a href="{% url 'home-proyecto-alumno' proyecto.id_proyecto %}" class="btn btn-sm btn-outline-success" title="Ir al Home"><i class="bi bi-house-door"></i></a>
+                  {% elif info.puede_solicitar %}
+                    <form method="post" action="{% url 'solicitar-ingreso-proyecto' proyecto.id_proyecto %}" style="display:inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-sm btn-outline-primary" title="Solicitar ingreso"><i class="bi bi-person-plus"></i></button>
+                    </form>
+                  {% elif info.solicitud_pendiente %}
+                    <span class="badge bg-warning text-dark small">Pendiente</span>
+                    <form method="post" action="{% url 'cancelar-solicitud-proyecto' proyecto.id_proyecto %}" style="display:inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-sm btn-outline-danger" title="Cancelar solicitud"><i class="bi bi-x-circle"></i></button>
+                    </form>
+                  {% endif %}
+                {% endif %}
+              </div>
+            </li>
+            <!-- Modal de detalle para la lista -->
+            <div class="modal fade" id="modalProyectoLista{{ proyecto.id_proyecto }}" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">🔍 Detalle del Proyecto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <div class="modal-body text-start">
+                    <p><strong>Nombre:</strong> {{ proyecto.nom_proyecto }}</p>
+                    <p><strong>Jefe de proyecto:</strong>
+                      {% if proyecto.jefe_proyecto.perfil_alumno %}
+                        {{ proyecto.jefe_proyecto.perfil_alumno.nombres }} {{ proyecto.jefe_proyecto.perfil_alumno.apellido_paterno }}
+                      {% elif proyecto.jefe_proyecto.perfil_docente %}
+                        {{ proyecto.jefe_proyecto.perfil_docente.nombres }} {{ proyecto.jefe_proyecto.perfil_docente.apellido_paterno }}
+                      {% else %}
+                        {{ proyecto.jefe_proyecto.username }}
+                      {% endif %}
+                    </p>
+                    <p><strong>Descripción:</strong> {{ proyecto.descripcion }}</p>
+                    <p><strong>Objetivo:</strong> {{ proyecto.objetivo }}</p>
+                    <p><strong>Integrantes:</strong> {{ proyecto.integrantes.count }} / {{ proyecto.num_integrantes }}</p>
+                    {% if proyecto.imagen %}
+                      <p><strong>Imagen:</strong><br><img src="{{ proyecto.imagen.url }}" class="img-fluid rounded" style="max-height: 250px;"></p>
+                    {% endif %}
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+            {% endwith %}
+          {% empty %}
+            <li class="list-group-item text-muted">No hay proyectos registrados.</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% elif request.GET.seccion == 'reuniones' %}
+      <!-- Reuniones del Track -->
+      <div class="mb-5">
+        <h4 class="mb-3 text-dark">🗓️ Reuniones del Track</h4>
+        {% if reuniones %}
+        <div class="list-group mt-3">
+          {% for reunion in reuniones %}
+            <div class="list-group-item mb-3 shadow-sm rounded">
+              <h5 class="mb-1"><strong>{{ reunion }}</strong></h5>
+              <p class="mb-1">
+                <strong>Fecha:</strong> {{ reunion.fecha|date:"d M Y" }} <br>
+                <strong>Hora:</strong> {{ reunion.hora|time:"H:i" }} <br>
+                <strong>Modalidad:</strong> {{ reunion.get_modalidad_display }} <br>
+                {% if reunion.modalidad == "virtual" %}
+                  <strong>Link:</strong> <a href="{{ reunion.link_virtual }}" target="_blank">Entrar a reunión</a><br>
+                {% else %}
+                  <strong>Ubicación:</strong> {{ reunion.ubicacion }} <br>
+                {% endif %}
+                <strong>Descripción:</strong> {{ reunion.descripcion }}
+              </p>
+            </div>
           {% endfor %}
         </div>
         {% else %}
-        <p class="text-muted">No hay proyectos registrados.</p>
+        <div class="alert alert-info text-center mt-4" role="alert">
+          No hay reuniones programadas actualmente.
+        </div>
         {% endif %}
       </div>
-
-      <!-- Alumnos en el Track -->
-      <div class="mt-5">
-        <h4 class="mb-3">Alumnos en el Track</h4>
-        {% if alumnos %}
+      {% elif request.GET.seccion == 'integrantes' %}
+      <!-- Integrantes del Track -->
+      <div class="mb-5">
+        <h4 class="mb-3 text-dark">Integrantes del Track</h4>
         <ul class="list-group">
-          {% for alumno in alumnos %}
-          <li class="list-group-item">
-            {{ alumno.p_nombre }} {{ alumno.apellido_pat }} ({{ alumno.alumno.username }})
-          </li>
+          {% for integrante in alumnos %}
+            <li class="list-group-item">
+              {% if integrante.alumno.perfil_docente %}
+                ({{ integrante.alumno.username }}) - {{ integrante.alumno.perfil_docente.nombres }} {{ integrante.alumno.perfil_docente.apellido_paterno }} {{ integrante.alumno.perfil_docente.apellido_materno }} <span class="badge bg-info ms-2">Docente</span>
+              {% elif integrante.nombres %}
+                ({{ integrante.alumno.username }}) - {{ integrante.nombres }} {{ integrante.apellido_paterno }} {{ integrante.apellido_materno }}
+              {% else %}
+                ({{ integrante.alumno.username }})
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% elif request.GET.seccion == 'eventos' %}
+      <!-- Eventos del Track -->
+      <div class="mb-5">
+        <h4 class="mb-3 text-dark">Eventos del Track</h4>
+        {% if eventos %}
+        <ul class="list-group">
+          {% for evento in eventos %}
+            <li class="list-group-item">
+              <strong>{{ evento.nombre_evento }}</strong> - {{ evento.fecha_evento|date:"d M Y" }} {{ evento.hora|time:"H:i" }}<br>
+              <span class="text-muted">{{ evento.ubicacion_evento }}</span>
+            </li>
           {% endfor %}
         </ul>
         {% else %}
-        <p class="text-muted">No hay alumnos registrados en este track.</p>
+        <div class="alert alert-info text-center mt-4" role="alert">
+          No hay eventos registrados para este track.
+        </div>
         {% endif %}
       </div>
-
-      <!-- Reuniones -->
-      <div class="container py-5">
-        <h2 class="mb-4">🗓️ Reuniones Programadas</h2>
-
-        {% if reuniones %}
-          <div class="list-group">
-            {% for reunion in reuniones %}
-              <div class="list-group-item mb-3 shadow-sm rounded">
-                <h5 class="mb-1"><strong>{{ reunion.titulo|default:"Reunión del Track" }}</strong></h5>
-                <p class="mb-1">
-                  <strong>Fecha:</strong> {{ reunion.fecha|date:"d M Y" }} <br>
-                  <strong>Hora:</strong> {{ reunion.hora|time:"H:i" }} <br>
-                  <strong>Modalidad:</strong> {{ reunion.get_modalidad_display }} <br>
-                  {% if reunion.modalidad == "virtual" %}
-                    <strong>Link:</strong> <a href="{{ reunion.link_virtual }}" target="_blank">Entrar a reunión</a><br>
-                  {% else %}
-                    <strong>Ubicación:</strong> {{ reunion.ubicacion }} <br>
-                  {% endif %}
-                  <strong>Descripción:</strong> {{ reunion.descripcion }}
-                </p>
-              </div>
-            {% endfor %}
+      {% endif %}
+    </div>
+    <!-- Card lateral derecha: Información del Track -->
+    <div class="col-lg-3 d-none d-lg-block">
+      <div class="card" style="background: #f5f6fa; box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10); border: none; border-radius: 16px; margin-top: 1.5rem;">
+        <div class="card-header bg-white text-center border-bottom" style="border-radius: 16px 16px 0 0;">
+          <span class="fw-bold" style="font-size: 1.1rem; color: #222;">Información del Track</span>
+        </div>
+        <div class="card-body px-3 py-4 text-center">
+          <h5 class="fw-bold text-center mb-3" style="color: #222;">{{ track.nom_track }}</h5>
+          <div class="d-flex align-items-center justify-content-center mb-3">
+            {% if track.id_usuario.perfil_docente and track.id_usuario.perfil_docente.imagen_perfil %}
+              <img src="{{ track.id_usuario.perfil_docente.imagen_perfil.url }}" alt="Foto Docente" class="rounded-circle me-2" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #eee;">
+            {% else %}
+              <div class="rounded-circle bg-secondary me-2" style="width: 48px; height: 48px;"></div>
+            {% endif %}
+            <div class="text-start">
+              <span class="fw-semibold" style="color: #444;">Docente a cargo:</span><br>
+              {% if track.id_usuario.perfil_docente %}
+                <span style="color: #555;">{{ track.id_usuario.perfil_docente.nombres }} {{ track.id_usuario.perfil_docente.apellido_paterno }} {{ track.id_usuario.perfil_docente.apellido_materno }}</span>
+              {% else %}
+                <span class="text-danger">No asignado</span>
+              {% endif %}
+            </div>
           </div>
-        {% else %}
-          <div class="alert alert-info text-center mt-4" role="alert">
-            No tienes reuniones asignadas actualmente.
-          </div>
-        {% endif %}
+          <p class="mb-3 text-center"><span class="fw-semibold" style="color: #444;">Descripción:</span><br><span style="color: #555;">{{ track.descripcion }}</span></p>
+          <ul class="list-group list-group-flush mb-3 text-center">
+            <li class="list-group-item bg-transparent text-dark border-0 ps-0"><span class="fw-semibold">Alumnos:</span> {{ alumnos|length }}</li>
+            <li class="list-group-item bg-transparent text-dark border-0 ps-0"><span class="fw-semibold">Proyectos:</span> {{ proyectos_info|length }}</li>
+            <li class="list-group-item bg-transparent text-dark border-0 ps-0"><span class="fw-semibold">Eventos:</span> {{ eventos|length }}</li>
+          </ul>
+          {% if mostrar_boton_solicitud %}
+            <form method="post" action="{% url 'unirse_a_track' track.id_track %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-success w-100 mt-2">Unirse al Track</button>
+            </form>
+          {% elif solicitud_en_este_track %}
+            <div class="alert alert-warning mt-2" role="alert">
+              Ya tienes una solicitud pendiente para este track.
+            </div>
+          {% elif solicitud_en_otro_track %}
+            <div class="alert alert-warning mt-2" role="alert">
+              Ya tienes una solicitud pendiente para otro track. Debes esperar una respuesta.
+            </div>
+          {% endif %}
+        </div>
       </div>
-
     </div>
   </div>
 </div>

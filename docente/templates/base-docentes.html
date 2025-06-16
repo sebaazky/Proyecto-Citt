@@ -27,8 +27,16 @@
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item"><a class="nav-link" href="{% url 'home-docente' %}">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'ver-perfil-doc' %}">Mi perfil</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ user.username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="{% url 'ver-perfil-doc' %}">Mi perfil</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
+            </ul>
+          </li>
         </ul>
       </div>
     </div>
@@ -39,30 +47,39 @@
     <div class="row">
       <!-- Sidebar -->
       <div class="col-md-3 col-lg-2 bg-white border-end p-3 min-vh-100">
-        <div class="mb-4 text-center">
+        <div class="mb-4 mt-5 text-center">
           {% if user.perfil_docente.imagen_perfil %}
-            <img src="{{ user.perfil_docente.imagen_perfil.url }}" alt="Foto perfil" class="rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;" />
+            <img src="{{ user.perfil_docente.imagen_perfil.url }}" alt="Foto perfil" class="rounded-circle mb-2" style="width: 160px; height: 160px; object-fit: cover;" />
           {% else %}
-            <img src="{% static 'images/profileImage.jpg' %}" alt="Foto perfil default" class="rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;" />
+            <img src="{% static 'images/default-avatar.jpg' %}" alt="Foto perfil default" class="rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;" />
           {% endif %}
 
-          <h6 class="mt-2">{{ user.username }}</h6>
+          {% if user.perfil_docente.nombres and user.perfil_docente.apellido_paterno %}
+            <h5 class="mt-2"><strong>{{ user.perfil_docente.nombres}} {{user.perfil_docente.apellido_paterno}}</strong></h5>
+          {% endif %}
+           <p><strong>usuario: </strong> {{ user.username }}</p>
         </div>
 
         <ul class="nav nav-pills flex-column">
+          <li class="nav-item mb-2">
+            <a href="{% url 'home-docente' %}" class="nav-link bg-dark text-white rounded-3 text-center">
+              <i class="bi bi-person-fill me-2"></i> Home
+            </a>
+          </li>
           <li class="nav-item mb-2">
             <a href="{% url 'ver-perfil-doc' %}" class="nav-link bg-dark text-white rounded-3 text-center">
               <i class="bi bi-person-fill me-2"></i> Ver Perfil
             </a>
           </li>
+          <hr class="text-white my-3">
           <li class="nav-item mb-2">
-            <a href="{% url 'listar-reuniones-track' %}" class="nav-link bg-dark text-white rounded-3 text-center">
-              <i class="bi bi-calendar-check-fill me-2"></i> Reuniones
+            <a href="{% url 'mi-track' %}" class="nav-link bg-dark text-white rounded-3 text-center">
+              <i class="bi bi-compass-fill me-2"></i> Mi track
             </a>
           </li>
           <li class="nav-item mb-2">
-            <a href="{% url 'mi-track' %}" class="nav-link bg-dark text-white rounded-3 text-center">
-              <i class="bi bi-compass-fill me-2"></i> Mi Track
+            <a href="{% url 'listar-reuniones-track' %}" class="nav-link bg-dark text-white rounded-3 text-center">
+              <i class="bi bi-calendar-check-fill me-2"></i> Reuniones
             </a>
           </li>
           <li class="nav-item mb-2">
@@ -80,12 +97,38 @@
               <i class="bi bi-folder-fill me-2"></i> Proyectos
             </a>
           </li>
+          <hr class="text-white my-3">
+          <!-- Mis Proyectos desplegable al final -->
+          <li class="nav-item mb-2">
+            <a class="nav-link bg-dark text-white rounded-3 text-center d-flex justify-content-center align-items-center" data-bs-toggle="collapse" href="#sidebarProyectosDocenteCollapse" role="button" aria-expanded="false" aria-controls="sidebarProyectosDocenteCollapse">
+              <span><i class="bi bi-folder-fill me-2"></i> Mis Proyectos</span>
+              <i class="bi bi-caret-down-fill"></i>
+            </a>
+            <div class="collapse" id="sidebarProyectosDocenteCollapse">
+              {% with proyectos_docente=user.id_track.proyecto_set.all %}
+              {% if proyectos_docente %}
+              <ul class="nav flex-column ms-3 mt-1">
+                {% for proyecto in proyectos_docente %}
+                  <li class="nav-item mb-1">
+                    <a href="{% url 'home-proyecto-docente' proyecto.id_proyecto %}" class="nav-link text-dark small ps-4 py-1 rounded-2" style="background: #f8f9fa;">
+                      <i class="bi bi-chevron-right me-1"></i> {{ proyecto.nom_proyecto|truncatechars:18 }}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+              {% else %}
+                <div class="text-muted small ps-4 py-2">No gestionas proyectos</div>
+              {% endif %}
+              {% endwith %}
+            </div>
+          </li>
         </ul>
       </div>
 
       <!-- Main Content -->
       <main class="col-md-9 col-lg-10 px-4 py-4">
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
       </main>
     </div>
   </div>
