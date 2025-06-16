@@ -1,0 +1,99 @@
+{% extends 'base-admin.html' %}
+{% load static %}
+
+{% block title %}Gestión de Eventos{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">📅 Gestión de Eventos</h2>
+    <a href="{% url 'admin-crear-evento' %}" class="btn btn-dark rounded-pill px-4 py-2">
+      <i class="bi bi-plus-circle me-2"></i> Crear Evento
+    </a>
+  </div>
+
+  {% if eventos %}
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered align-middle text-center">
+          <thead class="table-dark">
+            <tr>
+                <th>Nombre</th>
+                <th>Infografía</th>  <!-- Nueva columna -->
+                <th>Tipo</th>
+                <th>Ubicación</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for evento in eventos %}
+            <tr>
+                <td class="text-start">{{ evento.nombre_evento }}</td>
+                
+                <!-- Nueva celda para infografía -->
+                <td>
+                {% if evento.infografia %}
+                    <img src="{{ evento.infografia.url }}" class="img-thumbnail" style="max-height: 80px;">
+                {% else %}
+                    <span class="text-muted">Sin imagen</span>
+                {% endif %}
+                </td>
+
+                <td>{{ evento.id_tipo_evento }}</td>
+                <td>{{ evento.ubicacion_evento }}</td>
+                <td>{{ evento.fecha_evento|date:"d-m-Y" }}</td>
+                <td>{{ evento.hora|time:"H:i" }}</td>
+                <td>
+                <div class="btn-group" role="group">
+                    <a href="#" class="btn btn-sm btn-outline-primary" title="Ver Detalles"
+                    data-bs-toggle="modal" data-bs-target="#detalleEvento{{ evento.id_evento }}">
+                    <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{% url 'admin-modificar-evento' evento.id_evento %}" class="btn btn-sm btn-outline-warning" title="Modificar">
+                    <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="{% url 'admin-eliminar-evento' evento.id_evento %}" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                    <i class="bi bi-trash"></i>
+                    </a>
+                </div>
+                </td>
+            </tr>
+
+
+          <!-- Modal Detalle -->
+          <div class="modal fade" id="detalleEvento{{ evento.id_evento }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">🔍 Detalle del Evento</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-start">
+                  <p><strong>Nombre:</strong> {{ evento.nombre_evento }}</p>
+                  <p><strong>Tipo:</strong> {{ evento.id_tipo_evento }}</p>
+                  <p><strong>Ubicación:</strong> {{ evento.ubicacion_evento }}</p>
+                  <p><strong>Fecha:</strong> {{ evento.fecha_evento|date:"d-m-Y" }}</p>
+                  <p><strong>Hora:</strong> {{ evento.hora|time:"H:i" }}</p>
+                  {% if evento.infografia %}
+                    <p><strong>Infografía:</strong><br>
+                      <img src="{{ evento.infografia.url }}" class="img-fluid rounded" style="max-height: 250px;">
+                    </p>
+                  {% endif %}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center">No hay eventos registrados.</div>
+  {% endif %}
+</div>
+{% endblock %}

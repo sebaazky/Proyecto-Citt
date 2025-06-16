@@ -1,0 +1,33 @@
+{% extends 'base-admin.html' %}
+{% load static %}
+
+{% block title %}Mi Perfil Administrador{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow p-4">
+    <div class="row align-items-center">
+      <div class="col-md-4 text-center">
+        {% if perfil.imagen_perfil %}
+          <img src="{{ perfil.imagen_perfil.url }}" class="img-fluid rounded-circle mb-3" style="width: 180px; height: 180px; object-fit: cover;" alt="Foto perfil">
+        {% else %}
+          <img src="{% static 'images/profileImage.jpg' %}" class="img-fluid rounded-circle mb-3" style="width: 180px; height: 180px; object-fit: cover;" alt="Imagen por defecto">
+        {% endif %}
+        <p class="text-muted">{{ perfil.administrador.email }}</p>
+        <a href="{% url 'modificar-perfil-admin' %}" class="btn btn-outline-primary btn-sm">Editar Perfil</a>
+      </div>
+
+      <div class="col-md-8">
+        <h3 class="text-primary">Información Personal</h3>
+        <hr>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Nombre completo:</strong> {{ perfil.nombres }}</li>
+          <li class="list-group-item"><strong>Apellido Paterno:</strong> {{ perfil.apellido_paterno }}</li>
+          <li class="list-group-item"><strong>Apellido Materno:</strong> {{ perfil.apellido_materno }}</li>
+          <li class="list-group-item"><strong>Género:</strong> {{ perfil.genero }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

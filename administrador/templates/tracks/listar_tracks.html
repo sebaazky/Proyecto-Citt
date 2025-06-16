@@ -1,0 +1,88 @@
+{% extends 'base-admin.html' %}
+{% load static %}
+
+{% block title %}Gestión de Tracks{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">🎧 Gestión de Tracks</h2>
+    <a href="{% url 'admin-crear-track' %}" class="btn btn-dark rounded-pill px-4 py-2">
+      <i class="bi bi-plus-circle me-2"></i> Crear Track
+    </a>
+  </div>
+
+  {% if tracks %}
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered align-middle text-center">
+        <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Docente Asignado</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for track in tracks %}
+          <tr>
+            <td>{{ track.id_track }}</td>
+            <td>{{ track.nom_track }}</td>
+            <td>{{ track.id_usuario.username }}</td>
+            <td>{{ track.descripcion }}</td>
+            <td>
+              <div class="btn-group" role="group">
+                <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#modalTrack{{ track.pk }}" title="Ver Detalles">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <a href="{% url 'admin-modificar-track' track.pk %}" class="btn btn-sm btn-outline-warning" title="Modificar">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <a href="{% url 'admin-eliminar-track' track.pk %}" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Modal Detalle Track -->
+          <div class="modal fade" id="modalTrack{{ track.pk }}" tabindex="-1" aria-labelledby="modalLabel{{ track.pk }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+              <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                  <h5 class="modal-title" id="modalLabel{{ track.pk }}">🎧 Detalle del Track</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                  <p><strong>Imagen del Track:</strong></p>
+                {% if track.imagen %}
+                  <img src="{{ track.imagen.url }}" alt="Imagen del track" width="100" class="rounded shadow-sm">
+                {% else %}
+                  <span class="text-muted">Sin imagen</span>
+                {% endif %}
+                  <p><strong>Nombre:</strong> {{ track.nom_track }}</p>
+                  <p><strong>Descripción:</strong> {{ track.descripcion }}</p>
+                  <p><strong>Docente Asignado:</strong> {{ track.id_usuario.username }}</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Fin Modal -->
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center">No hay tracks registrados.</div>
+  {% endif %}
+</div>
+{% endblock %}
+
+
+
+
+<td>{{ track.id_usuario.username }}</td>

@@ -1,0 +1,103 @@
+{% extends 'base-admin.html' %}
+{% load static %}
+
+{% block title %}Gestión de Alumnos{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">🎓 Gestión de Alumnos</h2>
+    <a href="{% url 'admin-crear-alumno' %}" class="btn btn-dark rounded-pill px-4 py-2">
+      <i class="bi bi-plus-circle me-2"></i> Crear Alumno
+    </a>
+  </div>
+
+  {% if alumnos %}
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered align-middle text-center">
+        <thead class="table-dark">
+          <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Género</th>
+            <th>Imagen</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for alumno in alumnos %}
+          <tr>
+            <td>{{ alumno.nombres }}</td>
+            <td>{{ alumno.apellido_paterno }} {{ alumno.apellido_materno }}</td>
+            <td>{{ alumno.alumno.email }}</td>
+            <td>{{ alumno.telefono }}</td>
+            <td>{{ alumno.genero }}</td>
+            <td>
+              {% if alumno.imagen_perfil %}
+                <img src="{{ alumno.imagen_perfil.url }}" class="img-thumbnail" style="max-width: 80px; max-height: 80px;">
+              {% else %}
+                <span class="text-muted">Sin imagen</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="btn-group" role="group">
+                <!-- Botón Ver -->
+                <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#verAlumnoModal{{ alumno.id }}" title="Ver">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <a href="{% url 'admin-modificar-alumno' alumno.id %}" class="btn btn-sm btn-outline-warning" title="Modificar">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <a href="{% url 'admin-eliminar-alumno' alumno.id %}" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Modal Ver Alumno -->
+          <div class="modal fade" id="verAlumnoModal{{ alumno.id }}" tabindex="-1" aria-labelledby="verAlumnoModalLabel{{ alumno.id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+              <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                  <h5 class="modal-title" id="verAlumnoModalLabel{{ alumno.id }}">Detalles del Alumno</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row mb-3">
+                    <div class="col-md-4 text-center">
+                      {% if alumno.imagen_perfil %}
+                        <img src="{{ alumno.imagen_perfil.url }}" class="img-fluid rounded" style="max-height: 200px;">
+                      {% else %}
+                        <span class="text-muted">Sin imagen</span>
+                      {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                      <p><strong>Nombre:</strong> {{ alumno.nombres }}</p>
+                      <p><strong>Apellido Paterno:</strong> {{ alumno.apellido_paterno }}</p>
+                      <p><strong>Apellido Materno:</strong> {{ alumno.apellido_materno }}</p>
+                      <p><strong>Email:</strong> {{ alumno.alumno.email }}</p>
+                      <p><strong>Teléfono:</strong> {{ alumno.telefono }}</p>
+                      <p><strong>Dirección:</strong> {{ alumno.direccion }}</p>
+                      <p><strong>Género:</strong> {{ alumno.genero }}</p>
+                      <p><strong>Carrera:</strong> {{ alumno.carrera }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center">No hay alumnos registrados.</div>
+  {% endif %}
+</div>
+{% endblock %}

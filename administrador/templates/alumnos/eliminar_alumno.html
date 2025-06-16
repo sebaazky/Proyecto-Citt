@@ -1,0 +1,19 @@
+{% extends 'base-admin.html' %}
+{% load static %}
+
+{% block title %}Eliminar Alumno{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="alert alert-warning text-center" role="alert">
+    <h4 class="alert-heading">¿Estás seguro?</h4>
+    <p>Estás a punto de eliminar el perfil del alumno <strong>{{ alumno.nombres }} {{ alumno.apellido_paterno }}</strong>. Esta acción no se puede deshacer.</p>
+    <hr>
+    <form method="post" class="d-inline-block">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger px-4">Eliminar</button>
+      <a href="{% url 'admin-gestion-alumnos' %}" class="btn btn-secondary px-4">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
