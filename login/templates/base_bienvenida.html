@@ -84,26 +84,9 @@
                 </li>
               </ul>
               {% else %}
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="loginDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Log in
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="loginDropdown">
-                <li>
-                  <a class="dropdown-item" href="{% url 'login-alumno' %}"
-                    >Alumno</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#">Docente</a>
-                </li>
-              </ul>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'login-alumno' %}">Log in</a>
+              </li>
               {% endif %}
             </li>
           </ul>

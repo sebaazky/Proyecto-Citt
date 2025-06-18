@@ -73,22 +73,6 @@
       </div>
     </div>
 
-    <!-- Card Track -->
-    <div class="col-md-12">
-      <div class="card shadow h-100">
-        <img src="{% static 'images/track.jpg' %}" class="card-img-top" alt="Mi Track" style="height: 200px; object-fit: cover;" />
-        <div class="card-body text-center">
-          <h5 class="card-title">Mi Track</h5>
-          {% if user.perfil_alumno.track_interes %}
-            <p class="card-text">Accede al contenido, tareas y recursos de tu track asignado para avanzar en tu formación y proyectos.</p>
-            <a href="{% url 'detalle_track' user.perfil_alumno.track_interes.slug %}" class="btn btn-dark">Ir a Mi Track</a>
-          {% else %}
-            <p class="card-text text-danger">Aún no estás registrado en un track. Completa tu perfil o solicita inscripción.</p>
-            <a href="{% url 'edit-perfil-al' %}" class="btn btn-outline-warning">Registrar Track</a>
-          {% endif %}
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 {% endblock %}

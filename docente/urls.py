@@ -24,11 +24,11 @@ urlpatterns = [
      # Track del docente, gestion de post y solicitudes de ingreso al track
     path('mi-track/', views.mi_track_view, name='mi-track'),
     path('mi-track/post/crear/', views.crear_post_docente,
-         name='crear-post-docente'),
+         name='crear-post-track-docente'),
     path('mi-track/post/<int:post_id>/eliminar/',
-         views.eliminar_post_docente, name='eliminar-post-docente'),
+         views.eliminar_post_docente, name='eliminar-post-track-docente'),
     path('mi-track/post/<int:post_id>/modificar/',
-         views.modificar_post_docente, name='modificar-post-docente'),
+         views.modificar_post_docente, name='modificar-post-track-docente'),
 
     path('mi-track/alumnos/', views.listado_alumnos_track,
          name='listado-alumnos-track'),

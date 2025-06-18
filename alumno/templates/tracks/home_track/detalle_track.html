@@ -9,9 +9,9 @@
     <!-- Contenido central -->
     <div class="col-lg-9 mb-4 ms-lg-0">
       <!-- Banner superior -->
-      <div style="height: 120px; background: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat; border-radius: 12px; display: flex; align-items: flex-end; opacity: 0.3;">
+      <div style="height: 120px; background: url('{{ track.imagen.url }}') center/cover no-repeat; border-radius: 12px; display: flex; align-items: flex-end; opacity: 1;">
         <div class="w-100 p-3">
-          <h2 class="text-dark" style="font-weight: bold;">{{ track.nom_track }}</h2>
+          <h2 class="text-white" style="font-weight: bold;">{{ track.nom_track }}</h2>
         </div>
       </div>
       <!-- Menú navegación del track -->
@@ -98,6 +98,38 @@
                       {% csrf_token %}
                       <button type="submit" class="btn btn-sm btn-outline-primary mt-1">Solicitar ingreso</button>
                     </form>
+                  </div>
+                </div>
+              </div>
+              <!-- Modal de detalle para el carrusel -->
+              <div class="modal fade" id="modalProyecto{{ proyecto.id_proyecto }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">🔍 Detalle del Proyecto</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-start">
+                      <p><strong>Nombre:</strong> {{ proyecto.nom_proyecto }}</p>
+                      <p><strong>Jefe de proyecto:</strong>
+                        {% if proyecto.jefe_proyecto.perfil_alumno %}
+                          {{ proyecto.jefe_proyecto.perfil_alumno.nombres }} {{ proyecto.jefe_proyecto.perfil_alumno.apellido_paterno }}
+                        {% elif proyecto.jefe_proyecto.perfil_docente %}
+                          {{ proyecto.jefe_proyecto.perfil_docente.nombres }} {{ proyecto.jefe_proyecto.perfil_docente.apellido_paterno }}
+                        {% else %}
+                          {{ proyecto.jefe_proyecto.username }}
+                        {% endif %}
+                      </p>
+                      <p><strong>Descripción:</strong> {{ proyecto.descripcion }}</p>
+                      <p><strong>Objetivo:</strong> {{ proyecto.objetivo }}</p>
+                      <p><strong>Integrantes:</strong> {{ proyecto.integrantes.count }} / {{ proyecto.num_integrantes }}</p>
+                      {% if proyecto.imagen %}
+                        <p><strong>Imagen:</strong><br><img src="{{ proyecto.imagen.url }}" class="img-fluid rounded" style="max-height: 250px;"></p>
+                      {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
                   </div>
                 </div>
               </div>

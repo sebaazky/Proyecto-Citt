@@ -52,14 +52,14 @@
           {% for post in posts %}
             <li class="list-group-item d-flex align-items-start justify-content-between">
               <div class="d-flex">
-                {% if post.autor.perfil_alumno.imagen_perfil %}
-                  <img src="{{ post.autor.perfil_alumno.imagen_perfil.url }}" class="rounded-circle me-2 mt-1" style="width: 40px; height: 40px; object-fit: cover;" alt="Foto autor">
+                {% if post.autor.perfil_docente.imagen_perfil %}
+                  <img src="{{ post.autor.perfil_docente.imagen_perfil.url }}" class="rounded-circle me-2 mt-1" style="width: 40px; height: 40px; object-fit: cover;" alt="Foto autor">
                 {% else %}
                   <img src="{% static 'images/profileImage.jpg' %}" class="rounded-circle me-2 mt-1" style="width: 40px; height: 40px; object-fit: cover;" alt="Foto autor">
                 {% endif %}
                 <div>
                   <div>
-                    <strong>{{ post.autor.perfil_alumno.nombres }} {{ post.autor.perfil_alumno.apellido_paterno }}</strong>
+                    <strong>{{ post.autor.perfil_docente.nombres }} {{ post.autor.perfil_docente.apellido_paterno }}</strong>
                     <span class="text-muted">({{ post.autor.username }})</span>
                   </div>
                   <div class="small text-secondary">{{ post.fecha_creacion|date:"d M Y H:i" }}</div>

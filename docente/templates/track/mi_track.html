@@ -58,36 +58,88 @@
           <ul class="list-group">
             {% for post in posts %}
               <li class="list-group-item d-flex justify-content-between">
-  <div class="d-flex">
-    <!-- Imagen del perfil -->
-    {% if post.docente.perfil_docente.imagen_perfil %}
-      <img src="{{ post.docente.perfil_docente.imagen_perfil.url }}" class="rounded-circle me-2 mt-1" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #eee;">
-    {% else %}
-      <img src="{% static 'images/profileImage.jpg' %}" class="rounded-circle me-2 mt-1" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #eee;">
-    {% endif %}
+                <div class="d-flex">
+                  <!-- Imagen del perfil -->
+                  {% if post.docente.perfil_docente.imagen_perfil %}
+                    <img src="{{ post.docente.perfil_docente.imagen_perfil.url }}" class="rounded-circle me-2 mt-1" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #eee;">
+                  {% else %}
+                    <img src="{% static 'images/profileImage.jpg' %}" class="rounded-circle me-2 mt-1" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #eee;">
+                  {% endif %}
 
-    <!-- Contenido del post -->
-    <div>
-      <strong>{{ post.docente.first_name }} {{ post.docente.last_name }}</strong>
-      <span class="text-muted">({{ post.docente.username }})</span><br>
-      <span class="small text-secondary">{{ post.fecha_creacion|date:"d M Y H:i" }}</span><br>
-      {{ post.contenido|linebreaksbr }}
-      {% if post.imagen %}
-        <div class="mt-2">
-          <img src="{{ post.imagen.url }}" class="img-fluid rounded" style="max-height: 300px;">
-        </div>
-      {% endif %}
-    </div>
-  </div>
+                  <!-- Contenido del post -->
+                  <div>
+                    <strong>{{ post.docente.first_name }} {{ post.docente.last_name }}</strong>
+                    <span class="text-muted">({{ post.docente.username }})</span><br>
+                    <span class="small text-secondary">{{ post.fecha_creacion|date:"d M Y H:i" }}</span><br>
+                    {{ post.contenido|linebreaksbr }}
+                    {% if post.imagen %}
+                      <div class="mt-2">
+                        <img src="{{ post.imagen.url }}" class="img-fluid rounded" style="max-height: 300px;">
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
 
-  {% if user == post.docente %}
-  <div class="ms-2 d-flex flex-column gap-1">
-    <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editarPostModal{{ post.id }}"><i class="bi bi-pencil"></i></button>
-    <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#eliminarPostModal{{ post.id }}"><i class="bi bi-trash"></i></button>
-  </div>
-  {% endif %}
-</li>
-            {% endfor %}
+                {% if user == post.docente %}
+                <div class="ms-2 d-flex flex-column gap-1">
+                  <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editarPostModal{{ post.id }}"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#eliminarPostModal{{ post.id }}"><i class="bi bi-trash"></i></button>
+                </div>
+                <!-- Modal Editar Post -->
+                <div class="modal fade" id="editarPostModal{{ post.id }}" tabindex="-1" aria-labelledby="editarPostModalLabel{{ post.id }}" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <form method="post" action="{% url 'modificar-post-track-docente' post.id %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="editarPostModalLabel{{ post.id }}">Editar Post</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="mb-2">
+                            <label for="contenido-{{ post.id }}" class="form-label">Contenido</label>
+                            <textarea name="contenido" id="contenido-{{ post.id }}" class="form-control" rows="3">{{ post.contenido }}</textarea>
+                          </div>
+                          <div class="mb-2">
+                            <label for="imagen-{{ post.id }}" class="form-label">Imagen</label>
+                            <input type="file" name="imagen" id="imagen-{{ post.id }}" class="form-control">
+                            {% if post.imagen %}
+                              <img src="{{ post.imagen.url }}" class="img-fluid rounded mt-2" style="max-height: 120px;">
+                            {% endif %}
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                          <button type="submit" class="btn btn-warning">Guardar cambios</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <!-- Modal Eliminar Post -->
+                <div class="modal fade" id="eliminarPostModal{{ post.id }}" tabindex="-1" aria-labelledby="eliminarPostModalLabel{{ post.id }}" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <form method="post" action="{% url 'eliminar-post-track-docente' post.id %}">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="eliminarPostModalLabel{{ post.id }}">Eliminar Post</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                          ¿Estás seguro que deseas eliminar este post?
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                          <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+              </li>
+             {% endfor %}
           </ul>
           {% else %}
           <p class="text-muted">No hay publicaciones registradas.</p>

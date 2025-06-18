@@ -101,7 +101,7 @@ def admin_reporte_pdf(request):
     # Generar PDF o XLS
     if 'download' in request.GET and data:
         if formato == 'pdf':
-            html = render_to_string('reporte_pdf_export.html', {
+            html = render_to_string('reportes/reporte_pdf_export.html', {
                 'data': data,
                 'tipo': tipo,
                 'tracks': tracks,
@@ -157,7 +157,7 @@ def admin_enviar_correos(request):
         mensaje = request.POST.get('mensaje')
         destinatario = request.POST.get('destinatario')
         track_id = request.POST.get('track')
-        selected_ids = request.POST.getlist('selected_ids[]')
+        selected_ids = request.POST.get('selected_ids', '')
         users = User.objects.all()
         if destinatario == 'alumnos':
             users = users.filter(rol='alumno')
@@ -166,6 +166,7 @@ def admin_enviar_correos(request):
         if track_id:
             users = users.filter(id_track=track_id)
         if selected_ids:
+            selected_ids = [int(i) for i in selected_ids.split(',') if i]
             users = users.filter(id__in=selected_ids)
         correos = [u.email for u in users if u.email]
         if correos:
@@ -177,7 +178,7 @@ def admin_enviar_correos(request):
                 fail_silently=False,
             )
             enviados = len(correos)
-        return render(request, 'enviar_correos.html', {'tracks': tracks, 'enviados': enviados})
+        return render(request, 'correos/enviar_correos.html', {'tracks': tracks, 'enviados': enviados})
     return render(request, 'correos/enviar_correos.html', {'tracks': tracks})
 
 
