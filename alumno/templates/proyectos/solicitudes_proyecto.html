@@ -20,8 +20,8 @@
             <td>{{ solicitud.alumno.perfil_alumno.nombres }} {{ solicitud.alumno.perfil_alumno.apellido_paterno }} ({{ solicitud.alumno.username }})</td>
             <td>{{ solicitud.fecha_solicitud|date:'d/m/Y H:i' }}</td>
             <td>
-              <a href="{% url 'aceptar-solicitud-proyecto' proyecto.id_proyecto solicitud.id_solicitud %}" class="btn btn-success btn-sm">Aceptar</a>
-              <a href="{% url 'rechazar-solicitud-proyecto' proyecto.id_proyecto solicitud.id_solicitud %}" class="btn btn-danger btn-sm">Rechazar</a>
+              <a href="{% url 'aceptar-solicitud-proyecto-alumno' proyecto.id_proyecto solicitud.id_solicitud %}" class="btn btn-success btn-sm">Aceptar</a>
+              <a href="{% url 'rechazar-solicitud-proyecto-alumno' proyecto.id_proyecto solicitud.id_solicitud %}" class="btn btn-danger btn-sm">Rechazar</a>
             </td>
           </tr>
           {% empty %}
@@ -29,7 +29,7 @@
           {% endfor %}
         </tbody>
       </table>
-      <a href="{% url 'home-proyecto' proyecto.id_proyecto %}" class="btn btn-outline-secondary mt-3">Volver al proyecto</a>
+      <a href="{% url 'home-proyecto-alumno' proyecto.id_proyecto %}" class="btn btn-outline-secondary mt-3">Volver al proyecto</a>
     </div>
   </div>
 </div>

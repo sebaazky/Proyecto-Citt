@@ -158,7 +158,7 @@
                     </form>
                   {% elif info.solicitud_pendiente %}
                     <span class="badge bg-warning text-dark small">Pendiente</span>
-                    <form method="post" action="{% url 'cancelar-solicitud-proyecto' proyecto.id_proyecto %}" style="display:inline;">
+                    <form method="post" action="{% url 'cancelar-solicitud-proyecto-alumno' proyecto.id_proyecto %}" style="display:inline;">
                       {% csrf_token %}
                       <button type="submit" class="btn btn-sm btn-outline-danger" title="Cancelar solicitud"><i class="bi bi-x-circle"></i></button>
                     </form>

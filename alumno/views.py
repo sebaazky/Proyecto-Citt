@@ -152,16 +152,6 @@ def lista_proyectos_citt(request, track_id):
 # Solicitar ingreso a proyecto
 
 
-@login_required
-@rol_requerido('alumno')
-def solicitar_ingreso_proyecto(request, id_proyecto):
-    proyecto = get_object_or_404(Proyecto, id_proyecto=id_proyecto)
-    if ProyectoRequest.objects.filter(proyecto=proyecto, alumno=request.user, estado='pendiente').exists():
-        messages.warning(request, "Ya enviaste una solicitud a este proyecto.")
-    else:
-        ProyectoRequest.objects.create(proyecto=proyecto, alumno=request.user)
-        messages.success(request, "Solicitud enviada correctamente.")
-    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 # Gestionar solicitudes de proyectos
 
@@ -438,12 +428,15 @@ def crear_reunion_proyecto(request, proyecto_id):
 
 @login_required
 @rol_requerido('alumno')
-def solicitar_ingreso_proyecto(request, proyecto_id):
-    proyecto = get_object_or_404(Proyecto, id_proyecto=proyecto_id)
-    if not ProyectoRequest.objects.filter(proyecto=proyecto, alumno=request.user, estado='pendiente').exists():
+def solicitar_ingreso_proyecto(request, id_proyecto):
+    proyecto = get_object_or_404(Proyecto, id_proyecto=id_proyecto)
+    if ProyectoRequest.objects.filter(proyecto=proyecto, alumno=request.user, estado='pendiente').exists():
+        messages.warning(request, "Ya enviaste una solicitud a este proyecto.")
+    else:
         ProyectoRequest.objects.create(proyecto=proyecto, alumno=request.user)
-        messages.success(request, 'Solicitud enviada correctamente.')
+        messages.success(request, "Solicitud enviada correctamente.")
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
 
 @login_required
 @rol_requerido('alumno')
@@ -487,7 +480,7 @@ def rechazar_solicitud_proyecto(request, proyecto_id, solicitud_id):
     solicitud.estado = 'rechazada'
     solicitud.save()
     messages.info(request, 'Solicitud rechazada.')
-    return redirect('gestionar-solicitudes-proyecto', proyecto_id=proyecto_id)
+    return redirect('gestionar-solicitudes-proyecto-alumno', proyecto_id=proyecto_id)
 
 @login_required
 @rol_requerido('alumno')
@@ -516,7 +509,7 @@ def modificar_post_proyecto(request, proyecto_id, post_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Post modificado correctamente.')
-            return redirect('home-proyecto', proyecto_id=proyecto_id)
+            return redirect('home-proyecto-alumno', proyecto_id=proyecto_id)
     else:
         form = ProyectoPostForm(instance=post)
     return render(request, 'proyectos/modificar_post_proyecto.html', {'form': form, 'post': post, 'proyecto': proyecto})
@@ -531,7 +524,7 @@ def eliminar_post_proyecto(request, proyecto_id, post_id):
     if request.method == 'POST':
         post.delete()
         messages.success(request, 'Post eliminado correctamente.')
-        return redirect('home-proyecto', proyecto_id=proyecto_id)
+        return redirect('home-proyecto-alumno', proyecto_id=proyecto_id)
     return render(request, 'proyectos/eliminar_post_proyecto.html', {'post': post, 'proyecto': proyecto})
 
 @login_required

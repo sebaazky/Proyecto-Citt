@@ -73,7 +73,7 @@
               </div>
               {% if es_jefe %}
                 <div class="ms-2 d-flex flex-column gap-1">
-                  <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-targ  et="#editarPostModal{{ post.id_post }}"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editarPostModal{{ post.id_post }}"><i class="bi bi-pencil"></i></button>
                   <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#eliminarPostModal{{ post.id_post }}"><i class="bi bi-trash"></i></button>
                 </div>
                 <!-- Modal Editar Post -->
@@ -333,8 +333,8 @@
               <td>{{ solicitud.alumno.perfil_alumno.nombres }} {{ solicitud.alumno.perfil_alumno.apellido_paterno }} ({{ solicitud.alumno.username }})</td>
               <td>{{ solicitud.fecha_solicitud|date:'d/m/Y H:i' }}</td>
               <td>
-                <a href="{% url 'aceptar-solicitud-proyecto' proyecto.id_proyecto solicitud.id_solicitud %}" class="btn btn-success btn-sm">Aceptar</a>
-                <a href="{% url 'rechazar-solicitud-proyecto' proyecto.id_proyecto solicitud.id_solicitud %}" class="btn btn-danger btn-sm">Rechazar</a>
+                <a href="{% url 'aceptar-solicitud-proyecto-alumno' proyecto.id_proyecto solicitud.id_solicitud %}" class="btn btn-success btn-sm">Aceptar</a>
+                <a href="{% url 'rechazar-solicitud-proyecto-alumno' proyecto.id_proyecto solicitud.id_solicitud %}" class="btn btn-danger btn-sm">Rechazar</a>
               </td>
             </tr>
             {% empty %}
@@ -410,7 +410,7 @@
 
               <!-- Resto de integrantes -->
               {% for integrante in integrantes %}
-                <img src="{{ integrante.perfil_alumno.imagen_perfil.url }}"
+                <img src="{{ integrante.alumno.perfil_alumno.imagen_perfil.url }}"
                     class="rounded-circle border border-2 border-secondary"
                     alt="Integrante"
                     style="width: 38px; height: 38px; object-fit: cover;">

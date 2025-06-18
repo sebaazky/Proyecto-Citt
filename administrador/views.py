@@ -183,8 +183,7 @@ def admin_enviar_correos(request):
 
 @login_required
 def ver_perfil_administrador(request):
-    perfil = get_object_or_404(PerfilAdministrador, administrador=request.user)
-
+    perfil, created = PerfilAdministrador.objects.get_or_create(administrador=request.user)
     return render(request, 'perfil/ver_perfil_administrador.html', {'perfil': perfil})
 
 

@@ -1,14 +1,14 @@
 {% extends 'base-admin.html' %}
 {% load static %}
 
-{% block title %}Gestión de Alumnos{% endblock %}
+{% block title %}Gestión de perfiles de alumnos{% endblock %}
 
 {% block content %}
 <div class="container py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">🎓 Gestión de Alumnos</h2>
+    <h2 class="mb-0">🎓 Gestión de perfiles de alumnos</h2>
     <a href="{% url 'admin-crear-alumno' %}" class="btn btn-dark rounded-pill px-4 py-2">
-      <i class="bi bi-plus-circle me-2"></i> Crear Alumno
+      <i class="bi bi-plus-circle me-2"></i> Crear perfil alumno
     </a>
   </div>
 
@@ -97,7 +97,7 @@
       </table>
     </div>
   {% else %}
-    <div class="alert alert-info text-center">No hay alumnos registrados.</div>
+    <div class="alert alert-info text-center">No hay perfiles de alumnos registrados.</div>
   {% endif %}
 </div>
 {% endblock %}
