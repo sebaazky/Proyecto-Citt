@@ -55,13 +55,13 @@ def editar_perfil(request):
     try:
         perfil = Perfil_alumno.objects.get(alumno=request.user)
     except Perfil_alumno.DoesNotExist:
-        return redirect('perfil-alumno')
+        return redirect('ver-perfil-al')
 
     if request.method == 'POST':
         form = PerfilForm(request.POST, request.FILES, instance=perfil)
         if form.is_valid():
             form.save()
-            return redirect('home-alumno')
+            return redirect('ver-perfil-al')
     else:
         form = PerfilForm(instance=perfil)
 
@@ -180,6 +180,20 @@ def gestionar_solicitudes_proyecto(request):
         return redirect('gestionar-solicitudes-proyecto-alumno')
 
     return render(request, 'mis-proyectos/solicitudes/solicitudes_proyecto.html', {'solicitudes': solicitudes})
+
+@login_required
+@rol_requerido('alumno')
+def gestionar_solicitudes_proyecto_general(request):
+    proyectos = Proyecto.objects.filter(jefe_proyecto=request.user)
+    solicitudes_por_proyecto = {}
+    for proyecto in proyectos:
+        solicitudes = ProyectoRequest.objects.filter(proyecto=proyecto).select_related('alumno__perfil_alumno')
+        solicitudes_por_proyecto[proyecto.id_proyecto] = list(solicitudes)
+    context = {
+        'proyectos': proyectos,
+        'solicitudes_por_proyecto': solicitudes_por_proyecto,
+    }
+    return render(request, 'mis-proyectos/solicitudes/solicitudes_proyecto_general.html', context)
 
 # Vista dinámica del detalle del track
 
@@ -555,3 +569,25 @@ def eliminar_reunion_proyecto_alumno(request, proyecto_id, reunion_id):
         messages.success(request, 'Reunión eliminada correctamente.')
         return redirect('home-proyecto-alumno', proyecto_id=proyecto_id)
     return render(request, 'proyectos/eliminar_reunion_proyecto_alumno.html', {'reunion': reunion, 'proyecto': reunion.proyecto})
+
+@login_required
+@rol_requerido('alumno')
+def eliminar_integrante_proyecto(request, proyecto_id, alumno_id):
+    """
+    Permite al jefe de proyecto eliminar a un integrante (no a sí mismo) del proyecto.
+    """
+    proyecto = get_object_or_404(Proyecto, id_proyecto=proyecto_id)
+    if request.user != proyecto.jefe_proyecto:
+        return HttpResponseForbidden('Solo el jefe de proyecto puede eliminar integrantes.')
+    integrante = get_object_or_404(IntegranteProyecto, proyecto=proyecto, alumno__id=alumno_id)
+    if integrante.alumno == proyecto.jefe_proyecto:
+        messages.error(request, 'No puedes eliminar al jefe del proyecto.')
+        return redirect('home-proyecto-alumno', proyecto_id=proyecto_id)
+    if request.method == 'POST':
+        integrante.delete()
+        # Eliminar también la solicitud de ingreso (ProyectoRequest) si existe
+        ProyectoRequest.objects.filter(proyecto=proyecto, alumno=integrante.alumno).delete()
+        messages.success(request, 'Integrante eliminado correctamente.')
+        return redirect(f"/alumnos/proyectos/{proyecto_id}/?seccion=integrantes")
+    # Si se accede por GET, redirigir a la vista de integrantes
+    return redirect(f"/alumnos/proyectos/{proyecto_id}/?seccion=integrantes")

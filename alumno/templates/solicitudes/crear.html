@@ -1,39 +1,76 @@
-{% extends 'base-alumnos.html' %}
-{% load static %}
-
-{% block title %}Crear Solicitud{% endblock %}
-
-{% block content %}
+{% extends 'base-alumnos.html' %} {% load static %} {% block title %}Crear
+Solicitud{% endblock %} {% block content %}
 <div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card shadow-lg border-0 rounded-4">
-        <div class="card-header bg-dark text-white rounded-top-4">
-          <h4 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Nueva Solicitud al CITT</h4>
+  <div class="row">
+    <div class="col-md-7 mx-auto">
+      <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+          <h4 class="mb-0">
+            <i class="bi bi-plus-circle me-2"></i>Nueva Solicitud al CITT
+          </h4>
         </div>
         <div class="card-body">
-          <form method="post">
+          <form method="post" id="formCrearSolicitud">
             {% csrf_token %}
             <div class="mb-3">
               <label for="id_titulo" class="form-label">Título</label>
-              {{ form.titulo }}
+              <input
+                type="text"
+                name="titulo"
+                id="id_titulo"
+                class="form-control"
+                maxlength="30"
+                pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{1,30}"
+                required
+                value="{{ form.titulo.value|default:'' }}"
+              />
+              {% if form.titulo.errors %}
+              <div class="text-danger">{{ form.titulo.errors }}</div>
+              {% endif %}
             </div>
-
             <div class="mb-3">
               <label for="id_categoria" class="form-label">Categoría</label>
               {{ form.categoria }}
             </div>
-
             <div class="mb-3">
               <label for="id_descripcion" class="form-label">Descripción</label>
-              {{ form.descripcion }}
+              <textarea
+                name="descripcion"
+                id="id_descripcion"
+                class="form-control"
+                maxlength="250"
+                rows="3"
+                required
+              >
+{{ form.descripcion.value|default:'' }}</textarea
+              >
+              {% if form.descripcion.errors %}
+              <div class="text-danger">{{ form.descripcion.errors }}</div>
+              {% endif %}
             </div>
-
             <div class="text-end">
-              <a href="{% url 'listar-solicitudes' %}" class="btn btn-secondary">Cancelar</a>
-              <button type="submit" class="btn btn-success">Enviar Solicitud</button>
+              <a href="{% url 'listar-solicitudes' %}" class="btn btn-secondary"
+                >Cancelar</a
+              >
+              <button type="submit" class="btn btn-success">
+                Enviar Solicitud
+              </button>
             </div>
           </form>
+          <script>
+            document.addEventListener("DOMContentLoaded", function () {
+              const titulo = document.getElementById("id_titulo");
+              const descripcion = document.getElementById("id_descripcion");
+              titulo.addEventListener("input", function () {
+                this.value = this.value
+                  .replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ ]/g, "")
+                  .slice(0, 30);
+              });
+              descripcion.addEventListener("input", function () {
+                this.value = this.value.slice(0, 250);
+              });
+            });
+          </script>
         </div>
       </div>
     </div>

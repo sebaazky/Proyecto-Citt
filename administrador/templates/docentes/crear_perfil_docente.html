@@ -7,8 +7,8 @@
 {% block content %}
 <div class="container mt-5">
   <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card shadow-lg border-0 rounded-4">
+    <div class="col-md-5">
+      <div class="card shadow-lg border-0 rounded-4" style="max-width: 400px; margin: 0 auto;">
         <div class="card-header bg-dark text-white rounded-top-4">
           <h4 class="mb-0"><i class="bi bi-person-plus-fill me-2"></i> Crear Docente</h4>
         </div>
@@ -17,9 +17,41 @@
             {% csrf_token %}
 
             {% for field in form.visible_fields %}
-              <div class="mb-3">
+              <div class="mb-2">
                 <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                {{ field|add_class:"form-control" }}
+                {% if field.name == 'docente' %}
+                  <select name="docente" id="id_docente" class="form-select" required>
+                    <option value="" disabled selected>Seleccione un docente:</option>
+                    {% for option in field.field.queryset %}
+                      <option value="{{ option.pk }}" {% if field.value == option.pk %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                  </select>
+                {% elif field.name == 'nombres' or field.name == 'apellido_paterno' or field.name == 'apellido_materno' %}
+                  {{ field|add_class:"form-control"|attr:"maxlength:30"|attr:"pattern:^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{1,30}$"|attr:"title:Solo letras, máximo 30 caracteres" }}
+                {% elif field.name == 'carrera' %}
+                  <select name="carrera" id="id_carrera" class="form-select" required>
+                    <option value="" disabled selected>Seleccione una carrera</option>
+                    {% for option in field.field.queryset %}
+                      {% if option.pk %}
+                        <option value="{{ option.pk }}" {% if field.value == option.pk %}selected{% endif %}>{{ option }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                {% elif field.name == 'genero' %}
+                  <select name="genero" id="id_genero" class="form-select" required>
+                    <option value="" disabled selected>Seleccione un género</option>
+                    {% for option in field.field.queryset %}
+                      {% if option.pk %}
+                        <option value="{{ option.pk }}" {% if field.value == option.pk %}selected{% endif %}>{{ option }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                {% elif field.name == 'telefono' %}
+                  <input type="text" name="telefono" id="id_telefono" class="form-control" maxlength="12" pattern="\+56\d{9}" value="{{ field.value|default:'+569' }}" required autocomplete="off" placeholder="+569XXXXXXXX" title="Debe comenzar con +56 y 9 dígitos" />
+          <script src="{% static 'scripts/telefono_docente.js' %}" defer></script>
+                {% else %}
+                  {{ field|add_class:"form-control" }}
+                {% endif %}
                 {% if field.help_text %}
                   <div class="form-text">{{ field.help_text }}</div>
                 {% endif %}

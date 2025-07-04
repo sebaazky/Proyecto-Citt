@@ -1,36 +1,63 @@
 {% extends 'base-alumnos.html' %}
 {% load static %}
 
-{% block title %}Mi Perfil{% endblock %}
+{% block title %}
+  Mi Perfil
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-  <div class="card shadow">
-    <div class="card-header bg-primary text-white">
-      <h4 class="mb-0">👤 Mi Perfil</h4>
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col-md-4 text-center">
-          {% if perfil.imagen_perfil %}
-            <img src="{{ perfil.imagen_perfil.url }}" class="img-fluid rounded-circle mb-3" width="180" height="180">
-          {% else %}
-            <img src="{% static 'images/default-user.png' %}" class="img-fluid rounded-circle mb-3" width="180" height="180">
-          {% endif %}
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-8 col-lg-6 mx-auto">
+        <div class="card shadow">
+          <div class="card-header bg-dark text-white text-center">
+            <h4 class="mb-0">👤 Mi perfil</h4>
+          </div>
+          <div class="card-body">
+            <!-- Imagen de perfil centrada -->
+            <div class="text-center mb-4 mt-4">
+              {% if perfil.imagen_perfil %}
+                <img src="{{ perfil.imagen_perfil.url }}"
+                     class="rounded-circle border shadow"
+                     style="width: 160px; height: 160px; object-fit: cover;" />
+              {% else %}
+                <img src="{% static 'images/default-user.png' %}"
+                     class="rounded-circle border shadow"
+                     style="width: 160px; height: 160px; object-fit: cover;" />
+              {% endif %}
+            </div>
+
+            <!-- Datos del perfil -->
+            <div class="row">
+              <div class="col-sm-6 mb-2">
+                <strong>Nombre:</strong><br>
+                {{ perfil.nombres }} {{ perfil.apellido_paterno }} {{ perfil.apellido_materno }}
+              </div>
+              <div class="col-sm-6 mb-2">
+                <strong>Correo:</strong><br>
+                {{ perfil.alumno.email }}
+              </div>
+              <div class="col-sm-6 mb-2">
+                <strong>Teléfono:</strong><br>
+                {{ perfil.telefono }}
+              </div>
+              <div class="col-sm-6 mb-2">
+                <strong>Género:</strong><br>
+                {{ perfil.genero }}
+              </div>
+              <div class="col-12 mb-2">
+                <strong>Carrera:</strong><br>
+                {{ perfil.carrera }}
+              </div>
+            </div>
+            
+
+            <div class="text-end mt-4">
+              <a href="{% url 'edit-perfil-al' %}" class="btn btn-primary">Editar</a>
+            </div>
+          </div>
         </div>
-        <div class="col-md-8">
-          <p><strong>Nombre:</strong> {{ perfil.nombres }} {{ perfil.apellido_paterno }} {{ perfil.apellido_materno }}</p>
-          <p><strong>Correo:</strong> {{ perfil.alumno.email }}</p>
-          <p><strong>Teléfono:</strong> {{ perfil.telefono }}</p>
-          <p><strong>Dirección:</strong> {{ perfil.direccion }}</p>
-          <p><strong>Género:</strong> {{ perfil.genero }}</p>
-          <p><strong>Carrera:</strong> {{ perfil.carrera }}</p>
-        </div>
-      </div>
-      <div class="text-end mt-4">
-        <a href="{% url 'edit-perfil-al' %}" class="btn btn-warning">Editar Perfil</a>
       </div>
     </div>
   </div>
-</div>
 {% endblock %}

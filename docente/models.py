@@ -19,8 +19,6 @@ class PerfilDocente(models.Model):
     telefono = models.CharField(max_length=15, blank=True, null=True)
     imagen_perfil = models.ImageField(
         upload_to='images/', blank=True, null=True)
-    direccion = models.CharField(max_length=255, blank=True, null=True)
-
     def __str__(self):
         return f'{self.docente.username}'
 

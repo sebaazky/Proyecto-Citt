@@ -21,6 +21,14 @@ class ProyectoDocenteForm(forms.ModelForm):
 
 
 class PerfilDocenteForm(forms.ModelForm):  # <-- este nombre sí coincide
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Eliminar opción nula en carrera y genero
+        if 'carrera' in self.fields:
+            self.fields['carrera'].empty_label = None
+        if 'genero' in self.fields:
+            self.fields['genero'].empty_label = None
+
     class Meta:
         model = PerfilDocente
         exclude = ['usuario','docente']
@@ -32,9 +40,47 @@ class EventoForm(forms.ModelForm):
         fields = ['id_tipo_evento', 'nombre_evento',
                   'ubicacion_evento', 'fecha_evento', 'hora', 'infografia']
         widgets = {
-            'fecha_evento': forms.DateInput(attrs={'type': 'date'}),
-            'hora': forms.TimeInput(attrs={'type': 'time'}),
+            'id_tipo_evento': forms.Select(attrs={'class': 'form-select', 'required': True}),
+            'nombre_evento': forms.TextInput(attrs={
+                'class': 'form-control',
+                'maxlength': 50,
+                'pattern': r'^(?![0-9]+$)[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]{1,50}$',
+                'required': True
+            }),
+            'ubicacion_evento': forms.TextInput(attrs={
+                'class': 'form-control',
+                'maxlength': 100,
+                'pattern': r'^(?![0-9]+$)[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ,.\-]{1,100}$',
+                'required': True
+            }),
+            'fecha_evento': forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'required': True}),
+            'hora': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control', 'min': '08:00', 'max': '23:00', 'required': True}),
+            'infografia': forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
         }
+
+    def clean_nombre_evento(self):
+        nombre = self.cleaned_data.get('nombre_evento', '')
+        import re
+        if not re.match(r'^(?![0-9]+$)[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]{1,50}$', nombre):
+            raise forms.ValidationError('El nombre solo puede contener letras, números y espacios, y no puede ser solo números.')
+        return nombre
+
+    def clean_ubicacion_evento(self):
+        ubicacion = self.cleaned_data.get('ubicacion_evento', '')
+        import re
+        if not re.match(r'^(?![0-9]+$)[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ,.\-]{1,100}$', ubicacion):
+            raise forms.ValidationError('La ubicación solo puede contener letras, números, espacios y ,.- y no puede ser solo números.')
+        return ubicacion
+
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha = cleaned_data.get('fecha_evento')
+        hora = cleaned_data.get('hora')
+        if fecha is None:
+            self.add_error('fecha_evento', 'La fecha es obligatoria.')
+        if hora is None:
+            self.add_error('hora', 'La hora es obligatoria.')
+        return cleaned_data
 
 
 class ReunionTrackForm(forms.ModelForm):

@@ -4,10 +4,17 @@ from .models import ProyectoPost, ReunionProyecto
 
 
 class PerfilForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Eliminar opción nula en carrera y genero
+        if 'carrera' in self.fields:
+            self.fields['carrera'].empty_label = None
+        if 'genero' in self.fields:
+            self.fields['genero'].empty_label = None
+
     class Meta:
         model = Perfil_alumno
         exclude = ['alumno', 'track_interes']  # Eliminamos estos campos
-
         widgets = {
             'nombres': forms.TextInput(attrs={'class': 'form-control'}),
             'apellido_paterno': forms.TextInput(attrs={'class': 'form-control'}),
@@ -16,7 +23,6 @@ class PerfilForm(forms.ModelForm):
             'genero': forms.Select(attrs={'class': 'form-control'}),
             'telefono': forms.TextInput(attrs={'class': 'form-control'}),
             'imagen_perfil': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-            'direccion': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
 

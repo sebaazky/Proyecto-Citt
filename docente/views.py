@@ -161,16 +161,30 @@ def eliminar_evento(request, pk):
 @rol_requerido('docente')
 def mi_track_view(request):
     track = Track.objects.filter(id_usuario=request.user).first()
+    post_form = DocentePostForm()
+    reunion_form = ReunionTrackForm()
     if request.method == 'POST' and track:
-        form = DocentePostForm(request.POST, request.FILES)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.docente = request.user
-            post.track = track
-            post.save()
-            return redirect('mi-track')
-    else:
-        form = DocentePostForm()
+        # Diferenciar por los campos presentes en el POST
+        if 'titulo' in request.POST and 'fecha' in request.POST and 'hora' in request.POST and 'modalidad' in request.POST:
+            # Es un POST para crear reunión
+            reunion_form = ReunionTrackForm(request.POST)
+            if reunion_form.is_valid():
+                reunion = reunion_form.save(commit=False)
+                reunion.id_docente = request.user
+                reunion.track = track
+                reunion.save()
+                from django.contrib import messages
+                messages.success(request, "Reunión creada correctamente.")
+                return redirect('mi-track')
+        else:
+            # Es un POST para crear post
+            post_form = DocentePostForm(request.POST, request.FILES)
+            if post_form.is_valid():
+                post = post_form.save(commit=False)
+                post.docente = request.user
+                post.track = track
+                post.save()
+                return redirect('mi-track')
     posts = TrackPost.objects.filter(track=track).order_by('-fecha_creacion') if track else []
     proyectos = Proyecto.objects.filter(id_track=track) if track else []
     proyectos_info = [{'proyecto': p} for p in proyectos]
@@ -181,7 +195,8 @@ def mi_track_view(request):
     context = {
         'track': track,
         'posts': posts,
-        'post_form': form,
+        'post_form': post_form,
+        'reunion_form': reunion_form,
         'proyectos_info': proyectos_info,
         'reuniones': reuniones,
         'eventos': eventos,
@@ -293,24 +308,26 @@ def listar_reuniones_track(request):
 @login_required
 @rol_requerido('docente')
 def crear_reunion_track(request):
+    track = Track.objects.filter(id_usuario=request.user).first()
+    if not track:
+        messages.error(request, "No tienes un track asignado.")
+        return redirect('mi-track')
+
     if request.method == 'POST':
-        form = ReunionTrackForm(request.POST)
+        data = request.POST.copy()
+        data['track'] = track.id_track
+        form = ReunionTrackForm(data)
         if form.is_valid():
             reunion = form.save(commit=False)
             reunion.id_docente = request.user
-
-            # Obtener el track asociado al docente
-            track = Track.objects.filter(id_usuario=request.user).first()
-            if not track:
-                messages.error(request, "No tienes un track asignado.")
-                return redirect('mi-track')
-
-            reunion.track = track
+            # reunion.track = track  # Ya se asigna por el form
             reunion.save()
             messages.success(request, "Reunión creada correctamente.")
             return redirect('listar-reuniones-track')
+        else:
+            messages.error(request, "Corrige los errores en el formulario.")
     else:
-        form = ReunionTrackForm()
+        form = ReunionTrackForm(initial={'track': track.id_track})
 
     return render(request, 'reuniones/crear_reunion.html', {'form': form})
 

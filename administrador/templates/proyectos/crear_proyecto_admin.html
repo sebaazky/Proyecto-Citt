@@ -1,37 +1,113 @@
-{% extends 'base-admin.html' %}
-{% load static %}
-{% load widget_tweaks %}
-
-{% block title %}Crear Proyecto{% endblock %}
-
-{% block content %}
+{% extends 'base-admin.html' %} {% load static %} {% load widget_tweaks %} {%
+block title %}Crear Proyecto{% endblock %} {% block content %}
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card shadow-lg border-0 rounded-4">
         <div class="card-header bg-primary text-white rounded-top-4">
-          <h4 class="mb-0"><i class="bi bi-rocket-takeoff me-2"></i> Crear Nuevo Proyecto</h4>
+          <h4 class="mb-0">
+            <i class="bi bi-rocket-takeoff me-2"></i> Crear Nuevo Proyecto
+          </h4>
         </div>
         <div class="card-body">
           <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            {% for field in form.visible_fields %}
-              <div class="mb-3">
-                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field|add_class:"form-control" }}
-                {% if field.help_text %}
-                  <div class="form-text">{{ field.help_text }}</div>
-                {% endif %}
-                {% for error in field.errors %}
-                  <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-              </div>
+            {% csrf_token %} {% for field in form.visible_fields %}
+            <div class="mb-3">
+              <label class="form-label" for="{{ field.id_for_label }}"
+                >{{ field.label }}</label
+              >
+              {% if field.name == 'nom_proyecto' %} {{
+              field|add_class:"form-control"|attr:"maxlength:30"|attr:"pattern:(?!^[0-9
+              ]+$)^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]{1,30}$"|attr:"title:Solo letras y
+              números, no solo números" }} {% elif field.name == 'jefe_proyecto'
+              %} {# Campo visible bloqueado #} {{
+              field|add_class:"form-control"|attr:"onchange:removeNullOptions(this)"|attr:"disabled:true"|attr:"value:request.user.pk"
+              }} {# Campo oculto para enviar el valor real #}
+              <input
+                type="hidden"
+                name="jefe_proyecto"
+                value="{{ request.user.pk }}"
+              />
+              {% elif field.name == 'descripcion' %} {{
+              field|add_class:"form-control"|attr:"maxlength:300"|attr:"pattern:(?!^[0-9
+              ]+$)^.{1,300}$"|attr:"title:No solo números, máximo 300
+              caracteres" }} {% elif field.name == 'objetivo' %} {{
+              field|add_class:"form-control"|attr:"maxlength:30"|attr:"pattern:(?!^[0-9
+              ]+$)^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]{1,30}$"|attr:"title:Solo letras y
+              números, no solo números" }} {% elif field.name == 'fecha_inicio'
+              %} {{
+              field|add_class:"form-control"|attr:"type:date"|attr:"min:"|attr:"onfocus:this.min=new
+              Date().toISOString().split('T')[0]" }} {% elif field.name ==
+              'num_integrantes' %} {{
+              field|add_class:"form-control"|attr:"type:number"|attr:"min:1"|attr:"max:10"|attr:"pattern:[0-9]{1,2}"|attr:"inputmode:numeric"|attr:"title:Solo
+              números entre 1 y 10" }} {% elif field.name == 'id_track' %} {{
+              field|add_class:"form-control"|attr:"onchange:removeNullOptions(this)"
+              }} {% elif field.name == 'imagen' %} {{
+              field|add_class:"form-control"|attr:"accept:image/*" }} {% else %}
+              {{ field|add_class:"form-control" }} {% endif %} {% if
+              field.help_text %}
+              <div class="form-text">{{ field.help_text }}</div>
+              {% endif %} {% for error in field.errors %}
+              <div class="text-danger">{{ error }}</div>
+              {% endfor %}
+            </div>
+            <script>
+              // Elimina opciones nulas o con --- en selects de jefe_proyecto y id_track
+              function removeNullOptions(select) {
+                for (let i = select.options.length - 1; i >= 0; i--) {
+                  let opt = select.options[i];
+                  if (
+                    !opt.value ||
+                    opt.text.trim() === "---" ||
+                    opt.text.trim() === "" ||
+                    opt.text.trim().toLowerCase().includes("ninguno")
+                  ) {
+                    select.remove(i);
+                  }
+                }
+              }
+              // Validación para num_integrantes: solo números entre 1 y 10
+              document.addEventListener("DOMContentLoaded", function () {
+                document.querySelectorAll("select").forEach(function (sel) {
+                  if (sel.name === "jefe_proyecto" || sel.name === "id_track") {
+                    removeNullOptions(sel);
+                  }
+                });
+                // Validación para num_integrantes
+                var numInput = document.querySelector(
+                  'input[name="num_integrantes"]'
+                );
+                if (numInput) {
+                  numInput.addEventListener("input", function (e) {
+                    this.value = this.value.replace(/[^0-9]/g, "");
+                    if (this.value !== "") {
+                      let val = parseInt(this.value);
+                      if (val < 1) this.value = 1;
+                      if (val > 10) this.value = 10;
+                    }
+                  });
+                }
+                // Validación para fecha_inicio: solo fechas >= hoy
+                var fechaInput = document.querySelector(
+                  'input[name="fecha_inicio"]'
+                );
+                if (fechaInput) {
+                  let today = new Date().toISOString().split("T")[0];
+                  fechaInput.setAttribute("min", today);
+                }
+              });
+            </script>
             {% endfor %}
 
             <div class="text-end">
-              <a href="{% url 'admin-gestion-proyectos' %}" class="btn btn-secondary">Cancelar</a>
-              <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+              <a
+                href="{% url 'admin-gestion-proyectos' %}"
+                class="btn btn-secondary"
+                >Cancelar</a
+              >
+              <button type="submit" class="btn btn-primary">
+                Guardar Proyecto
+              </button>
             </div>
           </form>
         </div>

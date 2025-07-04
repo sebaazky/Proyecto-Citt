@@ -128,10 +128,15 @@
       {% elif request.GET.seccion == 'reuniones' %}
       <!-- Reuniones del Proyecto (listado paginado, gestión si es jefe) -->
       <div class="mb-5">
-        <h4 class="mb-3 text-dark">🗓️ Reuniones del Proyecto</h4>
-        {% if es_jefe %}
-        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalCrearReunion">Crear Reunión</button>
-        {% endif %}
+        <div class="d-flex align-items-center mb-3">
+          <h4 class="mb-0 text-dark">🗓️ Reuniones del Proyecto</h4>
+          {% if es_jefe %}
+            <button class="btn btn-dark btn-md rounded-pill px-3 ms-auto"
+                    data-bs-toggle="modal" data-bs-target="#modalCrearReunionCard">
+              <i class="bi bi-plus-circle"></i>
+            </button>
+          {% endif %}
+        </div>
         {% if reuniones_paginadas %}
         <div class="list-group mt-3">
           {% for reunion in reuniones_paginadas %}
@@ -166,34 +171,34 @@
                       <div class="modal-body">
                         <div class="mb-2">
                           <label for="titulo{{ reunion.id_reunion }}">Título</label>
-                          <input type="text" name="titulo" id="titulo{{ reunion.id_reunion }}" class="form-control" value="{{ reunion.titulo }}">
+                          <input type="text" name="titulo" id="titulo{{ reunion.id_reunion }}" class="form-control" value="{{ reunion.titulo }}" maxlength="30" pattern="^(?![0-9]+$)[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]{1,30}$" required>
                         </div>
                         <div class="mb-2">
                           <label for="fecha{{ reunion.id_reunion }}">Fecha</label>
-                          <input type="date" name="fecha" id="fecha{{ reunion.id_reunion }}" class="form-control" value="{{ reunion.fecha|date:'Y-m-d' }}">
+                          <input type="date" name="fecha" id="fecha{{ reunion.id_reunion }}" class="form-control fecha-reunion" value="{{ reunion.fecha|date:'Y-m-d' }}" required>
                         </div>
                         <div class="mb-2">
                           <label for="hora{{ reunion.id_reunion }}">Hora</label>
-                          <input type="time" name="hora" id="hora{{ reunion.id_reunion }}" class="form-control" value="{{ reunion.hora|time:'H:i' }}">
+                          <input type="time" name="hora" id="hora{{ reunion.id_reunion }}" class="form-control" value="{{ reunion.hora|time:'H:i' }}" min="08:00" max="23:00" required>
                         </div>
                         <div class="mb-2">
                           <label for="modalidad{{ reunion.id_reunion }}">Modalidad</label>
-                          <select name="modalidad" id="modalidad{{ reunion.id_reunion }}" class="form-control">
+                          <select name="modalidad" id="modalidad{{ reunion.id_reunion }}" class="form-control modalidad-select" data-uid="{{ reunion.id_reunion }}" required>
                             <option value="presencial" {% if reunion.modalidad == 'presencial' %}selected{% endif %}>Presencial</option>
                             <option value="virtual" {% if reunion.modalidad == 'virtual' %}selected{% endif %}>Virtual</option>
                           </select>
                         </div>
                         <div class="mb-2">
                           <label for="link_virtual{{ reunion.id_reunion }}">Link Virtual</label>
-                          <input type="url" name="link_virtual" id="link_virtual{{ reunion.id_reunion }}" class="form-control" value="{{ reunion.link_virtual }}">
+                          <input type="url" name="link_virtual" id="link_virtual{{ reunion.id_reunion }}" class="form-control link-virtual-input" value="{{ reunion.link_virtual }}" pattern="https://.*" maxlength="200" data-uid="{{ reunion.id_reunion }}">
                         </div>
                         <div class="mb-2">
                           <label for="ubicacion{{ reunion.id_reunion }}">Ubicación</label>
-                          <input type="text" name="ubicacion" id="ubicacion{{ reunion.id_reunion }}" class="form-control" value="{{ reunion.ubicacion }}">
+                          <input type="text" name="ubicacion" id="ubicacion{{ reunion.id_reunion }}" class="form-control ubicacion-input" value="{{ reunion.ubicacion }}" maxlength="25" pattern="^(?![0-9]+$)[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ,.\-]{1,25}$" data-uid="{{ reunion.id_reunion }}">
                         </div>
                         <div class="mb-2">
                           <label for="descripcion{{ reunion.id_reunion }}">Descripción</label>
-                          <textarea name="descripcion" id="descripcion{{ reunion.id_reunion }}" class="form-control">{{ reunion.descripcion }}</textarea>
+                          <textarea name="descripcion" id="descripcion{{ reunion.id_reunion }}" class="form-control" maxlength="300" pattern="^(?![0-9]+$).{1,300}$" required>{{ reunion.descripcion }}</textarea>
                         </div>
                       </div>
                       <div class="modal-footer">
@@ -262,7 +267,37 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                  {{ reunion_form.as_p }}
+                  <div class="mb-2">
+                    <label for="tituloNuevaReunion">Título</label>
+                    <input type="text" name="titulo" id="tituloNuevaReunion" class="form-control" maxlength="30" pattern="^(?![0-9]+$)[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]{1,30}$" required>
+                  </div>
+                  <div class="mb-2">
+                    <label for="fechaNuevaReunion">Fecha</label>
+                    <input type="date" name="fecha" id="fechaNuevaReunion" class="form-control fecha-reunion" required>
+                  </div>
+                  <div class="mb-2">
+                    <label for="horaNuevaReunion">Hora</label>
+                    <input type="time" name="hora" id="horaNuevaReunion" class="form-control" min="08:00" max="23:00" required>
+                  </div>
+                  <div class="mb-2">
+                    <label for="modalidadNuevaReunion">Modalidad</label>
+                    <select name="modalidad" id="modalidadNuevaReunion" class="form-control modalidad-select" data-uid="nueva" required>
+                      <option value="presencial">Presencial</option>
+                      <option value="virtual">Virtual</option>
+                    </select>
+                  </div>
+                  <div class="mb-2">
+                    <label for="link_virtualNuevaReunion">Link Virtual</label>
+                    <input type="url" name="link_virtual" id="link_virtualNuevaReunion" class="form-control link-virtual-input" pattern="https://.*" maxlength="200" data-uid="nueva">
+                  </div>
+                  <div class="mb-2">
+                    <label for="ubicacionNuevaReunion">Ubicación</label>
+                    <input type="text" name="ubicacion" id="ubicacionNuevaReunion" class="form-control ubicacion-input" maxlength="25" pattern="^(?![0-9]+$)[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ,.\-]{1,25}$" data-uid="nueva">
+                  </div>
+                  <div class="mb-2">
+                    <label for="descripcionNuevaReunion">Descripción</label>
+                    <textarea name="descripcion" id="descripcionNuevaReunion" class="form-control" maxlength="300" pattern="^(?![0-9]+$).{1,300}$" required></textarea>
+                  </div>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -310,6 +345,32 @@
                 </div>
               </div>
               <span class="badge bg-secondary ms-3">Integrante</span>
+              {% if es_jefe %}
+                <button class="btn btn-sm btn-outline-danger ms-2" data-bs-toggle="modal" data-bs-target="#eliminarIntegranteModal{{ integrante.alumno.id }}" title="Eliminar integrante">
+                  <i class="bi bi-dash"></i>
+                </button>
+                <!-- Modal Eliminar Integrante -->
+                <div class="modal fade" id="eliminarIntegranteModal{{ integrante.alumno.id }}" tabindex="-1" aria-labelledby="eliminarIntegranteModalLabel{{ integrante.alumno.id }}" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <form method="post" action="{% url 'eliminar-integrante-proyecto' proyecto.id_proyecto integrante.alumno.id %}?seccion=integrantes">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="eliminarIntegranteModalLabel{{ integrante.alumno.id }}">Eliminar Integrante</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                          ¿Estás seguro que deseas eliminar a <strong>{{ integrante.alumno.perfil_alumno.nombres }} {{ integrante.alumno.perfil_alumno.apellido_paterno }}</strong> ({{ integrante.alumno.username }}) del proyecto?
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                          <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
             </li>
             {% endif %}
           {% endfor %}
@@ -357,6 +418,65 @@
       </div>
       {% endif %}
     </div>
+
+{% block extra_js %}
+<script>
+// Utilidad para obtener la fecha de hoy en formato yyyy-mm-dd
+function getToday() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+// Mostrar/ocultar campos según modalidad y setear valores por defecto
+function toggleReunionFields(uid) {
+  const modalidad = document.getElementById('modalidad' + uid.charAt(0).toUpperCase() + uid.slice(1));
+  const linkInput = document.getElementById('link_virtual' + uid.charAt(0).toUpperCase() + uid.slice(1));
+  const ubicacionInput = document.getElementById('ubicacion' + uid.charAt(0).toUpperCase() + uid.slice(1));
+  if (!modalidad || !linkInput || !ubicacionInput) return;
+  if (modalidad.value === 'virtual') {
+    linkInput.disabled = false;
+    linkInput.required = true;
+    ubicacionInput.disabled = true;
+    ubicacionInput.required = false;
+    ubicacionInput.value = '-';
+  } else {
+    ubicacionInput.disabled = false;
+    ubicacionInput.required = true;
+    linkInput.disabled = true;
+    linkInput.required = false;
+    linkInput.value = '-';
+  }
+}
+
+// Inicializar listeners para todos los selects de modalidad y fechas
+document.addEventListener('DOMContentLoaded', function() {
+  // Para modales de edición
+  document.querySelectorAll('.modalidad-select').forEach(function(select) {
+    const uid = select.getAttribute('data-uid');
+    select.addEventListener('change', function() {
+      toggleReunionFields(uid);
+    });
+    // Inicializar estado al cargar
+    toggleReunionFields(uid);
+  });
+  // Validación de fechas: no permitir fechas anteriores a hoy
+  var hoy = getToday();
+  document.querySelectorAll('.fecha-reunion').forEach(function(input) {
+    input.setAttribute('min', hoy);
+    input.addEventListener('input', function() {
+      if (input.value < hoy) {
+        input.setCustomValidity('No puedes seleccionar una fecha anterior a hoy.');
+      } else {
+        input.setCustomValidity('');
+      }
+    });
+  });
+});
+</script>
+{% endblock %}
     <!-- Card lateral derecha: Información del Proyecto -->
     <div class="col-lg-4 d-none d-lg-block">
       <div class="card shadow-sm border-0" style="min-height: 400px; background: #fff;">
@@ -466,8 +586,37 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
-          {{ reunion_form.as_p }}
-        </div>
+          <div class="mb-2">
+            <label for="tituloNuevaReunionCard">Título</label>
+            <input type="text" name="titulo" id="tituloNuevaReunionCard" class="form-control" maxlength="30" pattern="^(?![0-9]+$)[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]{1,30}$" required>
+          </div>
+          <div class="mb-2">
+            <label for="fechaNuevaReunionCard">Fecha</label>
+            <input type="date" name="fecha" id="fechaNuevaReunionCard" class="form-control fecha-reunion" required>
+          </div>
+          <div class="mb-2">
+            <label for="horaNuevaReunionCard">Hora</label>
+            <input type="time" name="hora" id="horaNuevaReunionCard" class="form-control" min="08:00" max="23:00" required>
+          </div>
+          <div class="mb-2">
+            <label for="modalidadNuevaReunionCard">Modalidad</label>
+            <select name="modalidad" id="modalidadNuevaReunionCard" class="form-control modalidad-select" data-uid="NuevaReunionCard" required>
+              <option value="presencial">Presencial</option>
+              <option value="virtual">Virtual</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label for="link_virtualNuevaReunionCard">Link Virtual</label>
+            <input type="url" name="link_virtual" id="link_virtualNuevaReunionCard" class="form-control link-virtual-input" pattern="https://.*" maxlength="200" data-uid="NuevaReunionCard">
+          </div>
+          <div class="mb-2">
+            <label for="ubicacionNuevaReunionCard">Ubicación</label>
+            <input type="text" name="ubicacion" id="ubicacionNuevaReunionCard" class="form-control ubicacion-input" maxlength="25" pattern="^(?![0-9]+$)[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ,.\-]{1,25}$" data-uid="NuevaReunionCard">
+          </div>
+          <div class="mb-2">
+            <label for="descripcionNuevaReunionCard">Descripción</label>
+            <textarea name="descripcion" id="descripcionNuevaReunionCard" class="form-control" maxlength="300" pattern="^(?![0-9]+$).{1,300}$" required></textarea>
+          </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
           <button type="submit" class="btn btn-success">Crear</button>

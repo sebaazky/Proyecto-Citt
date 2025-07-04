@@ -1,12 +1,22 @@
-{% extends 'base-docentes.html' %}
-{% load static %}
-{% block titulo %}Mi Track{% endblock %}
-{% block content %}
+{% extends 'base-docentes.html' %} {% load static %} {% block titulo %} Mi Track
+{% endblock %} {% block content %}
 <!-- Banner superior -->
-<div class="mb-4" style="height: 220px; background: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat; border-radius: 12px; display: flex; align-items: flex-end;">
+<div
+  class="mb-4"
+  style="
+    height: 220px;
+    background: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80')
+      center/cover no-repeat;
+    border-radius: 12px;
+    display: flex;
+    align-items: flex-end;
+  "
+>
   <div class="bg-dark bg-opacity-50 w-100 p-3 rounded-bottom">
     <h2 class="text-white">
-      Bienvenido {{ user.perfil_docente.nombres }} {{ user.perfil_docente.apellido_paterno }}! a tu track de {{ track.nom_track }}.
+      Bienvenido {{ user.perfil_docente.nombres }}
+      {{user.perfil_docente.apellido_paterno }}! a tu track de {{
+      track.nom_track}}.
     </h2>
   </div>
 </div>
@@ -16,303 +26,818 @@
       <!-- Track Navigation Tabs -->
       <ul class="nav nav-tabs mb-4 mt-2">
         <li class="nav-item">
-          <a class="nav-link {% if not request.GET.seccion or request.GET.seccion == 'home' %}active{% endif %}" href="{% url 'mi-track' %}"><i class="bi bi-house-door"></i> Home</a>
+          <a
+            class="nav-link {% if not request.GET.seccion or request.GET.seccion == 'home' %}active{% endif %}"
+            href="{% url 'mi-track' %}"
+            ><i class="bi bi-house-door"></i> Home</a
+          >
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.GET.seccion == 'proyectos' %}active{% endif %}" href="{% url 'mi-track' %}?seccion=proyectos"><i class="bi bi-kanban"></i> Proyectos</a>
+          <a
+            class="nav-link {% if request.GET.seccion == 'proyectos' %}active{% endif %}"
+            href="{% url 'mi-track' %}?seccion=proyectos"
+            ><i class="bi bi-kanban"></i> Proyectos</a
+          >
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.GET.seccion == 'reuniones' %}active{% endif %}" href="{% url 'mi-track' %}?seccion=reuniones"><i class="bi bi-calendar-event"></i> Reuniones</a>
+          <a
+            class="nav-link {% if request.GET.seccion == 'reuniones' %}active{% endif %}"
+            href="{% url 'mi-track' %}?seccion=reuniones"
+            ><i class="bi bi-calendar-event"></i> Reuniones</a
+          >
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.GET.seccion == 'integrantes' %}active{% endif %}" href="{% url 'mi-track' %}?seccion=integrantes"><i class="bi bi-people"></i> Integrantes</a>
+          <a
+            class="nav-link {% if request.GET.seccion == 'integrantes' %}active{% endif %}"
+            href="{% url 'mi-track' %}?seccion=integrantes"
+            ><i class="bi bi-people"></i> Integrantes</a
+          >
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.GET.seccion == 'eventos' %}active{% endif %}" href="{% url 'mi-track' %}?seccion=eventos"><i class="bi bi-megaphone"></i> Eventos</a>
+          <a
+            class="nav-link {% if request.GET.seccion == 'eventos' %}active{% endif %}"
+            href="{% url 'mi-track' %}?seccion=eventos"
+            ><i class="bi bi-megaphone"></i> Eventos</a
+          >
         </li>
       </ul>
       <!-- Sectioned Content -->
       {% if not request.GET.seccion or request.GET.seccion == 'home' %}
-        <!-- Formulario para crear post (solo jefe de track) -->
-        {% if user == track.id_usuario %}
-        <div class="mb-4">
-          <form method="post" enctype="multipart/form-data" class="mb-3">
-            {% csrf_token %}
-            {{ post_form.non_field_errors }}
-            <div class="mb-2">
-              {{ post_form.contenido.label_tag }}
-              {{ post_form.contenido }}
+      <!-- Formulario para crear post (solo jefe de track) -->
+      {% if user == track.id_usuario %}
+      <div class="mb-4">
+        <form method="post" enctype="multipart/form-data" class="mb-3">
+          {% csrf_token %} {{ post_form.non_field_errors }}
+          <div class="mb-2">
+            {{ post_form.contenido.label_tag }} {{ post_form.contenido }}
+          </div>
+          <div class="mb-2">
+            {{ post_form.imagen.label_tag }} {{ post_form.imagen }}
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Publicar</button>
+        </form>
+      </div>
+      {% endif %}
+      <!-- Últimas Publicaciones -->
+      <div class="mb-5">
+        <h4 class="mb-3 text-dark">Últimas Publicaciones</h4>
+        {% if posts %}
+        <ul class="list-group">
+          {% for post in posts %}
+          <li class="list-group-item d-flex justify-content-between">
+            <div class="d-flex">
+              <!-- Imagen del perfil -->
+              {% if post.docente.perfil_docente.imagen_perfil %}
+              <img
+                src="{{ post.docente.perfil_docente.imagen_perfil.url }}"
+                class="rounded-circle me-2 mt-1"
+                style="
+                  width: 48px;
+                  height: 48px;
+                  object-fit: cover;
+                  border: 2px solid #eee;
+                "
+              />
+              {% else %}
+              <img
+                src="{% static 'images/profileImage.jpg' %}"
+                class="rounded-circle me-2 mt-1"
+                style="
+                  width: 48px;
+                  height: 48px;
+                  object-fit: cover;
+                  border: 2px solid #eee;
+                "
+              />
+              {% endif %}
+              <!-- Contenido del post -->
+              <div>
+                <strong
+                  >{{ post.docente.first_name }} {{
+                  post.docente.last_name}}</strong
+                >
+                <span class="text-muted">({{ post.docente.username }})</span>
+                <br />
+                <span class="small text-secondary"
+                  >{{ post.fecha_creacion|date:"d M Y H:i" }}</span
+                >
+                <br />
+                {{ post.contenido|linebreaksbr }} {% if post.imagen %}
+                <div class="mt-2">
+                  <img
+                    src="{{ post.imagen.url }}"
+                    class="img-fluid rounded"
+                    style="max-height: 300px"
+                  />
+                </div>
+                {% endif %}
+              </div>
             </div>
-            <div class="mb-2">
-              {{ post_form.imagen.label_tag }}
-              {{ post_form.imagen }}
+            {% if user == post.docente %}
+            <div class="ms-2 d-flex flex-column gap-1">
+              <button
+                class="btn btn-sm btn-outline-warning"
+                data-bs-toggle="modal"
+                data-bs-target="#editarPostModal{{ post.id }}"
+              >
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button
+                class="btn btn-sm btn-outline-danger"
+                data-bs-toggle="modal"
+                data-bs-target="#eliminarPostModal{{ post.id }}"
+              >
+                <i class="bi bi-trash"></i>
+              </button>
             </div>
-            <button type="submit" class="btn btn-primary btn-sm">Publicar</button>
-          </form>
+            <!-- Modal Editar Post -->
+            <div
+              class="modal fade"
+              id="editarPostModal{{ post.id }}"
+              tabindex="-1"
+              aria-labelledby="editarPostModalLabel{{ post.id }}"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form
+                    method="post"
+                    action="{% url 'modificar-post-track-docente' post.id %}"
+                    enctype="multipart/form-data"
+                  >
+                    {% csrf_token %}
+                    <div class="modal-header">
+                      <h5
+                        class="modal-title"
+                        id="editarPostModalLabel{{ post.id }}"
+                      >
+                        Editar Post
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-2">
+                        <label for="contenido-{{ post.id }}" class="form-label"
+                          >Contenido</label
+                        >
+                        <textarea
+                          name="contenido"
+                          id="contenido-{{ post.id }}"
+                          class="form-control"
+                          rows="3"
+                        >
+                                    {{ post.contenido }}
+                                  </textarea
+                        >
+                      </div>
+                      <div class="mb-2">
+                        <label for="imagen-{{ post.id }}" class="form-label"
+                          >Imagen</label
+                        >
+                        <input
+                          type="file"
+                          name="imagen"
+                          id="imagen-{{ post.id }}"
+                          class="form-control"
+                        />
+                        {% if post.imagen %}
+                        <img
+                          src="{{ post.imagen.url }}"
+                          class="img-fluid rounded mt-2"
+                          style="max-height: 120px"
+                        />
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        Cancelar
+                      </button>
+                      <button type="submit" class="btn btn-warning">
+                        Guardar cambios
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- Modal Eliminar Post -->
+            <div
+              class="modal fade"
+              id="eliminarPostModal{{ post.id }}"
+              tabindex="-1"
+              aria-labelledby="eliminarPostModalLabel{{ post.id }}"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form
+                    method="post"
+                    action="{% url 'eliminar-post-track-docente' post.id %}"
+                  >
+                    {% csrf_token %}
+                    <div class="modal-header">
+                      <h5
+                        class="modal-title"
+                        id="eliminarPostModalLabel{{ post.id }}"
+                      >
+                        Eliminar Post
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      ¿Estás seguro que deseas eliminar este post?
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        Cancelar
+                      </button>
+                      <button type="submit" class="btn btn-danger">
+                        Eliminar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted">No hay publicaciones registradas.</p>
+        {% endif %}
+      </div>
+      <!-- Carrusel de Proyectos Asociados -->
+      <div class="mb-5">
+        <h4 class="mb-3 text-dark">Proyectos Asociados</h4>
+        {% if proyectos_info %}
+        <div
+          id="proyectosCarruselDocente"
+          class="carousel slide carousel-fade"
+          data-bs-ride="carousel"
+          data-bs-interval="4000"
+        >
+          <div class="carousel-inner">
+            {% for info in proyectos_info %} {% with proyecto=info.proyecto %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+              <div
+                class="card h-100 shadow-sm mx-auto"
+                style="max-width: 400px"
+              >
+                {% if proyecto.imagen %}
+                <img
+                  src="{{ proyecto.imagen.url }}"
+                  class="card-img-top"
+                  style="height: 180px; object-fit: cover"
+                  alt="Imagen Proyecto"
+                />
+                {% endif %}
+                <div class="card-body">
+                  <h5 class="card-title">{{ proyecto.nom_proyecto }}</h5>
+                  <p class="card-text mb-1">
+                    <strong>Jefe Proyecto:</strong>
+                    {{proyecto.jefe_proyecto.first_name }}
+                    {{proyecto.jefe_proyecto.last_name }}
+                    ({{proyecto.jefe_proyecto.username }})
+                  </p>
+                  <p class="card-text">
+                    {{ proyecto.objetivo|truncatewords:20 }}
+                  </p>
+                  <a
+                    href="{% url 'home-proyecto-docente' proyecto.id_proyecto %}"
+                    class="btn btn-sm btn-outline-success mt-1"
+                    >Ir al Home</a
+                  >
+                </div>
+              </div>
+            </div>
+            {% endwith %} {% endfor %}
+          </div>
+          <button
+            class="carousel-control-prev custom-carousel-btn"
+            type="button"
+            data-bs-target="#proyectosCarruselDocente"
+            data-bs-slide="prev"
+          >
+            <span
+              class="carousel-control-prev-icon custom-carousel-icon"
+              aria-hidden="true"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M15.5 19 9.5 12l6-7"
+                  stroke="#0d6efd"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button
+            class="carousel-control-next custom-carousel-btn"
+            type="button"
+            data-bs-target="#proyectosCarruselDocente"
+            data-bs-slide="next"
+          >
+            <span
+              class="carousel-control-next-icon custom-carousel-icon"
+              aria-hidden="true"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M8.5 5l6 7-6 7"
+                  stroke="#0d6efd"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
+        </div>
+        <style>
+          /* Animación fade y visibilidad de flechas personalizadas */
+          .carousel-fade .carousel-item {
+            opacity: 0;
+            transition: opacity 0.7s ease-in-out;
+          }
+          .carousel-fade .carousel-item.active,
+          .carousel-fade .carousel-item-next.carousel-item-start,
+          .carousel-fade .carousel-item-prev.carousel-item-end {
+            opacity: 1;
+            transition: opacity 0.7s ease-in-out;
+          }
+          .custom-carousel-btn {
+            filter: none;
+            z-index: 2;
+          }
+          .custom-carousel-icon {
+            background-color: #f8f9fa;
+            border: 2px solid #0d6efd;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(13, 110, 253, 0.08);
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0d6efd;
+            opacity: 0.95;
+            transition: border-color 0.2s, background 0.2s;
+            padding: 0;
+          }
+          .custom-carousel-btn:hover .custom-carousel-icon {
+            border-color: #0a58ca;
+            background-color: #e7f1ff;
+            color: #0a58ca;
+          }
+          .custom-carousel-icon svg {
+            display: block;
+          }
+        </style>
+        {% else %}
+        <p class="text-muted">No hay proyectos registrados.</p>
+        {% endif %}
+      </div>
+      {% elif request.GET.seccion == 'proyectos' %}
+      <!-- Listado de proyectos -->
+      <div class="mb-5">
+        <h4 class="mb-3 text-dark">Proyectos del Track</h4>
+        {% if proyectos_info %}
+        <ul class="list-group">
+          {% for info in proyectos_info %} {% with proyecto=info.proyecto %}
+          <li
+            class="list-group-item d-flex align-items-center justify-content-between"
+          >
+            <div class="d-flex align-items-center">
+              {% if proyecto.imagen %}
+              <img
+                src="{{ proyecto.imagen.url }}"
+                class="rounded me-2"
+                style="width: 40px; height: 40px; object-fit: cover"
+                alt="Imagen Proyecto"
+              />
+              {% else %}
+              <img
+                src="{% static 'images/profileImage.jpg' %}"
+                class="rounded me-2"
+                style="width: 40px; height: 40px; object-fit: cover"
+                alt="Imagen Proyecto"
+              />
+              {% endif %}
+              <span class="fw-semibold">{{ proyecto.nom_proyecto }}</span>
+            </div>
+            <div>
+              <a
+                href="{% url 'home-proyecto-docente' proyecto.id_proyecto %}"
+                class="btn btn-sm btn-outline-success"
+                title="Ir al Home"
+                ><i class="bi bi-house-door"></i
+              ></a>
+            </div>
+          </li>
+          {% endwith %} {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted">No hay proyectos registrados.</p>
+        {% endif %}
+      </div>
+      {% elif request.GET.seccion == 'reuniones' %}
+      <!-- Reuniones del Track -->
+      <div class="mb-5">
+        <div class="d-flex align-items-center mb-3">
+          <h4 class="text-dark mb-0 flex-grow-1">🗓️ Reuniones del Track</h4>
+        </div>
+        {% if reuniones %}
+        <div class="list-group mt-3">
+          {% for reunion in reuniones %}
+          <div class="list-group-item mb-3 shadow-sm rounded">
+            <h5 class="mb-1">
+              <strong>{{ reunion }}</strong>
+            </h5>
+            <p class="mb-1">
+              <strong>Fecha:</strong> {{ reunion.fecha|date:"d M Y" }}
+              <br />
+              <strong>Hora:</strong> {{ reunion.hora|time:"H:i" }}
+              <br />
+              <strong>Modalidad:</strong> {{ reunion.get_modalidad_display }}
+              <br />
+              {% if reunion.modalidad == "virtual" %}
+              <strong>Link:</strong>
+              <a href="{{ reunion.link_virtual }}" target="_blank"
+                >Entrar a reunión</a
+              >
+              <br />
+              {% else %}
+              <strong>Ubicación:</strong> {{ reunion.ubicacion }}
+              <br />
+              {% endif %}
+              <strong>Descripción:</strong> {{ reunion.descripcion }}
+            </p>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center mt-4" role="alert">
+          No hay reuniones programadas actualmente.
         </div>
         {% endif %}
-        <!-- Últimas Publicaciones -->
-        <div class="mb-5">
-          <h4 class="mb-3 text-dark">Últimas Publicaciones</h4>
-          {% if posts %}
-          <ul class="list-group">
-            {% for post in posts %}
-              <li class="list-group-item d-flex justify-content-between">
-                <div class="d-flex">
-                  <!-- Imagen del perfil -->
-                  {% if post.docente.perfil_docente.imagen_perfil %}
-                    <img src="{{ post.docente.perfil_docente.imagen_perfil.url }}" class="rounded-circle me-2 mt-1" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #eee;">
-                  {% else %}
-                    <img src="{% static 'images/profileImage.jpg' %}" class="rounded-circle me-2 mt-1" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #eee;">
-                  {% endif %}
-
-                  <!-- Contenido del post -->
-                  <div>
-                    <strong>{{ post.docente.first_name }} {{ post.docente.last_name }}</strong>
-                    <span class="text-muted">({{ post.docente.username }})</span><br>
-                    <span class="small text-secondary">{{ post.fecha_creacion|date:"d M Y H:i" }}</span><br>
-                    {{ post.contenido|linebreaksbr }}
-                    {% if post.imagen %}
-                      <div class="mt-2">
-                        <img src="{{ post.imagen.url }}" class="img-fluid rounded" style="max-height: 300px;">
-                      </div>
-                    {% endif %}
-                  </div>
-                </div>
-
-                {% if user == post.docente %}
-                <div class="ms-2 d-flex flex-column gap-1">
-                  <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editarPostModal{{ post.id }}"><i class="bi bi-pencil"></i></button>
-                  <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#eliminarPostModal{{ post.id }}"><i class="bi bi-trash"></i></button>
-                </div>
-                <!-- Modal Editar Post -->
-                <div class="modal fade" id="editarPostModal{{ post.id }}" tabindex="-1" aria-labelledby="editarPostModalLabel{{ post.id }}" aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <form method="post" action="{% url 'modificar-post-track-docente' post.id %}" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="editarPostModalLabel{{ post.id }}">Editar Post</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                        </div>
-                        <div class="modal-body">
-                          <div class="mb-2">
-                            <label for="contenido-{{ post.id }}" class="form-label">Contenido</label>
-                            <textarea name="contenido" id="contenido-{{ post.id }}" class="form-control" rows="3">{{ post.contenido }}</textarea>
-                          </div>
-                          <div class="mb-2">
-                            <label for="imagen-{{ post.id }}" class="form-label">Imagen</label>
-                            <input type="file" name="imagen" id="imagen-{{ post.id }}" class="form-control">
-                            {% if post.imagen %}
-                              <img src="{{ post.imagen.url }}" class="img-fluid rounded mt-2" style="max-height: 120px;">
-                            {% endif %}
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                          <button type="submit" class="btn btn-warning">Guardar cambios</button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-                <!-- Modal Eliminar Post -->
-                <div class="modal fade" id="eliminarPostModal{{ post.id }}" tabindex="-1" aria-labelledby="eliminarPostModalLabel{{ post.id }}" aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <form method="post" action="{% url 'eliminar-post-track-docente' post.id %}">
-                        {% csrf_token %}
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="eliminarPostModalLabel{{ post.id }}">Eliminar Post</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                        </div>
-                        <div class="modal-body">
-                          ¿Estás seguro que deseas eliminar este post?
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                          <button type="submit" class="btn btn-danger">Eliminar</button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-                {% endif %}
-              </li>
-             {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No hay publicaciones registradas.</p>
-          {% endif %}
-        </div>
-        <!-- Carrusel de Proyectos Asociados -->
-        <div class="mb-5">
-          <h4 class="mb-3 text-dark">Proyectos Asociados</h4>
-          {% if proyectos_info %}
-          <div id="proyectosCarruselDocente" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-              {% for info in proyectos_info %}
-                {% with proyecto=info.proyecto %}
-                <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                  <div class="card h-100 shadow-sm mx-auto" style="max-width: 400px;">
-                    {% if proyecto.imagen %}
-                    <img src="{{ proyecto.imagen.url }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="Imagen Proyecto">
-                    {% endif %}
-                    <div class="card-body">
-                      <h5 class="card-title">{{ proyecto.nom_proyecto }}</h5>
-                      <p class="card-text mb-1">
-                        <strong>Jefe Proyecto:</strong> {{ proyecto.jefe_proyecto.first_name }} {{ proyecto.jefe_proyecto.last_name }} ({{ proyecto.jefe_proyecto.username }})
-                      </p>
-                      <p class="card-text">{{ proyecto.objetivo|truncatewords:20 }}</p>
-                      <a href="{% url 'home-proyecto-docente' proyecto.id_proyecto %}" class="btn btn-sm btn-outline-success mt-1">Ir al Home</a>
-                    </div>
-                  </div>
-                </div>
-                {% endwith %}
-              {% endfor %}
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#proyectosCarruselDocente" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Anterior</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#proyectosCarruselDocente" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Siguiente</span>
-            </button>
-          </div>
-          {% else %}
-          <p class="text-muted">No hay proyectos registrados.</p>
-          {% endif %}
-        </div>
-      {% elif request.GET.seccion == 'proyectos' %}
-        <!-- Listado de proyectos -->
-        <div class="mb-5">
-          <h4 class="mb-3 text-dark">Proyectos del Track</h4>
-          {% if proyectos_info %}
-          <ul class="list-group">
-            {% for info in proyectos_info %}
-              {% with proyecto=info.proyecto %}
-              <li class="list-group-item d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center">
-                  {% if proyecto.imagen %}
-                    <img src="{{ proyecto.imagen.url }}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;" alt="Imagen Proyecto">
-                  {% else %}
-                    <img src="{% static 'images/profileImage.jpg' %}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;" alt="Imagen Proyecto">
-                  {% endif %}
-                  <span class="fw-semibold">{{ proyecto.nom_proyecto }}</span>
-                </div>
-                <div>
-                  <a href="{% url 'home-proyecto-docente' proyecto.id_proyecto %}" class="btn btn-sm btn-outline-success" title="Ir al Home"><i class="bi bi-house-door"></i></a>
-                </div>
-              </li>
-              {% endwith %}
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No hay proyectos registrados.</p>
-          {% endif %}
-        </div>
-      {% elif request.GET.seccion == 'reuniones' %}
-        <!-- Reuniones del Track -->
-        <div class="mb-5">
-          <h4 class="mb-3 text-dark">🗓️ Reuniones del Track</h4>
-          {% if reuniones %}
-          <div class="list-group mt-3">
-            {% for reunion in reuniones %}
-              <div class="list-group-item mb-3 shadow-sm rounded">
-                <h5 class="mb-1"><strong>{{ reunion }}</strong></h5>
-                <p class="mb-1">
-                  <strong>Fecha:</strong> {{ reunion.fecha|date:"d M Y" }} <br>
-                  <strong>Hora:</strong> {{ reunion.hora|time:"H:i" }} <br>
-                  <strong>Modalidad:</strong> {{ reunion.get_modalidad_display }} <br>
-                  {% if reunion.modalidad == "virtual" %}
-                    <strong>Link:</strong> <a href="{{ reunion.link_virtual }}" target="_blank">Entrar a reunión</a><br>
-                  {% else %}
-                    <strong>Ubicación:</strong> {{ reunion.ubicacion }} <br>
-                  {% endif %}
-                  <strong>Descripción:</strong> {{ reunion.descripcion }}
-                </p>
-              </div>
-            {% endfor %}
-          </div>
-          {% else %}
-          <div class="alert alert-info text-center mt-4" role="alert">
-            No hay reuniones programadas actualmente.
-          </div>
-          {% endif %}
-        </div>
+      </div>
       {% elif request.GET.seccion == 'integrantes' %}
-        <!-- Integrantes del Track -->
-        <div class="mb-5">
-          <h4 class="mb-3 text-dark">Integrantes del Track</h4>
-          <ul class="list-group">
-            {% for alumno in alumnos %}
-              <li class="list-group-item d-flex align-items-center">
-                {% if alumno.perfil_docente.imagen_perfil %}
-                  <img src="{{ alumno.perfil_docente.imagen_perfil.url }}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
-                {% elif alumno.perfil_alumno.imagen_perfil %}
-                  <img src="{{ alumno.perfil_alumno.imagen_perfil.url }}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
-                {% else %}
-                  <img src="{% static 'images/profileImage.jpg' %}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
-                {% endif %}
-                <span>{{ alumno.first_name }} {{ alumno.last_name }}</span> <span class="text-muted ms-1">({{ alumno.username }})</span>
-              </li>
-            {% endfor %}
-          </ul>
+      <!-- Integrantes del Track -->
+      <div class="mb-5">
+        <h4 class="mb-3 text-dark">Integrantes del Track</h4>
+        {% if alumnos and alumnos|length > 0 %}
+        <ul class="list-group">
+          {% for alumno in alumnos %}
+          <li class="list-group-item d-flex align-items-center">
+            {% if alumno.perfil_docente.imagen_perfil %}
+            <img
+              src="{{ alumno.perfil_docente.imagen_perfil.url }}"
+              class="rounded-circle me-2"
+              style="width: 40px; height: 40px; object-fit: cover"
+            />
+            {% elif alumno.perfil_alumno.imagen_perfil %}
+            <img
+              src="{{ alumno.perfil_alumno.imagen_perfil.url }}"
+              class="rounded-circle me-2"
+              style="width: 40px; height: 40px; object-fit: cover"
+            />
+            {% else %}
+            <img
+              src="{% static 'images/profileImage.jpg' %}"
+              class="rounded-circle me-2"
+              style="width: 40px; height: 40px; object-fit: cover"
+            />
+            {% endif %}
+            <span>{{ alumno.first_name }} {{ alumno.last_name }}</span>
+            <span class="text-muted ms-1">({{ alumno.username }})</span>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <div class="alert alert-info text-center mt-4" role="alert">
+          No hay integrantes registrados en este track.
         </div>
+        {% endif %}
+      </div>
       {% elif request.GET.seccion == 'eventos' %}
-        <!-- Eventos del Track -->
-        <div class="mb-5">
-          <h4 class="mb-3 text-dark">Eventos del Track</h4>
-          {% if eventos %}
-          <ul class="list-group">
-            {% for evento in eventos %}
-              <li class="list-group-item">
-                <strong>{{ evento.nombre_evento }}</strong> - {{ evento.fecha_evento|date:"d M Y" }} {{ evento.hora|time:"H:i" }}<br>
-                <span class="text-muted">{{ evento.ubicacion_evento }}</span>
-              </li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <div class="alert alert-info text-center mt-4" role="alert">
-            No hay eventos registrados para este track.
-          </div>
-          {% endif %}
+      <!-- Eventos del Track -->
+      <div class="mb-5">
+        <h4 class="mb-3 text-dark">Eventos del Track</h4>
+        {% if eventos %}
+        <ul class="list-group">
+          {% for evento in eventos %}
+          <li class="list-group-item">
+            <strong>{{ evento.nombre_evento }}</strong> -
+            {{evento.fecha_evento|date:"d M Y" }} {{ evento.hora|time:"H:i" }}
+            <br />
+            <span class="text-muted">{{ evento.ubicacion_evento }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <div class="alert alert-info text-center mt-4" role="alert">
+          No hay eventos registrados para este track.
         </div>
+        {% endif %}
+      </div>
       {% endif %}
     </div>
     <!-- Card lateral derecha: Información del Track -->
     <div class="col-lg-4 d-none d-lg-block">
-      <div class="card" style="background: #f5f6fa; box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10); border: none; border-radius: 16px; margin-top: 0.5rem; max-width: 350px; margin-left: auto;">
-        <div class="card-header bg-white text-center border-bottom" style="border-radius: 16px 16px 0 0;">
-          <span class="fw-bold" style="font-size: 1.1rem; color: #222;">Información del Track</span>
+      <div
+        class="card"
+        style="
+          background: #f5f6fa;
+          box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.1);
+          border: none;
+          border-radius: 16px;
+          margin-top: 0.5rem;
+          max-width: 350px;
+          margin-left: auto;
+        "
+      >
+        <div
+          class="card-header bg-white text-center border-bottom"
+          style="border-radius: 16px 16px 0 0"
+        >
+          <span class="fw-bold" style="font-size: 1.1rem; color: #222"
+            >Información del Track</span
+          >
         </div>
         <div class="card-body px-3 py-4 text-center">
-          <h5 class="fw-bold text-center mb-3" style="color: #222;">{{ track.nom_track }}</h5>
+          <h5 class="fw-bold text-center mb-3" style="color: #222">
+            {{ track.nom_track }}
+          </h5>
           <div class="d-flex align-items-center justify-content-center mb-3">
-            {% if track.id_usuario.perfil_docente and track.id_usuario.perfil_docente.imagen_perfil %}
-              <img src="{{ track.id_usuario.perfil_docente.imagen_perfil.url }}" alt="Foto Docente" class="rounded-circle me-2" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #eee;">
+            {% if track.id_usuario.perfil_docente and
+            track.id_usuario.perfil_docente.imagen_perfil %}
+            <img
+              src="{{ track.id_usuario.perfil_docente.imagen_perfil.url }}"
+              alt="Foto Docente"
+              class="rounded-circle me-2"
+              style="
+                width: 48px;
+                height: 48px;
+                object-fit: cover;
+                border: 2px solid #eee;
+              "
+            />
             {% else %}
-              <div class="rounded-circle bg-secondary me-2" style="width: 48px; height: 48px;"></div>
+            <div
+              class="rounded-circle bg-secondary me-2"
+              style="width: 48px; height: 48px"
+            ></div>
             {% endif %}
             <div class="text-start">
-              <span class="fw-semibold" style="color: #444;">Docente a cargo:</span><br>
+              <span class="fw-semibold" style="color: #444"
+                >Docente a cargo:</span
+              >
+              <br />
               {% if track.id_usuario.perfil_docente %}
-                <span style="color: #555;">{{ track.id_usuario.perfil_docente.nombres }} {{ track.id_usuario.perfil_docente.apellido_paterno }} {{ track.id_usuario.perfil_docente.apellido_materno }}</span>
+              <span style="color: #555"
+                >{{ track.id_usuario.perfil_docente.nombres }}
+                {{track.id_usuario.perfil_docente.apellido_paterno }}
+                {{track.id_usuario.perfil_docente.apellido_materno }}</span
+              >
               {% else %}
-                <span class="text-danger">No asignado</span>
+              <span class="text-danger">No asignado</span>
               {% endif %}
             </div>
           </div>
-          <p class="mb-3 text-center"><span class="fw-semibold" style="color: #444;">Descripción:</span><br><span style="color: #555;">{{ track.descripcion }}</span></p>
+          <p class="mb-3 text-center">
+            <span class="fw-semibold" style="color: #444">Descripción:</span>
+            <br />
+            <span style="color: #555">{{ track.descripcion }}</span>
+          </p>
           <ul class="list-group list-group-flush mb-3 text-center">
-            <li class="list-group-item bg-transparent text-dark border-0 ps-0"><span class="fw-semibold">Alumnos:</span> {{ alumnos|length }}</li>
-            <li class="list-group-item bg-transparent text-dark border-0 ps-0"><span class="fw-semibold">Proyectos:</span> {{ proyectos_info|length }}</li>
-            <li class="list-group-item bg-transparent text-dark border-0 ps-0"><span class="fw-semibold">Reuniones:</span> {{ reuniones|length }}</li>
+            <li class="list-group-item bg-transparent text-dark border-0 ps-0">
+              <span class="fw-semibold">Alumnos:</span> {{ alumnos|length }}
+            </li>
+            <li class="list-group-item bg-transparent text-dark border-0 ps-0">
+              <span class="fw-semibold">Proyectos:</span>
+              {{proyectos_info|length }}
+            </li>
+            <li class="list-group-item bg-transparent text-dark border-0 ps-0">
+              <span class="fw-semibold">Reuniones:</span> {{ reuniones|length }}
+            </li>
           </ul>
         </div>
       </div>
     </div>
   </div>
 </div>
+{# --- MODAL CREAR REUNIÓN (SECCIÓN REUNIONES) --- #} {% if request.GET.seccion
+== 'reuniones' and user == track.id_usuario %}
+<div
+  class="modal fade"
+  id="modalCrearReunionDocente"
+  tabindex="-1"
+  aria-labelledby="modalCrearReunionDocenteLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" id="formCrearReunionDocente">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalCrearReunionDocenteLabel">
+            Crear Reunión
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Cerrar"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-2">
+            <label for="tituloNuevaReunion" class="form-label">Título</label>
+            <input
+              type="text"
+              name="titulo"
+              id="tituloNuevaReunion"
+              class="form-control"
+              maxlength="30"
+              pattern="^(?![0-9]+$)[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]{1,30}$"
+              required
+            />
+          </div>
+          <div class="mb-2">
+            <label for="fechaNuevaReunion" class="form-label">Fecha</label>
+            <input
+              type="date"
+              name="fecha"
+              id="fechaNuevaReunion"
+              class="form-control fecha-reunion"
+              required
+            />
+          </div>
+          <div class="mb-2">
+            <label for="horaNuevaReunion" class="form-label">Hora</label>
+            <input
+              type="time"
+              name="hora"
+              id="horaNuevaReunion"
+              class="form-control"
+              min="08:00"
+              max="23:00"
+              required
+            />
+          </div>
+          <div class="mb-2">
+            <label for="modalidadNuevaReunion" class="form-label"
+              >Modalidad</label
+            >
+            <select
+              name="modalidad"
+              id="modalidadNuevaReunion"
+              class="form-control modalidad-select"
+              data-uid="NuevaReunion"
+              required
+            >
+              <option value="presencial">Presencial</option>
+              <option value="virtual">Virtual</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label for="link_virtualNuevaReunion" class="form-label"
+              >Link Virtual</label
+            >
+            <input
+              type="url"
+              name="link_virtual"
+              id="link_virtualNuevaReunion"
+              class="form-control link-virtual-input"
+              pattern="https://.*"
+              maxlength="200"
+              data-uid="NuevaReunion"
+            />
+          </div>
+          <div class="mb-2">
+            <label for="ubicacionNuevaReunion" class="form-label"
+              >Ubicación</label
+            >
+            <input
+              type="text"
+              name="ubicacion"
+              id="ubicacionNuevaReunion"
+              class="form-control ubicacion-input"
+              maxlength="25"
+              pattern="^(?![0-9]+$)[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ,.\-]{1,25}$"
+              data-uid="NuevaReunion"
+            />
+          </div>
+          <div class="mb-2">
+            <label for="descripcionNuevaReunion" class="form-label"
+              >Descripción</label
+            >
+            <textarea
+              name="descripcion"
+              id="descripcionNuevaReunion"
+              class="form-control"
+              maxlength="300"
+              pattern="^(?![0-9]+$).{1,300}$"
+              required
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save-fill me-1"></i>Guardar
+          </button>
+        </div>
+      </form>
+      <script src="{% static 'scripts/reuniones.js' %}" defer></script>
+    </div>
+  </div>
+</div>
+{% endif %} {# --- SCRIPTS DE VALIDACIÓN FECHA/HORA Y CAMPOS DEPENDIENTES --- #}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Fecha mínima hoy para todos los inputs de tipo date de reunión
+    var hoy = new Date();
+    var yyyy = hoy.getFullYear();
+    var mm = String(hoy.getMonth() + 1).padStart(2, "0");
+    var dd = String(hoy.getDate()).padStart(2, "0");
+    var minDate = yyyy + "-" + mm + "-" + dd;
+    document
+      .querySelectorAll('input[type="date"].fecha-reunion')
+      .forEach(function (input) {
+        input.setAttribute("min", minDate);
+      });
+
+    // Validación dinámica de modalidad
+    function toggleCamposModalidad(uid) {
+      var modalidad = document.getElementById("modalidadNuevaReunion" + uid);
+      var link = document.getElementById("link_virtualNuevaReunion" + uid);
+      var ubic = document.getElementById("ubicacionNuevaReunion" + uid);
+      if (!modalidad || !link || !ubic) return;
+      if (modalidad.value === "virtual") {
+        link.required = true;
+        link.disabled = false;
+        ubic.required = false;
+        ubic.disabled = true;
+        ubic.value = "";
+      } else {
+        link.required = false;
+        link.disabled = true;
+        link.value = "";
+        ubic.required = true;
+        ubic.disabled = false;
+      }
+    }
+    // Para el modal de crear reunión
+    var modalidad = document.getElementById("modalidadNuevaReunionDocente");
+    if (modalidad) {
+      modalidad.addEventListener("change", function () {
+        toggleCamposModalidad("Docente");
+      });
+      toggleCamposModalidad("Docente");
+    }
+  });
+</script>
 {% endblock %}

@@ -38,10 +38,17 @@ class ProyectoForm(forms.ModelForm):
 class SolicitudForm(forms.ModelForm):
     class Meta:
         model = Solicitud
-        fields = ['alumno', 'titulo', 'descripcion', 'categoria', 'estado']
+        fields = ['alumno', 'titulo', 'descripcion', 'categoria', 'estado', 'respuesta_admin']
         widgets = {
-            'descripcion': forms.Textarea(attrs={'rows': 4}),
+            'descripcion': forms.Textarea(attrs={'rows': 4, 'readonly': 'readonly'}),
+            'respuesta_admin': forms.Textarea(attrs={'rows': 3, 'maxlength': 300, 'class': 'form-control', 'placeholder': 'Respuesta del administrador (máx 300 caracteres)'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['alumno'].disabled = True
+        self.fields['titulo'].disabled = True
+        self.fields['descripcion'].disabled = True
 
 
 class EventoForm(forms.ModelForm):

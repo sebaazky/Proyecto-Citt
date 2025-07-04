@@ -16,18 +16,80 @@
           <form method="post">
             {% csrf_token %}
 
+            <input type="hidden" name="docente" value="{{ request.user.pk }}">
             {% for field in form.visible_fields %}
-              <div class="mb-3">
-                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                {% render_field field class="form-control" %}
-                {% if field.help_text %}
-                  <div class="form-text">{{ field.help_text }}</div>
-                {% endif %}
-                {% for error in field.errors %}
-                  <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-              </div>
+              {% if field.name == 'docente' %}
+                {# omitido, ya se envía oculto #}
+              {% elif field.name == 'id_tipo_evento' %}
+                <div class="mb-3">
+                  <label for="{{ field.id_for_label }}" class="form-label">Tipo de evento</label>
+                  <select name="id_tipo_evento" id="{{ field.id_for_label }}" class="form-select" required>
+                    <option value="" disabled {% if not field.value %}selected{% endif %}>Selecciona un tipo de evento</option>
+                    {% for opt in field.field.choices %}
+                      {% if opt.0 %}
+                        <option value="{{ opt.0 }}" {% if field.value == opt.0 %}selected{% endif %}>{{ opt.1 }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                  {% for error in field.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              {% elif field.name == 'nombre_evento' %}
+                <div class="mb-3">
+                  <label for="{{ field.id_for_label }}" class="form-label">Nombre del evento</label>
+                  {{ field|add_class:"form-control"|attr:"maxlength:30"|attr:"pattern:(?!^[0-9 ]+$)^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{1,30}$"|attr:"title:Solo letras y espacios, máximo 30 caracteres" }}
+                  {% for error in field.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              {% elif field.name == 'ubicacion_evento' %}
+                <div class="mb-3">
+                  <label for="{{ field.id_for_label }}" class="form-label">Ubicación del evento</label>
+                  {{ field|add_class:"form-control"|attr:"maxlength:30"|attr:"pattern:(?!^[ ]+$)^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ,.\-#()\/]{1,30}$"|attr:"title:Hasta 30 caracteres, permite letras, números y caracteres especiales básicos" }}
+                  {% for error in field.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              {% elif field.name == 'fecha_evento' %}
+                <div class="mb-3">
+                  <label for="{{ field.id_for_label }}" class="form-label">Fecha del evento</label>
+                  {{ field|add_class:"form-control"|attr:"type:date"|attr:"min:"|attr:"onfocus:this.min=new Date().toISOString().split('T')[0]" }}
+                  {% for error in field.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              {% elif field.name == 'hora' %}
+                <div class="mb-3">
+                  <label for="{{ field.id_for_label }}" class="form-label">Hora</label>
+                  {{ field|add_class:"form-control"|attr:"type:time"|attr:"min:08:00"|attr:"max:23:00"|attr:"title:Entre 8:00 y 23:00" }}
+                  {% for error in field.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <div class="mb-3">
+                  <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                  {% render_field field class="form-control" %}
+                  {% if field.help_text %}
+                    <div class="form-text">{{ field.help_text }}</div>
+                  {% endif %}
+                  {% for error in field.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              {% endif %}
             {% endfor %}
+          <script>
+            // Validación para fecha_evento: solo fechas > hoy
+            document.addEventListener('DOMContentLoaded', function() {
+              var fechaInput = document.querySelector('input[name="fecha_evento"]');
+              if (fechaInput) {
+                let today = new Date().toISOString().split('T')[0];
+                fechaInput.setAttribute('min', today);
+              }
+            });
+          </script>
 
             <div class="text-end">
               <a href="{% url 'admin-gestion-eventos' %}" class="btn btn-secondary">Cancelar</a>

@@ -1,36 +1,69 @@
-{% extends 'base-docentes.html' %}
-{% load static %}
-{% load widget_tweaks %}
-
-{% block title %}Modificar Evento{% endblock %}
-
-{% block content %}
+{% extends 'base-docentes.html' %} {% load static %} {% load widget_tweaks %} {%
+block title %}Modificar Evento{% endblock %} {% block content %}
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card shadow-lg border-0 rounded-4">
         <div class="card-header bg-warning text-dark rounded-top-4">
-          <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Modificar Evento</h4>
+          <h4 class="mb-0">
+            <i class="bi bi-pencil-square me-2"></i>Modificar Evento
+          </h4>
         </div>
         <div class="card-body">
           <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% for field in form.visible_fields %}
-              <div class="mb-3">
-                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field|add_class:"form-control" }}
-                {% if field.help_text %}
-                  <div class="form-text">{{ field.help_text }}</div>
-                {% endif %}
-                {% for error in field.errors %}
-                  <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-              </div>
+            {% csrf_token %} {% for field in form.visible_fields %}
+            <div class="mb-3">
+              <label class="form-label" for="{{ field.id_for_label }}"
+                >{{ field.label }}</label
+              >
+              {% if field.name == 'nombre_evento' %} {{
+              field|add_class:'form-control'|attr:'maxlength:50'|attr:'pattern:^(?![0-9]+$)[A-Za-zÁÉÍÓÚáéíóúÑñ0-9
+              ]{1,50}$'|attr:'required' }} {% elif field.name ==
+              'ubicacion_evento' %} {{
+              field|add_class:'form-control'|attr:'maxlength:100'|attr:'pattern:^(?![0-9]+$)[A-Za-zÁÉÍÓÚáéíóúÑñ0-9
+              ,.\-]{1,100}$'|attr:'required' }} {% elif field.name ==
+              'fecha_evento' %} {{ field|add_class:'form-control
+              fecha-reunion'|attr:'required'|attr:'type:date'|attr:'min:'|safe
+              }} {% elif field.name == 'hora' %} {{
+              field|add_class:'form-control'|attr:'required'|attr:'type:time'|attr:'min:08:00'|attr:'max:23:00'
+              }}
+              <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                  var fechaInput = document.querySelector(
+                    'input[name="fecha_evento"]'
+                  );
+                  if (fechaInput) {
+                    var today = new Date();
+                    var yyyy = today.getFullYear();
+                    var mm = String(today.getMonth() + 1).padStart(2, "0");
+                    var dd = String(today.getDate()).padStart(2, "0");
+                    var minDate = yyyy + "-" + mm + "-" + dd;
+                    fechaInput.setAttribute("min", minDate);
+                  }
+                });
+              </script>
+              {% elif field.name == 'id_tipo_evento' %} {{
+              field|add_class:'form-select'|attr:'required' }} {% elif
+              field.name == 'infografia' %} {{
+              field|add_class:'form-control'|attr:'accept:image/*' }} {% else %}
+              {{ field|add_class:'form-control' }} {% endif %} {% if
+              field.help_text %}
+              <div class="form-text">{{ field.help_text }}</div>
+              {% endif %} {% for error in field.errors %}
+              <div class="text-danger">{{ error }}</div>
+              {% endfor %}
+            </div>
             {% endfor %}
 
             <div class="text-end">
-              <a href="{% url 'listar-eventos' %}" class="btn btn-outline-secondary">Cancelar</a>
-              <button type="submit" class="btn btn-warning text-dark">Guardar Cambios</button>
+              <a
+                href="{% url 'listar-eventos' %}"
+                class="btn btn-outline-secondary"
+                >Cancelar</a
+              >
+              <button type="submit" class="btn btn-warning text-dark">
+                Guardar Cambios
+              </button>
             </div>
           </form>
         </div>

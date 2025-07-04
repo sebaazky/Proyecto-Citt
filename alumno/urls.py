@@ -38,6 +38,7 @@ urlpatterns = [
     path('proyectos/<int:proyecto_id>/reunion/crear/', views.crear_reunion_proyecto, name='crear-reunion-proyecto-alumno'),
     path('proyectos/<int:proyecto_id>/solicitar/', views.solicitar_ingreso_proyecto, name='solicitar-ingreso-proyecto-alumno'),
     path('proyectos/<int:proyecto_id>/solicitudes/', views.gestionar_solicitudes_proyecto, name='gestionar-solicitudes-proyecto-alumno'),
+    path('proyectos/solicitudes/', views.gestionar_solicitudes_proyecto_general, name='gestionar-solicitudes-proyecto-general'),
     path('proyectos/<int:proyecto_id>/solicitudes/<int:solicitud_id>/aceptar/', views.aceptar_solicitud_proyecto, name='aceptar-solicitud-proyecto-alumno'),
     path('proyectos/<int:proyecto_id>/solicitudes/<int:solicitud_id>/rechazar/', views.rechazar_solicitud_proyecto, name='rechazar-solicitud-proyecto-alumno'),
     path('proyectos/<int:id_proyecto>/cancelar-solicitud/', views.cancelar_solicitud_proyecto, name='cancelar-solicitud-proyecto-alumno'),
@@ -45,4 +46,5 @@ urlpatterns = [
     path('proyectos/<int:proyecto_id>/post/<int:post_id>/eliminar/', views.eliminar_post_proyecto, name='eliminar-post-proyecto-alumno'),
     path('proyectos/<int:proyecto_id>/reunion/<int:reunion_id>/modificar/', views.modificar_reunion_proyecto_alumno, name='modificar-reunion-proyecto-alumno'),
     path('proyectos/<int:proyecto_id>/reunion/<int:reunion_id>/eliminar/', views.eliminar_reunion_proyecto_alumno, name='eliminar-reunion-proyecto-alumno'),
+    path('proyectos/<int:proyecto_id>/integrante/<int:alumno_id>/eliminar/', views.eliminar_integrante_proyecto, name='eliminar-integrante-proyecto'),
 ]

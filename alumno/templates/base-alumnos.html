@@ -4,159 +4,217 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block titulo %}CITT Alumnos{% endblock %}</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
-    <link rel="icon" href="{% static 'images/logocitt.jpeg' %}" type="image/x-icon" />
+    <title>
+      {% block titulo %}CITT Alumnos{% endblock %}
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+          rel="stylesheet" />
+    <link rel="icon"
+          href="{% static 'images/logocitt.jpeg' %}"
+          type="image/x-icon" />
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
   </head>
-
   <body class="d-flex flex-column min-vh-100">
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-    <div class="container">
-      <a class="navbar-brand d-flex align-items-center" href="{% url 'inicio' %}">
-        <img src="{% static 'images/citt.jpeg' %}" alt="Logo" class="rounded-circle me-2" style="height: 40px;" />
-        <span>CITT Alumnos</span>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="{% url 'home-alumno' %}">Inicio</a></li>
-          {% if user.id_track %}
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center"
+           href="{% url 'inicio' %}">
+          <img src="{% static 'images/citt.jpeg' %}"
+               alt="Logo"
+               class="rounded-circle me-2"
+               style="height: 40px" />
+          <span>CITT Alumnos</span>
+        </a>
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'detalle-track' user.id_track.nom_track|slugify %}">{{ user.id_track.nom_track }}</a>
+              <a class="nav-link" href="{% url 'home-alumno' %}">Inicio</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'listar-proyectos' %}">Mis Proyectos</a>
+            {% if user.id_track %}
+              <li class="nav-item">
+                <a class="nav-link"
+                   href="{% url 'detalle-track' user.id_track.nom_track|slugify %}">{{ user.id_track.nom_track }}</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'listar-proyectos' %}">Mis Proyectos</a>
+              </li>
+            {% endif %}
+            <li class="nav-item position-relative">
+              <a class="nav-link d-flex align-items-center"
+                 href="{% url 'gestionar-solicitudes-proyecto-general' %}">
+                <i class="bi bi-envelope-plus"></i>
+                {% if solicitudes_proyecto_pendientes and solicitudes_proyecto_pendientes > 0 %}
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                        style="font-size: 0.8rem">{{ solicitudes_proyecto_pendientes }}</span>
+                {% endif %}
+              </a>
             </li>
-          {% endif %}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-              {{ user.username }}
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="{% url 'ver-perfil-al' %}">Mi perfil</a></li>
-              <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Contenido general con Sidebar + Content -->
-  <div class="container-fluid flex-grow-1">
-    <div class="row">
-      <!-- Sidebar -->
-      <div class="col-md-3 col-lg-2 bg-white border-end p-3 min-vh-100">
-        <div class="mb-4 mt-5 text-center">
-          {% if user.perfil_alumno.imagen_perfil %}
-            <img src="{{ user.perfil_alumno.imagen_perfil.url }}" alt="Foto perfil" class="rounded-circle mb-2" style="width: 160px; height: 160px; object-fit: cover;" />
-          {% else %}
-            <img src="{% static 'images/default-avatar.jpg' %}" alt="Foto perfil default" class="rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;" />
-          {% endif %}
-
-          {% if user.perfil_alumno.nombres and user.perfil_alumno.apellido_paterno %}
-            <h5 class="mt-2"><strong>{{ user.perfil_alumno.nombres}} {{user.perfil_alumno.apellido_paterno}}</strong></h5>
-          {% endif %}
-           <p><strong>usuario: </strong> {{ user.username }}</p>
-        </div>
-
-        <ul class="nav nav-pills flex-column mb-auto">
-          <li class="nav-item mb-2">
-            <a href="{% url 'home-alumno' %}" class="nav-link bg-dark text-white rounded-3 text-center">
-              <i class="bi bi-house-door me-2"></i> Inicio
-            </a>
-          </li>
-          <li class="nav-item mb-2">
-            <a href="{% url 'ver-perfil-al' %}" class="nav-link bg-dark text-white rounded-3 text-center">
-              <i class="bi bi-person-fill me-2"></i> Ver Perfil
-            </a>
-          </li>
-          <hr class="text-white my-3">
-          {% if user.id_track %}
-          <li class="nav-item mb-2">
-            <a href="{% url 'detalle-track' user.id_track.nom_track|slugify %}" class="nav-link bg-dark text-white rounded-3 text-center">
-              <i class="bi bi-diagram-3-fill me-2"></i> {{ user.id_track.nom_track }}
-            </a>
-          </li>
-          {% endif %}
-          {% if not mostrar_menu_restringido %}
-          <li class="nav-item mb-2">
-            <a href="{% url 'reuniones-alumno' %}" class="nav-link bg-dark text-white rounded-3 text-center">
-              <i class="bi bi-calendar-event me-2"></i> Reuniones
-            </a>
-          </li>
-          <li class="nav-item mb-2">
-            <a href="{% url 'eventos-alumno' %}" class="nav-link bg-dark text-white rounded-3 text-center">
-              <i class="bi bi-megaphone me-2"></i> Eventos
-            </a>
-          </li>
-          <li class="nav-item mb-2">
-            <a href="{% url 'listar-solicitudes' %}" class="nav-link bg-dark text-white rounded-3 text-center">
-              <i class="bi bi-inbox me-2"></i> Solicitudes CITT
-            </a>
-          </li> 
-          {% endif %}
-          {% if not request.user.id_track %}
-            <li class="nav-item mb-2">
-            <a href="{% url 'listar-tracks' %}" class="nav-link bg-dark text-white rounded-3 text-center">
-              <i class="bi bi-person-fill me-2"></i> Tracks
-            </a>
-          </li>
-          {% endif %}
-          <hr class="text-white my-3">
-          <li class="nav-item mb-2">
-            <a class="nav-link bg-dark text-white rounded-3 text-center justify-content-center d-flex align-items-center" data-bs-toggle="collapse" href="#sidebarProyectosCollapse" role="button" aria-expanded="false" aria-controls="sidebarProyectosCollapse">
-              <span><i class="bi bi-folder-fill me-2"></i> Mis Proyectos</span>
-              <i class="bi bi-caret-down-fill"></i>
-            </a>
-            <div class="collapse" id="sidebarProyectosCollapse">
-              {% with user_proyectos=user.proyecto_set.all %}
-              {% if user_proyectos %}
-              <ul class="nav flex-column ms-3 mt-1">
-                {% for proyecto in user_proyectos %}
-                  <li class="nav-item mb-1">
-                    <a href="{% url 'home-proyecto-alumno' proyecto.id_proyecto %}" class="nav-link text-dark small ps-4 py-1 rounded-2" style="background:rgb(207, 210, 214);">
-                      <i class="bi bi-chevron-right me-1"></i> {{ proyecto.nom_proyecto|truncatechars:18 }}
-                    </a>
-                  </li>
-                {% endfor %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle"
+                 href="#"
+                 id="navbarDropdown"
+                 role="button"
+                 data-bs-toggle="dropdown">{{ user.username }}</a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <a class="dropdown-item" href="{% url 'ver-perfil-al' %}">Mi perfil</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a>
+                </li>
               </ul>
-              {% else %}
-                <div class="text-muted small ps-4 py-2">No tienes proyectos</div>
-              {% endif %}
-              {% endwith %}
-            </div>
-          </li>
-        </ul>
+            </li>
+          </ul>
+        </div>
       </div>
-
-      <!-- Área de contenido -->
-      <main class="col-md-9 col-lg-10 px-4 py-4">
-        {% block content %}{% endblock %}
-      </main>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <footer class="bg-dark text-light py-4 mt-auto">
-    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
-      <p class="mb-2 mb-md-0">Síguenos en nuestras redes sociales:</p>
-      <div>
-        <a href="https://www.youtube.com/c/CITTDuocUC" target="_blank" class="btn btn-outline-light btn-sm me-2"><i class="bi bi-youtube"></i></a>
-        <a href="https://www.instagram.com/citt_puentealto" target="_blank" class="btn btn-outline-light btn-sm me-2"><i class="bi bi-instagram"></i></a>
-        <a href="http://www2.duoc.cl/citt/index.html" target="_blank" class="btn btn-outline-light btn-sm"><i class="bi bi-building"></i> CITT</a>
+    </nav>
+    <!-- Contenido general con Sidebar + Content -->
+    <div class="container-fluid flex-grow-1">
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 bg-white border-end p-3 min-vh-100">
+          <div class="mb-4 mt-5 text-center">
+            {% if user.perfil_alumno.imagen_perfil %}
+              <img src="{{ user.perfil_alumno.imagen_perfil.url }}"
+                   alt="Foto perfil"
+                   class="rounded-circle mb-2"
+                   style="width: 160px;
+                          height: 160px;
+                          object-fit: cover" />
+            {% else %}
+              <img src="{% static 'images/default-avatar.jpg' %}"
+                   alt="Foto perfil default"
+                   class="rounded-circle mb-2"
+                   style="width: 120px;
+                          height: 120px;
+                          object-fit: cover" />
+            {% endif %}
+            {% if user.perfil_alumno.nombres and user.perfil_alumno.apellido_paterno %}
+              <h5 class="mt-2">
+                <strong>{{ user.perfil_alumno.nombres }}
+                {{ user.perfil_alumno.apellido_paterno }}</strong>
+              </h5>
+            {% endif %}
+            <p>
+              <strong>usuario:</strong> {{ user.username }}
+            </p>
+          </div>
+          <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item mb-2">
+              <a href="{% url 'home-alumno' %}"
+                 class="nav-link bg-dark text-white rounded-3 text-center">
+                <i class="bi bi-house-door me-2"></i> Inicio
+              </a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="{% url 'ver-perfil-al' %}"
+                 class="nav-link bg-dark text-white rounded-3 text-center">
+                <i class="bi bi-person-fill me-2"></i> Ver Perfil
+              </a>
+            </li>
+            <hr class="text-white my-3" />
+            {% if user.id_track %}
+              <li class="nav-item mb-2">
+                <a href="{% url 'detalle-track' user.id_track.nom_track|slugify %}"
+                   class="nav-link bg-dark text-white rounded-3 text-center">
+                  <i class="bi bi-diagram-3-fill me-2"></i> {{ user.id_track.nom_track }}
+                </a>
+              </li>
+            {% endif %}
+            {% if not mostrar_menu_restringido %}
+              <li class="nav-item mb-2">
+                <a href="{% url 'reuniones-alumno' %}"
+                   class="nav-link bg-dark text-white rounded-3 text-center">
+                  <i class="bi bi-calendar-event me-2"></i> Reuniones
+                </a>
+              </li>
+              <li class="nav-item mb-2">
+                <a href="{% url 'eventos-alumno' %}"
+                   class="nav-link bg-dark text-white rounded-3 text-center">
+                  <i class="bi bi-megaphone me-2"></i> Eventos
+                </a>
+              </li>
+              <li class="nav-item mb-2">
+                <a href="{% url 'listar-solicitudes' %}"
+                   class="nav-link bg-dark text-white rounded-3 text-center">
+                  <i class="bi bi-inbox me-2"></i> Solicitudes CITT
+                </a>
+              </li>
+            {% endif %}
+            {% if not request.user.id_track %}
+              <li class="nav-item mb-2">
+                <a href="{% url 'listar-tracks' %}"
+                   class="nav-link bg-dark text-white rounded-3 text-center">
+                  <i class="bi bi-person-fill me-2"></i> Tracks
+                </a>
+              </li>
+            {% endif %}
+            <hr class="text-white my-3" />
+            <li class="nav-item mb-2">
+              <a class="nav-link bg-dark text-white rounded-3 text-center justify-content-center d-flex align-items-center"
+                 data-bs-toggle="collapse"
+                 href="#sidebarProyectosCollapse"
+                 role="button"
+                 aria-expanded="false"
+                 aria-controls="sidebarProyectosCollapse">
+                <span><i class="bi bi-folder-fill me-2"></i> Mis Proyectos</span>
+                <i class="bi bi-caret-down-fill"></i>
+              </a>
+              <div class="collapse" id="sidebarProyectosCollapse">
+                {% with user_proyectos=user.proyecto_set.all %}
+                  {% if user_proyectos %}
+                    <ul class="nav flex-column ms-3 mt-1">
+                      {% for proyecto in user_proyectos %}
+                        <li class="nav-item mb-1">
+                          <a href="{% url 'home-proyecto-alumno' proyecto.id_proyecto %}"
+                             class="nav-link text-dark small ps-4 py-1 rounded-2"
+                             style="background: rgb(207, 210, 214)">
+                            <i class="bi bi-chevron-right me-1"></i> {{proyecto.nom_proyecto|truncatechars:18 }}
+                          </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  {% else %}
+                    <div class="text-muted small ps-4 py-2">No tienes proyectos</div>
+                  {% endif %}
+                {% endwith %}
+              </div>
+            </li>
+          </ul>
+        </div>
+        <!-- Área de contenido -->
+        <main class="col-md-9 col-lg-10 px-4 py-4">
+          {% block content %}{% endblock %}
+        </main>
       </div>
     </div>
-  </footer>
-
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-auto">
+      <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <p class="mb-2 mb-md-0">Síguenos en nuestras redes sociales:</p>
+        <div>
+          <a href="https://www.youtube.com/c/CITTDuocUC"
+             target="_blank"
+             class="btn btn-outline-light btn-sm me-2"><i class="bi bi-youtube"></i></a>
+          <a href="https://www.instagram.com/citt_puentealto"
+             target="_blank"
+             class="btn btn-outline-light btn-sm me-2"><i class="bi bi-instagram"></i></a>
+          <a href="http://www2.duoc.cl/citt/index.html"
+             target="_blank"
+             class="btn btn-outline-light btn-sm"><i class="bi bi-building"></i> CITT</a>
+        </div>
+      </div>
+    </footer>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>

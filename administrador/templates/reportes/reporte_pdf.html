@@ -58,25 +58,55 @@
   {% if data %}
     <div class="my-4"></div>
     <div class="table-responsive">
-      <table class="table table-bordered align-middle shadow-sm" style="background: #fff; border-radius: 12px; overflow: hidden;">
-        <thead style="background: #343a40; color: #fff;">
+      <table class="table table-bordered align-middle shadow" style="background: #fff; border-radius: 14px; overflow: hidden;">
+        <thead style="background: #f5f7fa; color: #495057;">
           <tr>
-            {% for key in data.0.keys %}
-              <th style="padding: 10px 8px; font-size: 1rem;">{{ key|title|cut:"_" }}</th>
-            {% endfor %}
-            {% if tipo == 'alumnos_track' %}
-              <th style="padding: 10px 8px; font-size: 1rem;">Cantidad de Proyectos</th>
+            {% if tipo == 'proyectos' %}
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Nombre proyecto</th>
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Jefe Proyecto</th>
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Rol Jefe</th>
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Correo Jefe</th>
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Descripción</th>
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Fecha inicio</th>
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Track</th>
+            {% elif tipo == 'reuniones' %}
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Track</th>
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Fecha</th>
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Hora</th>
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Modalidad</th>
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Ubicación</th>
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Descripción</th>
+            {% elif tipo == 'alumnos_track' %}
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Usuario</th>
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Correo</th>
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Track</th>
+              <th style="padding: 13px 10px; font-size: 1.07rem; font-weight: 600; border-bottom: 2px solid #e3e6ea;">Cantidad de proyectos</th>
             {% endif %}
           </tr>
         </thead>
         <tbody>
           {% for row in data %}
-          <tr {% if forloop.counter0|divisibleby:2 %}style="background:#f8f9fa;"{% else %}style="background:#e9ecef;"{% endif %}>
-            {% for value in row.values %}
-              <td style="padding: 8px 6px;">{{ value }}</td>
-            {% endfor %}
-            {% if tipo == 'alumnos_track' %}
-              <td style="padding: 8px 6px;">{{ row.proyectos_count|default:0 }}</td>
+          <tr style="background: {% if forloop.counter0|divisibleby:2 %}#fafdff{% else %}#f3f5f7{% endif %}; transition: background 0.2s;">
+            {% if tipo == 'proyectos' %}
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.nom_proyecto }}</td>
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.jefe_proyecto__username }}</td>
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.jefe_proyecto__rol }}</td>
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.jefe_proyecto__email }}</td>
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.descripcion }}</td>
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.fecha_inicio }}</td>
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.id_track__nom_track }}</td>
+            {% elif tipo == 'reuniones' %}
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.track__nom_track }}</td>
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.fecha }}</td>
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.hora }}</td>
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.modalidad }}</td>
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.ubicacion }}</td>
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.descripcion }}</td>
+            {% elif tipo == 'alumnos_track' %}
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.username }}</td>
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.email }}</td>
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.id_track__nom_track }}</td>
+              <td style="padding: 10px 8px; font-size: 1.01rem; border-bottom: 1.5px solid #f0f1f3; vertical-align: middle;">{{ row.proyectos_count|default:0 }}</td>
             {% endif %}
           </tr>
           {% endfor %}

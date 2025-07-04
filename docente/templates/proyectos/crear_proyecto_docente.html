@@ -1,41 +1,188 @@
-{% extends 'base-docentes.html' %}
-{% load static %}
-{% load widget_tweaks %}
-
-{% block title %}Crear Proyecto{% endblock %}
-
-{% block content %}
+{% extends 'base-docentes.html' %} {% load static %} {% load widget_tweaks %} {%
+block title %}Crear Proyecto{% endblock %} {% block content %}
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card shadow-lg border-0 rounded-4">
         <div class="card-header bg-primary text-white rounded-top-4">
-          <h4 class="mb-0"><i class="bi bi-rocket-takeoff me-2"></i>Crear Nuevo Proyecto</h4>
+          <h4 class="mb-0">
+            <i class="bi bi-rocket-takeoff me-2"></i>Crear Nuevo Proyecto
+          </h4>
         </div>
         <div class="card-body">
           <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            {% for field in form.visible_fields %}
-              <div class="mb-3">
-                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field|add_class:"form-control" }}
-                {% if field.help_text %}
-                  <div class="form-text">{{ field.help_text }}</div>
-                {% endif %}
-                {% for error in field.errors %}
-                  <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-              </div>
-            {% endfor %}
+            {% csrf_token %} {% for field in form.visible_fields %} {% if
+            field.name == 'nom_proyecto' %}
+            <div class="mb-3">
+              <label for="id_nom_proyecto" class="form-label"
+                >Nombre del Proyecto</label
+              >
+              <input
+                type="text"
+                name="nom_proyecto"
+                id="id_nom_proyecto"
+                class="form-control"
+                maxlength="30"
+                pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{1,30}"
+                required
+                value="{{ form.nom_proyecto.value|default:'' }}"
+              />
+              {% for error in form.nom_proyecto.errors %}
+              <div class="text-danger">{{ error }}</div>
+              {% endfor %}
+            </div>
+            {% elif field.name == 'descripcion' %}
+            <div class="mb-3">
+              <label for="id_descripcion" class="form-label">Descripción</label>
+              <textarea
+                name="descripcion"
+                id="id_descripcion"
+                class="form-control"
+                maxlength="300"
+                rows="3"
+                required
+              >
+{{ form.descripcion.value|default:'' }}</textarea
+              >
+              {% for error in form.descripcion.errors %}
+              <div class="text-danger">{{ error }}</div>
+              {% endfor %}
+            </div>
+            {% elif field.name == 'fecha_inicio' %}
+            <div class="mb-3">
+              <label for="id_fecha_inicio" class="form-label"
+                >Fecha de Inicio</label
+              >
+              <input
+                type="date"
+                name="fecha_inicio"
+                id="id_fecha_inicio"
+                class="form-control"
+                required
+                min=""
+                value="{{ form.fecha_inicio.value|default:'' }}"
+              />
+              {% for error in form.fecha_inicio.errors %}
+              <div class="text-danger">{{ error }}</div>
+              {% endfor %}
+            </div>
+            {% elif field.name == 'objetivo' %}
+            <div class="mb-3">
+              <label for="id_objetivo" class="form-label">Objetivo</label>
+              <input
+                type="text"
+                name="objetivo"
+                id="id_objetivo"
+                class="form-control"
+                maxlength="30"
+                pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{1,30}"
+                required
+                value="{{ form.objetivo.value|default:'' }}"
+              />
+              {% for error in form.objetivo.errors %}
+              <div class="text-danger">{{ error }}</div>
+              {% endfor %}
+            </div>
+            {% elif field.name == 'num_integrantes' %}
+            <div class="mb-3">
+              <label for="id_num_integrantes" class="form-label"
+                >N° de Integrantes</label
+              >
+              <input
+                type="number"
+                name="num_integrantes"
+                id="id_num_integrantes"
+                class="form-control"
+                min="1"
+                max="10"
+                required
+                value="{{ form.num_integrantes.value|default:'' }}"
+              />
+              {% for error in form.num_integrantes.errors %}
+              <div class="text-danger">{{ error }}</div>
+              {% endfor %}
+            </div>
+            {% elif field.name == 'imagen' %}
+            <div class="mb-3">
+              <label for="id_imagen" class="form-label">Imagen</label>
+              {{ form.imagen }} {% for error in form.imagen.errors %}
+              <div class="text-danger">{{ error }}</div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="mb-3">
+              <label class="form-label" for="{{ field.id_for_label }}"
+                >{{ field.label }}</label
+              >
+              {{ field|add_class:"form-control" }} {% if field.help_text %}
+              <div class="form-text">{{ field.help_text }}</div>
+              {% endif %} {% for error in field.errors %}
+              <div class="text-danger">{{ error }}</div>
+              {% endfor %}
+            </div>
+            {% endif %} {% endfor %}
 
             <div class="alert alert-info small">
-              <strong>Nota:</strong> El proyecto se asignará automáticamente a tu track y tú serás el jefe de proyecto.
+              <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                  const fechaInicio =
+                    document.getElementById("id_fecha_inicio");
+                  if (fechaInicio) {
+                    var today = new Date();
+                    var yyyy = today.getFullYear();
+                    var mm = String(today.getMonth() + 1).padStart(2, "0");
+                    var dd = String(today.getDate()).padStart(2, "0");
+                    var minDate = yyyy + "-" + mm + "-" + dd;
+                    fechaInicio.setAttribute("min", minDate);
+                  }
+                });
+              </script>
+              <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                  const nom = document.getElementById("id_nom_proyecto");
+                  const objetivo = document.getElementById("id_objetivo");
+                  const descripcion = document.getElementById("id_descripcion");
+                  const num = document.getElementById("id_num_integrantes");
+                  if (nom)
+                    nom.addEventListener("input", function () {
+                      this.value = this.value
+                        .replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ ]/g, "")
+                        .slice(0, 30);
+                    });
+                  if (objetivo)
+                    objetivo.addEventListener("input", function () {
+                      this.value = this.value
+                        .replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ ]/g, "")
+                        .slice(0, 30);
+                    });
+                  if (descripcion)
+                    descripcion.addEventListener("input", function () {
+                      this.value = this.value.slice(0, 300);
+                    });
+                  if (num)
+                    num.addEventListener("input", function () {
+                      let v = this.value.replace(/[^0-9]/g, "");
+                      if (v.length > 2) v = v.slice(0, 2);
+                      let n = parseInt(v, 10);
+                      if (isNaN(n) || n < 1) n = 1;
+                      if (n > 10) n = 10;
+                      this.value = n;
+                    });
+                });
+              </script>
+              <strong>Nota:</strong> El proyecto se asignará automáticamente a
+              tu track y tú serás el jefe de proyecto.
             </div>
 
             <div class="text-end">
-              <a href="{% url 'listar-proyectos-docente' %}" class="btn btn-secondary">Cancelar</a>
-              <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+              <a
+                href="{% url 'listar-proyectos-docente' %}"
+                class="btn btn-secondary"
+                >Cancelar</a
+              >
+              <button type="submit" class="btn btn-primary">
+                Guardar Proyecto
+              </button>
             </div>
           </form>
         </div>

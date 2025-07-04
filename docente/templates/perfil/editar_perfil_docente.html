@@ -1,29 +1,55 @@
 {% extends 'base-docentes.html' %}
 {% load static %}
-
 {% block content %}
-<div class="container mt-5">
-  <div class="card shadow">
-    <div class="card-header bg-dark text-white">
-      <h4 class="mb-0">Editar Perfil</h4>
-    </div>
-    <div class="card-body">
-      <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% for field in form %}
-          <div class="mb-3">
-            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-            {{ field }}
-            {% if field.errors %}
-              <div class="text-danger">{{ field.errors }}</div>
-            {% endif %}
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-7 mx-auto">
+        <div class="card shadow">
+          <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">Editar Perfil</h4>
           </div>
-        {% endfor %}
-        <button type="submit" class="btn btn-success">Guardar cambios</button>
-        <a href="{% url 'ver-perfil-doc' %}" class="btn btn-secondary">Cancelar</a>
-      </form>
+          <div class="card-body">
+            <form method="POST"
+                  enctype="multipart/form-data"
+                  id="formEditarPerfilDocente">
+              {% csrf_token %}
+              {% for field in form %}
+                <div class="mb-3">
+                  <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                  {% if field.name == 'nombres' or field.name == 'apellido_paterno' or field.name == 'apellido_materno' %}
+                    <input type="text"
+                           name="{{ field.name }}"
+                           id="{{ field.id_for_label }}"
+                           class="form-control"
+                           maxlength="20"
+                           pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{1,20}"
+                           value="{{ field.value|default:'' }}"
+                           required />
+                  {% elif field.name == 'telefono' %}
+                    <input type="text"
+                           name="telefono"
+                           id="{{ field.id_for_label }}"
+                           class="form-control"
+                           maxlength="12"
+                           pattern="\+56\d{9}"
+                           value="{{ field.value|default:'+569' }}"
+                           required
+                           autocomplete="off" />
+                  {% else %}
+                    {{ field }}
+                  {% endif %}
+                  {% if field.errors %}<div class="text-danger">{{ field.errors }}</div>{% endif %}
+                </div>
+              {% endfor %}
+              <div class="text-center">
+                <button type="submit" class="btn btn-success">Guardar cambios</button>
+                <a href="{% url 'ver-perfil-doc' %}" class="btn btn-secondary">Cancelar</a>
+              </div>
+            </form>
+            <script src="{% static 'scripts/scripts.js' %}" defer></script>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 {% endblock %}
-
